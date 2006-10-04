@@ -1,21 +1,12 @@
-"PCAproj" <-
-function (x, k = 2, method = c("sd", "mad", "qn"), CalcMethod = c("eachobs", "lincomb", "sphere"), 
-          nmax = 1000, update = TRUE, scores = TRUE, maxit = 5, maxhalf = 5, control, ...)
+PCAproj = function (x, k = 2, method = c ("mad", "sd","qn"), CalcMethod = c("eachobs", "lincomb", "sphere"), nmax = 1000, update = TRUE, scores = TRUE, maxit = 5, maxhalf = 5, scale = NULL, center = l1median, control)
 {
 	if (!missing (control))
 		ParseControlStructure (control, c("k", "method", "CalcMethod", "nmax", "update", "scores", "maxit", "maxhalf"))
+	CalcMethod = CalcMethod[1]
+	method = method[1]
 
 	if (!any (CalcMethod == c("eachobs", "lincomb", "sphere")))
 		stop (paste ("Unknown calcmethod:", CalcMethod))
-
-	k = k[1]
-	method = method[1]
-	CalcMethod = CalcMethod[1]
-	nmax = nmax[1]
-	update = as.logical (update[1])
-	scores = as.logical (scores[1])
-	maxit = maxit[1]
-	maxhalf = maxhalf[1]
 
 	n = nrow (x)
 	p = ncol (x)
@@ -33,7 +24,8 @@ function (x, k = 2, method = c("sd", "mad", "qn"), CalcMethod = c("eachobs", "li
                 pold=p
 
 
-	DataObj = ScaleAdvR (x, ...)
+	DataObj = ScaleAdv (x, scale = scale, center = center)
+
 	y = DataObj$x
 
 #	m = l1median(x)
@@ -64,17 +56,19 @@ function (x, k = 2, method = c("sd", "mad", "qn"), CalcMethod = c("eachobs", "li
 	nn = nrow (y)
 
 	if (update)
-		ret = .C ("rpcnup", as.double (y), as.integer (c(nn, p, k, ParseDevString (method), scores, maxit, maxhalf, n)),
+		ret = .C ("rpcnup", PACKAGE="pcaPP",
+                          as.double (y), 
+                          as.integer (c(nn, p, k, ParseDevString (method), scores, maxit, maxhalf, n)),
 			scores = double (scoresize),
 			loadings = double (p * k),
-			lambda = double (k),
-			PACKAGE = "pcaPP")
+			lambda = double (k))
 	else
-		ret = .C ("rpcn",   as.double (y), as.integer (c(nn, p, k, ParseDevString (method), scores, n)),
+		ret = .C ("rpcn",  PACKAGE="pcaPP",
+                          as.double (y), 
+                          as.integer (c(nn, p, k, ParseDevString (method), scores, n)),
 			scores = double (scoresize),
 			loadings = double (p * k),
-			lambda = double (k),
-			PACKAGE = "pcaPP")
+			lambda = double (k))
 
 
        if(pold>n)
@@ -85,4 +79,3 @@ function (x, k = 2, method = c("sd", "mad", "qn"), CalcMethod = c("eachobs", "li
 	else
 		DataPostProc (DataObj, ret$lambda, matrix (ret$loadings, ncol = k), NULL, match.call(), scores)
 }
-

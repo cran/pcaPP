@@ -6,9 +6,9 @@
   Croux and Ruiz-Gazen (JMVA, 2005). 
 }
 \usage{
-PCAproj(x, k = 2, method = c("sd", "mad", "qn"), CalcMethod = c("eachobs",
+PCAproj(x, k = 2, method = c("mad", "sd", "qn"), CalcMethod = c("eachobs",
 "lincomb", "sphere"), nmax = 1000, update = TRUE, scores = TRUE, maxit = 5, 
-maxhalf = 5, control, ...)
+maxhalf = 5, scale = NULL, center = l1median, control)
 }
 \arguments{
   \item{x}{ a numeric matrix or data frame which provides the data for the 
@@ -28,14 +28,15 @@ maxhalf = 5, control, ...)
   principal component should be calculated. }
   \item{maxit}{ maximim number of iterations. }
   \item{maxhalf}{ maximum number of steps for angle halving. }
+  \item{scale}{ this argument indicates how the data is to be rescaled. It
+  can be a function like \code{\link{sd}} or \code{\link{mad}} or a vector
+  of length \code{ncol(x)} containing the scale value of each column. }
+  \item{center}{ this argument indicates how the data is to be centered. It
+  can be a function like \code{\link{mean}} or \code{\link{median}} or a vector
+  of length \code{ncol(x)} containing the center value of each column. }
   \item{control}{ a list whose elements must be the same as (or a subset of) 
   the parameters above. If the control object is supplied, the parameters from 
-  it will be used and any other given parameters are overridden. The parameter
-  \code{...} is not affected by this parameter though. It cannot be given as an 
-  element of the \code{control} object and is not ignored if the \code{control} 
-  object is supplied.}
-  \item{\dots}{ additional arguments passed to the function 
-  \code{\link{ScaleAdvR}} }
+  it will be used and any other given parameters are overridden. }
 }
 \details{
   Basically, this algrithm considers the directions of each observation 
@@ -83,9 +84,10 @@ maxhalf = 5, control, ...)
         Technical Report TS-04-4, Vienna University of Technology, Austria}
 }
 \author{ Heinrich Fritz, Peter Filzmoser <\email{P.Filzmoser@tuwien.ac.at}>}
-\seealso{ \code{\link{PCAgrid}}, \code{\link{ScaleAdvR}}, \code{\link{princomp}} }
+\seealso{ \code{\link{PCAgrid}}, \code{\link{ScaleAdv}}, \code{\link{princomp}} }
 \examples{
   # multivariate data with outliers
+  library(mvtnorm)
   x <- rbind(rmvnorm(200, rep(0, 6), diag(c(5, rep(1,5)))),
              rmvnorm( 15, c(0, rep(20, 5)), diag(rep(1, 6))))
   # Here we calculate the principal components with PCAgrid

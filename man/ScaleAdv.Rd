@@ -1,13 +1,11 @@
 \name{ScaleAdv}
 \alias{ScaleAdv}
-\alias{ScaleAdvR}
 \title{ centers and rescales data }
 \description{
   Data is centered and rescaled (to have mean 0 and a standard deviation of 1).
 }
 \usage{
 ScaleAdv(x, center = mean, scale = sd)
-ScaleAdvR(x, center = l1median, scale = NULL)
 }
 \arguments{
   \item{x}{ matrix containing the observations. If this is not a matrix, but
@@ -32,8 +30,7 @@ ScaleAdvR(x, center = l1median, scale = NULL)
   the data with the original scales. }
 }
 \details{
-  The function \code{ScaleAdvR} is the same as \code{ScaleAdv} except for its differing 
-  default values. The default \code{scale} being \code{NULL} means that no rescaling is done.
+  The default \code{scale} being \code{NULL} means that no rescaling is done.
 }
 \author{ Heinrich Fritz, Peter Filzmoser <\email{P.Filzmoser@tuwien.ac.at}>}
 \examples{

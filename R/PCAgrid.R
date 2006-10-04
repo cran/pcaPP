@@ -1,6 +1,4 @@
-"PCAgrid" <-
-function (x, k = 2, method = c("sd", "mad", "qn"), maxiter = 10, splitcircle = 10, 
-          scores = TRUE, anglehalving = TRUE, fact2dim = 10, control, ...)
+PCAgrid = function (x, k = 2, method = c("mad", "sd", "qn"), maxiter = 10, splitcircle = 10, scores = TRUE, anglehalving = TRUE, fact2dim = 10, scale = NULL, center = l1median, control)
 {
 # grid search for PCA
 #
@@ -9,19 +7,12 @@ function (x, k = 2, method = c("sd", "mad", "qn"), maxiter = 10, splitcircle = 1
 # m ... number of directions to search ## umbenannt auf "splitcircle"
 # maxiter ... maximum number of iterations
 # method ... how to estimate the standard deviation
-#        should be: "sd", "mad", qn
+#        should be: "sd", "mad"
 #
 
 	if (!missing (control))
 		ParseControlStructure (control, c("k", "method", "maxiter", "splitcircle", "scores", "anglehalving", "fact2dim"))
-
-	k = k[1]
 	method = method[1]
-	maxiter = maxiter[1]
-	splitcircle = splitcircle[1]
-	scores = as.logical (scores[1])
-	anglehalving = as.logical (anglehalving[1])
-	fact2dim = fact2dim[1]
 
 	n = nrow (x)
 	p = ncol (x)
@@ -35,26 +26,23 @@ function (x, k = 2, method = c("sd", "mad", "qn"), maxiter = 10, splitcircle = 1
         } else
                 pold=p
 
-
-	DataObj = ScaleAdvR (x, ...)
+	DataObj = ScaleAdv (x, scale = scale, center = center)
 
 	if (scores)
-		res = .C("rpcgrid",
+		res = .C("rpcgrid", PACKAGE="pcaPP",
 			as.double (DataObj$x),
 			as.integer (c(nrow (DataObj$x), ncol(DataObj$x), k, splitcircle, maxiter, ParseDevString (method), anglehalving, scores, fact2dim)),
 			obj = double(k),
 			loadings = double (ncol(DataObj$x) * k),
-			scores = double (nrow(DataObj$x) * k),
-			PACKAGE = "pcaPP"
+			scores = double (nrow(DataObj$x) * k)
 			)
 	else
-		res = .C("rpcgrid",
+		res = .C("rpcgrid", PACKAGE="pcaPP",
 			as.double (DataObj$x),
 			as.integer (c(nrow (DataObj$x), ncol(DataObj$x), k, splitcircle, maxiter, ParseDevString (method), anglehalving, scores, fact2dim)),
 			obj = double(k),
 			loadings = double (ncol(DataObj$x) * k),
-			scores = double (1),
-			PACKAGE = "pcaPP"
+			scores = double (1)
 			)
 	veig = matrix (res$loadings, ncol = k)
 
@@ -63,4 +51,3 @@ function (x, k = 2, method = c("sd", "mad", "qn"), maxiter = 10, splitcircle = 1
 
 	return (DataPostProc (DataObj, res$obj, loadings = veig, scores = matrix (res$scores, ncol = k), match.call(), scores))
 }
-

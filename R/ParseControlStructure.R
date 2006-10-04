@@ -1,5 +1,4 @@
-"ParseControlStructure" <-
-function (control, arguments)
+ParseControlStructure = function (control, arguments)
 {
 	if (!is.list(control))
 		stop ("Invalid argument type: control structure must be of type list")
@@ -13,4 +12,3 @@ function (control, arguments)
 			eval (parse (text = paste ("eval.parent (substitute(", curname, "<- control$", curname, "), n = 3)", sep = "")))
 	}
 }
-

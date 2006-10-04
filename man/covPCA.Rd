@@ -7,18 +7,14 @@
   \code{PCAproj} functions.
 }
 \usage{
-covPCAproj(x, control, ...)
-covPCAgrid(x, control, ...)
+covPCAproj(x, control)
+covPCAgrid(x, control)
 }
 \arguments{
   \item{x}{ a numeric matrix or data frame which provides the data. }
   \item{control}{ a list whose elements must be the same as (or a subset of) 
   the parameters of the appropriate PCA function (\code{\link{PCAgrid}} or 
-  \code{\link{PCAproj}}). If the control object is supplied, other parameters 
-  supposed to be passed to this function as part of the \code{...} parameter 
-  are overridden. }
-  \item{\dots}{ additional arguments passed to the function 
-  \code{\link{PCAproj}} or \code{\link{PCAgrid}} respectively.}
+  \code{\link{PCAproj}}). }
 }
 \details{
   The functions \code{covPCAproj} and \code{covPCAgrid} use the functions
@@ -38,9 +34,10 @@ covPCAgrid(x, control, ...)
         Technical Report TS-04-4, Vienna University of Technology, Austria}
 }
 \author{ Heinrich Fritz, Peter Filzmoser <\email{P.Filzmoser@tuwien.ac.at}> }
-\seealso{ \code{\link{PCAgrid}}, \code{\link{ScaleAdvR}}, \code{\link{princomp}} }
+\seealso{ \code{\link{PCAgrid}}, \code{\link{ScaleAdv}}, \code{\link{princomp}} }
 \examples{
   # multivariate data with outliers
+  library(mvtnorm)
   x <- rbind(rmvnorm(200, rep(0, 6), diag(c(5, rep(1,5)))),
              rmvnorm( 15, c(0, rep(20, 5)), diag(rep(1, 6))))
   covPCAproj(x)

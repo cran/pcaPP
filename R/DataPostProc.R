@@ -1,5 +1,4 @@
-"DataPostProc" <-
-function (DataObj, obj, loadings, scores, cl, bScores)
+DataPostProc = function (DataObj, obj, loadings, scores, cl, bScores)
 {
 
 	if (bScores)
@@ -51,4 +50,3 @@ function (DataObj, obj, loadings, scores, cl, bScores)
 	class (ret) = c ("pcaPP", "princomp")
 	return (ret)
 }
-

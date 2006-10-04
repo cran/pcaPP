@@ -8,8 +8,8 @@
   these planes.
 }
 \usage{
-PCAgrid(x, k = 2, method = c("sd", "mad", "qn"), maxiter = 10, splitcircle = 10, 
-scores = TRUE, anglehalving = TRUE, fact2dim = 10, control, ...)
+PCAgrid(x, k = 2, method = c("mad", "sd", "qn"), maxiter = 10, splitcircle = 10, 
+scores = TRUE, anglehalving = TRUE, fact2dim = 10, scale = NULL, center = l1median, control)
 }
 \arguments{
   \item{x}{ a numeric matrix or data frame which provides the data for the 
@@ -32,13 +32,15 @@ scores = TRUE, anglehalving = TRUE, fact2dim = 10, control, ...)
   two-dimensional. In higher dimensions, fewer search directions are needed to allow
   for faster computation. In two dimensions, more search directions are required to 
   grant higher precision. \code{fact2dim} is used to take account of this.}
+  \item{scale}{ this argument indicates how the data is to be rescaled. It
+  can be a function like \code{\link{sd}} or \code{\link{mad}} or a vector
+  of length \code{ncol(x)} containing the scale value of each column. }
+  \item{center}{ this argument indicates how the data is to be centered. It
+  can be a function like \code{\link{mean}} or \code{\link{median}} or a vector
+  of length \code{ncol(x)} containing the center value of each column. }
   \item{control}{ a list whose elements must be the same as (or a subset of) 
   the parameters above. If the control object is supplied, the parameters from 
-  it will be used and any other given parameters are overridden. The parameter
-  \code{...} is not affected by this parameter though. It cannot be given as an 
-  element of the \code{control} object and is not ignored if the \code{control} 
-  object is supplied.}
-  \item{\dots}{ additional arguments passed to the function \code{\link{ScaleAdvR}} }
+  it will be used and any other given parameters are overridden. }
 }
 \details{
   Angle halving is an extension of the original algorithm. In the original 
@@ -74,9 +76,10 @@ scores = TRUE, anglehalving = TRUE, fact2dim = 10, control, ...)
         Technical Report TS-04-4, Vienna University of Technology, Austria}
 }
 \author{Heinrich Fritz, Peter Filzmoser <\email{P.Filzmoser@tuwien.ac.at}>}
-\seealso{ \code{link{PCAproj}}, \code{\link{ScaleAdvR}}, \code{\link{princomp}} }
+\seealso{ \code{\link{PCAproj}}, \code{\link{ScaleAdv}}, \code{\link{princomp}} }
 \examples{
   # multivariate data with outliers
+  library(mvtnorm)
   x <- rbind(rmvnorm(200, rep(0, 6), diag(c(5, rep(1,5)))),
              rmvnorm( 15, c(0, rep(20, 5)), diag(rep(1, 6))))
   # Here we calculate the principal components with PCAgrid

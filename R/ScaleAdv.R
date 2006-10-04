@@ -1,5 +1,4 @@
-"ScaleAdv" <-
-function (x, center = mean, scale = sd)
+ScaleAdv <- function (x, center = mean, scale = sd)
 {
 	if (class (x) != "matrix")
 	{
@@ -55,4 +54,3 @@ function (x, center = mean, scale = sd)
 
 	return (list (x = x, center = m, scale = s))
 }
-
