@@ -71,11 +71,13 @@ PCAproj = function (x, k = 2, method = c ("mad", "sd","qn"), CalcMethod = c("eac
 			lambda = double (k))
 
 
+	veig = matrix (ret$loadings, ncol = k)
+
        if(pold>n)
             veig = svdx$u %*% veig
 
 	if (scores)
-		DataPostProc (DataObj, ret$lambda, matrix (ret$loadings, ncol = k), matrix (ret$scores, ncol = k) , match.call(), scores)
+		DataPostProc (DataObj, ret$lambda, veig, matrix (ret$scores, ncol = k) , match.call(), scores)
 	else
-		DataPostProc (DataObj, ret$lambda, matrix (ret$loadings, ncol = k), NULL, match.call(), scores)
+		DataPostProc (DataObj, ret$lambda, veig, NULL, match.call(), scores)
 }

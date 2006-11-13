@@ -83,6 +83,12 @@ extern 	void rpcgrid (double *px, int *pnParams, double *pObj, double *pLoadings
 
 			double *pdYOpt = NEWDARRAY (n * 2) ;
 
+			double *pd_y_x_afin = NEWDARRAY (n);
+
+			double *pdYOrdered = NEWDARRAY (n * p) ;
+
+			double *pdTemp ;
+
 			for (nb = 0; nb < k; nb++)
 			{
 				fill (afin, p, 0) ;
@@ -93,11 +99,16 @@ extern 	void rpcgrid (double *px, int *pnParams, double *pObj, double *pLoadings
 					colsd (y, &n, &p, pdYColSd) ;
 					order_decr (pdYColSd, &p, pnOrder) ;
 					
-					double *pdYOrdered = NEWDARRAY (n * p) ;
+//					double *pdYOrdered = NEWDARRAY (n * p) ;
 					SetColOrder (y, &n, &p, pnOrder, pdYOrdered) ;
 		
-					free (y) ;
+//					free (y) ;
+
+					pdTemp = y ;
 					y = pdYOrdered ;
+					pdYOrdered = pdTemp ;
+
+
 				}
 
 				double dFoo ;
@@ -154,7 +165,6 @@ extern 	void rpcgrid (double *px, int *pnParams, double *pObj, double *pLoadings
 
 				double dObjf ;
 
-				double *pd_y_x_afin = NEWDARRAY (n);
 				matmult (y, &n, &p, afin, &nOneCol, pd_y_x_afin) ; 
 
 //				if (method)
@@ -230,12 +240,9 @@ extern 	void rpcgrid (double *px, int *pnParams, double *pObj, double *pLoadings
 					matmult (l + nb * p, &p, &nOneCol, l + nb * p, &p, pd_lnb_x_t_lnb) ;
 					MatSubMat (pr, pd_lnb_x_t_lnb, &p, &p) ;
 				}
-
-				free (pd_y_x_afin) ;
-
-//				free (pdYOpt) ;
-
 			}
+
+			free (pd_y_x_afin) ;
 
 			free (pdYColSd) ;
 			free (pdAfinBest) ;
@@ -244,12 +251,14 @@ extern 	void rpcgrid (double *px, int *pnParams, double *pObj, double *pLoadings
 			free (pnOrder) ;
 			free (afin) ;
 			free (y) ;
+			free (pdYOrdered) ;
 			free (pr) ;
 
 			//	pScores <- x %*% l
 			if (nScores)
 				matmult (px, &n, &p, l, &k, pScores) ;
+
+			VectorSqrt (pObj, &k, pObj) ;
 		}
 
-		VectorSqrt (pObj, &k, pObj) ;
 	}
