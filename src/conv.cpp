@@ -219,6 +219,7 @@
 		free (pdAngle) ;
 		free (pdAlpha) ;
 		free (pdAlpha1) ;
+		free (pdtAlpha1) ;
 	}
 
 	void calcvectorsqrt (double *pdData, int n, double *pdSqrt)

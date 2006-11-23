@@ -250,10 +250,10 @@ double myvec [] = {0.399, 0.994, 0.512, 0.844, 0.611, 0.857, 0.669, 0.872 } ;
 	void Qn (double *pdX, int *pn, double *pdRet)
 	{
 		int n = *pn ;
-		double *pdWork = new double [n], *pdY = new double [n];							//XX Length?!	//	: rvector;
+		double *pdWork = new double [n]; //, *pdY = new double [n];							//XX Length?!	//	: rvector;
 
 		InitD (pdWork, n, 0) ;
-		InitD (pdY, n, 0) ;
+//		InitD (pdY, n, 0) ;
 		
 		int *pnLeft = new int [n],
 			*pnRight = new int [n],
@@ -268,8 +268,6 @@ double myvec [] = {0.399, 0.994, 0.512, 0.844, 0.611, 0.857, 0.669, 0.872 } ;
 		InitN (pnQ, n, 0) ;
 		InitN (pnP, n, 0) ;
 
-
-
 		double dn, dTrial, dQv = 0 ;										//	: real;
 		int h, k, nKNew,nJHelp, nL, nR,nSumQ, nSumP, i, j, jj ;				//	: integer;
 		bool bFound ;													//	: boolean;
@@ -279,7 +277,7 @@ double myvec [] = {0.399, 0.994, 0.512, 0.844, 0.611, 0.857, 0.669, 0.872 } ;
 		k = h * (h - 1) / 2;
 
 //		sort(pdX,n,pdY);
-		pdY = new double [n] ;
+		double *pdY = new double [n] ;
 		memcpy (pdY, pdX, n * sizeof (double) ) ;
 		R_rsort (pdY, n) ;
 //		doublesort (pdY, n) ;
