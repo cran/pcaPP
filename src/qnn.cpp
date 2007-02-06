@@ -245,6 +245,16 @@ double whimed (double *pdA, int *pnW, int n)
 	return dRet ;
 }
 
+
+/* Testsource
+
+library (pcaPP)
+r = matrix (rnorm (10000), 100, 100)
+for (i in 1:1000)
+  qna = qn(r)
+
+*/
+
 double myvec [] = {0.399, 0.994, 0.512, 0.844, 0.611, 0.857, 0.669, 0.872 } ;
 
 	void Qn (double *pdX, int *pn, double *pdRet)
@@ -297,7 +307,7 @@ double myvec [] = {0.399, 0.994, 0.512, 0.844, 0.611, 0.857, 0.669, 0.872 } ;
 		while ((nR-nL > n) && (!bFound))
 		{
 			j = 0;
-			for (int i = 1; i < n; i++)
+			for (i = 1; i < n; i++)
 			{
 				if (pnLeft[i] <= pnRight[i]) 
 				{

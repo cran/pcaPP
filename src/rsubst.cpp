@@ -128,6 +128,8 @@
 
 	void VectorMult (double *x, int *pn, double dFactor)
 	{
+		if (dFactor == 1.0)
+			return ;
 		int i ;
 		for (i = *pn - 1; i >=0; i--)
 			x[i] *= dFactor ;
@@ -656,4 +658,26 @@
 		case 2:	return Qn ;
 		}
 		return NULL ;
+	}
+
+
+	void MatSetMat (double *pdBig, double *pdSmall, int nNB, /*int nPB,*/ int nNS, int nPS, int nOffsetN, int nOffsetP)
+	{				//	kopiert eine kleine nNS x nPS matrix in eine größere nNB x nPB matrix, wobei der Paramater nPB eigentlich nur für checks verwendet werden kann -deshalb wird er hier weggelassen 
+		int i ;
+		pdBig += nNB * nOffsetP + nOffsetN ;
+
+		for (i = nPS - 1; i >= 0; i--)
+		{
+			memcpy (pdBig, pdSmall, nNS * sizeof (double)) ;
+			pdBig += nNB ;
+			pdSmall += nNS ;
+		}
+	}
+
+	void SwapPtrs (double **pptr1, double **pptr2)
+	{
+		double *ptr3 ;
+		ptr3 = *pptr1 ;
+		*pptr1 = *pptr2 ;
+		*pptr2 = ptr3 ;
 	}

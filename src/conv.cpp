@@ -229,6 +229,19 @@
 			*pdSqrt++ = sqrt (*pdData++) ;
 	}
 
+	double calcsumsqrVectorDiff (double *pD1, double *pD2, int nCount)
+	{
+		double dRet = 0, dCur ; 
+		int i ;
+
+		for (i = nCount - 1; i >= 0 ; i--)
+		{
+			dCur = pD1[i] - pD2[i] ;
+			dRet += dCur * dCur ;
+		}
+		return dRet ;
+	}
+
 	double calcsqrtsumsqr (double *pData, int nCount)
 	{
 		int i ;

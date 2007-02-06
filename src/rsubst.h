@@ -100,6 +100,7 @@ typedef int                 BOOL;
 
 	void calcvectorsqrt (double *pdData, int n, double *pdSqrt) ;
 	double calcsqrtsumsqr (double *pData, int nCount) ;
+	double calcsumsqrVectorDiff (double *pD1, double *pD2, int nCount) ;
 	double calcrowsumsq (double *pdData, int n, int p, double *pdRowSumSq) ;
 	int VectorLargerThan (double *pdData, int n, int *pnTF, double pMargin) ;
 	int GetRows (double *pdX, int n, int p, int *pnIdx, double *pdOut) ;
@@ -113,3 +114,6 @@ typedef int                 BOOL;
 
 	void gridplane (double *pdY, int *npYSize, int *pm, dev_Type *pfDev, double *pdObjMax, double *pdAlphaMax) ;
 	void gridplane2 (double *pdY, int *npYSize, double *pa, int *pm, double *pdDiv, dev_Type *pfDev, double *pdObjMax, double *pdAlphaMax) ;
+
+	void MatSetMat (double *pdBig, double *pdSmall, int nNB, /*int nPB,*/ int nNS, int nPS, int nOffsetN, int nOffsetP) ;
+	void SwapPtrs (double **pptr1, double **pptr2) ;

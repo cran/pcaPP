@@ -5,8 +5,8 @@
 
 
 
-extern 	void rpcgrid (double *px, int *pnParams, double *pObj, double *pLoadings, double *pScores)
-	{
+extern 	void rpcgrid (double *pdx, int *pnParams, double *pdObj, double *pdl, double *pdScores)
+{
 		int n  = pnParams [0] ;		//	nRows
 		int p  = pnParams [1] ;		//	nCols
 
@@ -16,249 +16,282 @@ extern 	void rpcgrid (double *px, int *pnParams, double *pObj, double *pLoadings
 		int	method = pnParams [5] ;
 		int nAngleHalving = pnParams [6] ;
 		int nScores = pnParams [7] ;
-		int n2DimFact = pnParams [8] ;
+		int n2DimFact = pnParams [8] * m;
 
 		dev_Type *pfDev = GetDevFunction (method) ;
 
-		// grid search for PCA
+		// grid search for PCA, using Householder transformation for orthogonality of loadings
 		//
-		// x ... centered (!) data matrix						n x p
+		// x ... centered (!) data matrix
 		// k ... number of components to determine
 		// m ... number of directions to search
 		// maxiter ... maximum number of iterations
 		// method ... how to estimate the standard deviation
-		//        should be: "std", "mad"
+		//        should be: "sd", "mad"
+		// fact2dim ... multiplication factor for m for 2-dimensional data
 		//
 
-		int i ;
-		for (i = k - 1; i >= 0; i--)
-			pObj[i] = R_NaReal ;
+		//	z <- matrix(NA,nrow=n,ncol=k) # matrix with scores
+//		double *pdz = new double [n * k] ; // matrix with scores
 
-//		double *z = pScores /*= (double *) malloc (n * k * sizeof (double))*/ ;		//	n x k	//	matrix with scores
-		if (nScores)		
-			fill (pScores, n * k, R_NaReal) ;
+		//	l <- matrix(0,nrow=p,ncol=k) # matrix with loadings
+//		double *pdl = new double [p * k] ; // matrix with scores
+		fill (pdl, p * k, 0) ;
 
-		double *l = pLoadings /*= (double *) malloc (p * k * sizeof (double))*/ ;		//	p x k	//	matrix with loadings
+		//	lorigin <- matrix(NA,nrow=p,ncol=k) # matrix with loadings in original space
 
-		fill (pLoadings, p * k, R_NaReal) ;
+		double *pdlOrigin = new double [p * k] ; // matrix with scores
+		fill (pdlOrigin, p * k, R_NaReal) ;
+
+		//	obj <- rep(NA,k) # vector with objective function
+		//double *pdObj = new double [k] ; // matrix with scores
+		//fill (pdObj, p * k, R_NaReal) ;
+
+		int *pnOrder = new int [p] ; 
+
+//		int nCurM = m * n2DimFact ;
+
+		double *pdTempN = new double [n + p] ;
+		double *pdTempP = pdTempN + n ;
+
+		static int nTwo = 2 ;
+		static int nOne = 1 ;
+
+		int nFoo ;
+		double dFoo ;
+
+		
 
 		if (p == 2)
 		{
-			int nCurM = m * n2DimFact ;
-			gridplane (px, &n, &nCurM, pfDev, pObj, l) ;
+			// res <- gridplane(x,fact2dim*m,method=method)
+
+			gridplane (pdx, &n, &n2DimFact, pfDev, pdObj, pdl) ;
 
 			if (k > 1)
 			{
-				l[0 + 1 * p] = -l[1] ;
-				l[1 + 1 * p] = l[0] ;
+				pdl[p] = -pdl[1] ;
+				pdl[1 + p] = pdl[0] ;
 
-				double *pFatMat = NEWDARRAY (n) ;		//	n x 1
+				double *pFatMat = new double [n] ;		//	n x 1
 
 				int nOneCol = 1 ;
-				matmult (px, &n, &p, l + p, &nOneCol, pFatMat) ;
+				matmult (pdx, &n, &p, pdl + p, &nOneCol, pFatMat) ;
 
-/*				if (method)
-					colsd (pFatMat, &n, &nOneCol, pObj + 1) ;
-				else
-					colmad (pFatMat, &n, &nOneCol, pObj + 1) ;*/
-				coldev (pFatMat, &n, &nOneCol, pObj + 1, pfDev) ;
+				coldev (pFatMat, &n, &nOneCol, pdObj + 1, pfDev) ;
 
-				free (pFatMat) ;
+				delete [] pFatMat ;
 			}
 		}
 		else if (p > 2)
 		{
-			double *pr = NEWDARRAY (p * p);				//	 p x p
-			fillDiag (pr, &p, &p) ;
+						//	Transfo <- diag(p) # Transformation matrix
+			double *pdTransfo = new double [p * p] ;
+			double *pdTransfo_x_Edge = new double [p * p] ;
+			fillDiag (pdTransfo, &p, &p) ;
+						//	y <- x
+			double *pdy = new double [n * p] ;
+			double *pdY_Alloc = pdy ;
+			double *pdU = new double [p * p] ;			// p x p
 
-			double *y = NEWDARRAY (n * p) ;				//	n x p
-			double *afin = NEWDARRAY (p) ;				//	p x 1
+			matcpy (pdy, pdx, n * p) ;
+
+			double *pdY_x_U = new double [n * p] ;		//	p x n
+			double *pdY_x_U_Alloc = pdY_x_U ;
+
+
+			
+
+			double *pdAfinbest = new double [p] ;
+			double pdAlphaMax [2] ;
+			double dObjfbest ;//= new double [p * k] ;
+			double *pdAfin = new double [p] ;			// p x 2
+			double *pdYColSd = new double [p] ;			// p x 1
+			double *pdYOrdered = new double [n * p] ;	// n x p
+			double *pdYOpt	 = new double [n * 2] ;		// n x p
+
+			double *pdBase = new double [p * p] ;		// p x p
+
+			double *pdEdge = new double [p * p] ;		// p x p
+
+			double dObjf, dObjfold ;
+			double dnDiff ;
+			int nCurDimCount ;								//	current number of dimensions
+
+			double *pCurLPos ;
 
 			int nb ;
-
-			double *pdYColSd = NEWDARRAY (p) ;
-			int *pnOrder = NEWNARRAY (p) ;
-
-			double *pdAfinBest = NEWDARRAY (p) ;
-
-			double *pdYOpt = NEWDARRAY (n * 2) ;
-
-			double *pd_y_x_afin = NEWDARRAY (n);
-
-			double *pdYOrdered = NEWDARRAY (n * p) ;
-
-			double *pdTemp ;
-
 			for (nb = 0; nb < k; nb++)
-			{
-				fill (afin, p, 0) ;
+			{	  // loop over number of comp
 
-				matmult (px, &n, &p, pr, &p, y) ;
+				nCurDimCount = p - nb ;
 
-				{			// OrderArray für die Y Matrix nach den SD der Spalten ordnen
-					colsd (y, &n, &p, pdYColSd) ;
-					order_decr (pdYColSd, &p, pnOrder) ;
-					
-//					double *pdYOrdered = NEWDARRAY (n * p) ;
-					SetColOrder (y, &n, &p, pnOrder, pdYOrdered) ;
-		
-//					free (y) ;
+				int p1 = p - nb ;//+ 1 ; // dimension will be reduced for subsequent PCs
 
-					pdTemp = y ;
-					y = pdYOrdered ;
-					pdYOrdered = pdTemp ;
-
-
-				}
-
-				double dFoo ;
-					//	res <- gridplane(y[,1:2],m,method=method)
-					//	afin[1:2] <- res$alphamax
-				gridplane (y, &n, &m, pfDev, &dFoo, afin) ;
-
-
-
-									//	pdYOpt müsste eigentlich nur n x 1 sein, später wird jedoch ein temporäres colbind (+1 col)
-									//	gemacht, deshalb wird hier schon eine col mehr allociert
-
-					//	yopt <- y[,1:2]%*%res$alphamax
-
-				int nTwoCols = 2 ;
-				int nOneCol = 1 ;
-				matmult (y, &n, &nTwoCols, afin, &nOneCol, pdYOpt) ;
-
-				int j ;
-
-				for (j = 2; j < p; j++)
+				if (p1 == 1)
+					fill (pdl + nb + nb * p, p - nb, 1) ;
+				else if (p1 == 2)
 				{
-					double adAlphaMax[2] ;
-						//	cbind(yopt,y[,j])
-					matcpy (pdYOpt + n, y + j*n, n) ;		//	-> in pdYOpt + n steht y[,j] drinnen
-
-						//	res <- gridplane(cbind(yopt,y[,j]),m,method=method)
-						//        %%% this is the difference between rpcgrid.R & rpcgrid2.R
-						//	res <- gridplane2(cbind(yopt,y[,j]),afin[j],m,div=2^i,method=method)
-
-//					double dDiv = pow (2, i) ;
-//					gridplane2 (pdYOpt, &n, afin+ j, &m, &dDiv, &method, 0, adAlphaMax) ;
-					gridplane (pdYOpt, &n, &m, pfDev, 0, adAlphaMax) ;
-
-						//	y[,j]*res$alphamax[2]
-					VectorMult (pdYOpt + n, &n, adAlphaMax[1]) ;
-
-						//	afin[1:(j-1)] <- afin[1:(j-1)]*res$alphamax[1]
-
-						//	yopt <- yopt*res$alphamax[1]+y[,j]*res$alphamax[2]
-							//	yopt <- yopt*res$alphamax[1]
-					VectorMult (pdYOpt, &n, adAlphaMax[0]) ;
-
-							//	yopt <- yopt+y[,j]*res$alphamax[2]
-					VectorAddVector (pdYOpt, &n, pdYOpt + n) ;
-
-					VectorMult (afin, &j, adAlphaMax[0]) ;
-
-					//	afin[j] <- res$alphamax[2]
-					afin[j] = adAlphaMax [1] ;
+					gridplane (pdy, &n, &n2DimFact, pfDev, &dObjfbest, pdAfinbest) ;
+					pdObj[nb] = dObjfbest ;
+					pnOrder[0] = 0 ;
+					pnOrder[1] = 1 ;
 				}
+				else
+				{	// more than 2 dimensions from data left
+					fill (pdAfin, p1, 0) ;
+					{			// OrderArray für die Y Matrix nach den SD der Spalten ordnen
+						coldev (pdy, &n, &nCurDimCount,pdYColSd,  pfDev) ;
+						//colsd (pdy, &n, &p, pdYColSd) ;
+						order_decr (pdYColSd, &nCurDimCount, pnOrder) ;
+						SetColOrder (pdy, &n, &nCurDimCount, pnOrder, pdYOrdered) ;
+					}
 
-			//	verified...
 
-				double dObjf ;
+					gridplane (pdYOrdered, &n, &m, pfDev, &dFoo, pdAfin) ;
+								//yopt <- yord[,1:2]%*%res$alphamax
+					matmult (pdYOrdered, &n,  &nTwo, pdAfin, &nOne, pdYOpt) ;
 
-				matmult (y, &n, &p, afin, &nOneCol, pd_y_x_afin) ; 
-
-//				if (method)
-//					sd  (pd_y_x_afin, &n, &dObjf) ;
-//				else
-//					mad  (pd_y_x_afin, &n, &dObjf) ;
-				pfDev (pd_y_x_afin, &n, &dObjf) ;
-
-				double dObjF_old = dObjf, dObjF_best = dObjf ;
-
-				matcpy (pdAfinBest, afin, p) ;
-
-				int i ;
-				for (i = 0; i < maxiter; i++)
-				{
-					for (j = 0; j < p; j++)
+					int j, i ;
+					for (j = 2; j < p1; j++)
 					{
-						double adAlphaMax[2] ;
+						matcpy (pdYOpt + n, pdYOrdered + n * j, n) ;
+						gridplane (pdYOpt, &n, &m, pfDev, &dObjf, pdAlphaMax) ;
+						matmult (pdYOpt, &n, &nTwo, pdAlphaMax, &nOne, pdTempN) ;
+						matcpy (pdYOpt, pdTempN, n) ;
+						nFoo = j  ;
+						VectorMult (pdAfin, &j, *pdAlphaMax) ;
+						pdAfin[j] = pdAlphaMax [1] ;
 
-						matcpy (pdYOpt + n, y + n * j, n) ;
-						double dDiv = nAngleHalving ? 2<< i : 1 ;
-						gridplane2 (pdYOpt, &n, afin + j, &m, &dDiv, pfDev, NULL, adAlphaMax) ;
+					}
 
-						{	//	yopt <- yopt*res$alphamax[1]+y[,j]*res$alphamax[2]
-								//	y[,j]*res$alphamax[2]
-							VectorMult (pdYOpt + n, &n, adAlphaMax[1]) ;
+					dObjfbest = dObjfold = dObjf ;
+					matcpy (pdAfinbest, pdAfin, 2) ;
 
-								//	afin[1:(j-1)] <- afin[1:(j-1)]*res$alphamax[1]
-								
-									//	yopt <- yopt*res$alphamax[1]
-							VectorMult (pdYOpt, &n, adAlphaMax[0]) ;
-
-									//	yopt <- yopt+y[,j]*res$alphamax[2]
-							VectorAddVector (pdYOpt, &n, pdYOpt + n) ;
+					for (i = 0; i < maxiter; i++)
+					{
+						for (j = 0; j < p1; j++)
+						{
+							matcpy (pdYOpt + n, pdYOrdered + n * j, n) ;
+							double dDiv = nAngleHalving ? 2<< i : 1 ;
+							gridplane2 (pdYOpt, &n, pdAfin + j, &m, &dDiv, pfDev, &dObjf, pdAlphaMax) ;
+							matmult (pdYOpt, &n, &nTwo, pdAlphaMax, &nOne, pdTempN) ;
+							matcpy (pdYOpt, pdTempN, n) ;
+							VectorMult (pdAfin, &p, *pdAlphaMax) ;
+							pdAfin[j] += pdAlphaMax [1] ;
 						}
 
-						VectorMult (afin, &p, adAlphaMax[0]) ;
-						afin [j] += adAlphaMax[1] ;
+									//	afin=afin/sqrt(sum(afin^2))
+						VectorMult (pdAfin, &p, 1 / calcsqrtsumsqr (pdAfin, nCurDimCount)) ;
 
+						if (dObjf > dObjfold)
+						{
+							dObjfold = dObjfbest = dObjf ;
+										//	afinbest <- afin/sqrt(sum(afin^2))
+							matcpy (pdAfinbest, pdAfin, p) ;
+							VectorMult (pdAfinbest, &p, 1 / calcsqrtsumsqr (pdAfin, nCurDimCount)) ;
+						} 
 					}
-					double dAfinSqrtSumSqrt ;
-					
-					{	//	afin=afin/sqrt(sum(afin^2))
-						dAfinSqrtSumSqrt= calcsqrtsumsqr (afin, p) ;
+					pdObj[nb] = dObjfbest ;
 
-						VectorMult (afin, &p, 1 / dAfinSqrtSumSqrt) ;
-					}
+				}	// how many dimensions from data are left
 
-						//	y%*%afin = (n x p) X (p x 1) -> n x 1
-					matmult (y, &n, &p, afin, &nOneCol, pd_y_x_afin) ; 
+				if (p1 == 1)
+				{	// only 1 dimension of data left
 
-//					if (method)
-//						sd  (pd_y_x_afin, &n, &dObjf) ;
-//					else
-//						mad  (pd_y_x_afin, &n, &dObjf) ;
-					pfDev (pd_y_x_afin, &n, &dObjf) ;
+								//	lorigin[,nb]=Transfo%*%l[,nb]
+					matmult (pdTransfo, &p, &p, pdl + nb * p, &nOne, pdlOrigin + p * nb) ;
+								//	if (method=="sd"){objflast <- sd(x%*%lorigin[,nb])} 
+								//	else {objflast <- mad(x%*%lorigin[,nb])} 
+								//	obj[nb] <- objflast
 
-					if (dObjf > dObjF_old)
-					{
-							dObjF_best = dObjf ;
-							dObjF_old = dObjf ;
-
-							matcpy (pdAfinBest, afin, p) ;
-							VectorMult (pdAfinBest, &p, 1 / calcsqrtsumsqr (afin, p)) ;
-					}
+					matmult (pdx, &n, &p, pdlOrigin + p * nb, &nOne, pdTempN) ;
+					pfDev (pdTempN, &n, pdObj + nb) ;
 				}
+				else
+				{	// more than 1 dimension in data left
+					pCurLPos = pdl + nb + nb * p ;
+								// l[nord+nb-1,nb] <- afinbest # column nb of loadings matrix # !!!!!!!!!!!!!
 
-				pObj [nb] = dObjF_best * dObjF_best ;
-				SetVectorOrder (pdAfinBest, &p, pnOrder, l + nb * p) ;
+					SetVectorOrder (pdAfinbest, &nCurDimCount, pnOrder, pCurLPos) ;
 
-				{	// pr <- pr-l[,nb]%*%t(l[,nb])  
-					double *pd_lnb_x_t_lnb = NEWDARRAY (p * p ) ;		//	p x p
-					matmult (l + nb * p, &p, &nOneCol, l + nb * p, &p, pd_lnb_x_t_lnb) ;
-					MatSubMat (pr, pd_lnb_x_t_lnb, &p, &p) ;
+					fillDiag  (pdBase , &nCurDimCount, &nCurDimCount) ;
+					dnDiff = calcsumsqrVectorDiff (pdBase, pCurLPos, p-nb) ;
+					if (dnDiff > 1e-12)
+					{
+									//	if ((t(l[nb:p,nb])%*%Base[,1]) < 0)
+						matmult (pCurLPos, &nOne, &nCurDimCount, pdBase, &nOne, &dFoo) ;
+						if (dFoo < 0)
+							VectorMult (pCurLPos, &nCurDimCount, -1) ;
+									//	u=(Base[,1]-l[nb:p,nb])/sqrt(sum((Base[,1]-l[nb:p,nb])^2))
+						
+						matcpy (pdTempN, pdBase, nCurDimCount) ;
+						VectorSubstractVector (pdTempN, &nCurDimCount, pCurLPos) ;			//	pdTempN = u  = 1 x nCurDimCount
+						dFoo = sqrt (calcsumsqrVectorDiff (pdBase, pCurLPos, nCurDimCount)) ;
+						VectorMult (pdTempN, &nCurDimCount, 1 / sqrt (calcsumsqrVectorDiff (pdBase, pCurLPos, nCurDimCount))) ;
+
+									//	hlp=t(u)%*%Base
+						matmult (pdTempN, &nOne, &nCurDimCount, pdBase, &nCurDimCount, pdTempP) ;	//	pdTempP = hlp = 1 x nCurDimCount
+
+									//	U=Base - (t((hlp*2)) %*% u)
+						VectorMult (pdTempP, &nCurDimCount, -2) ;
+						matmult (pdTempP, &nCurDimCount, &nOne, pdTempN, &nCurDimCount, pdU) ;
+						nFoo = nCurDimCount * nCurDimCount ;
+						VectorAddVector (pdU, &nFoo, pdBase) ;
+					}
+					else
+						matcpy (pdU, pdBase, nCurDimCount * nCurDimCount) ;
+
+					// Back transformation to original pxp space:
+///	Verified...
+					if (!nb)
+					{
+						matcpy (pdlOrigin + p * nb, pdl + p * nb, p) ;
+						matcpy (pdTransfo, pdU, p * p) ;
+					}
+					else
+					{
+						fillDiag (pdEdge, &p, &p) ;
+						MatSetMat (pdEdge, pdU, p, nCurDimCount, nCurDimCount, nb, nb) ;
+						matmult (pdTransfo, &p, &p, pdl + nb * p, &nOne, pdlOrigin + nb * p) ;
+
+						matmult (pdTransfo, &p, &p, pdEdge, &p, pdTransfo_x_Edge) ;
+						SwapPtrs (&pdTransfo_x_Edge, &pdTransfo) ;		//	memorybereiche von pdTransfo_x_Edge % pdTransfo swapen - damit sparen wir uns 1x kopieren
+
+					}
+					matmult (pdy, &n, &nCurDimCount, pdU, &nCurDimCount, pdY_x_U) ;
+					SwapPtrs (&pdY_x_U, &pdy) ;
+					pdy += n ;
 				}
 			}
 
-			free (pd_y_x_afin) ;
+			delete [] pdTransfo ;
+			delete [] pdY_Alloc ;
+			delete [] pdU ;
+			delete [] pdY_x_U_Alloc ;
 
-			free (pdYColSd) ;
-			free (pdAfinBest) ;
+			delete [] pdAfin ;
+			delete [] pdYColSd ;
+			delete [] pdYOrdered ;
+			delete [] pdYOpt ;
+			delete [] pdBase ;
+			delete [] pdAfinbest ;
+			delete [] pdEdge ;
+			delete [] pdTransfo_x_Edge ;
 
-			free (pdYOpt) ;
-			free (pnOrder) ;
-			free (afin) ;
-			free (y) ;
-			free (pdYOrdered) ;
-			free (pr) ;
+			order_decr (pdObj, &k, pnOrder) ;
+			SetVectorOrder (pdObj, &k, pnOrder, pdTempP) ;
+			matcpy (pdObj, pdTempP,k) ;
+			SetColOrder (pdlOrigin, &p, &k, pnOrder, pdl) ;
 
-			//	pScores <- x %*% l
-			if (nScores)
-				matmult (px, &n, &p, l, &k, pScores) ;
-
-			VectorSqrt (pObj, &k, pObj) ;
 		}
 
-	}
+
+		if (nScores)
+			matmult (pdx, &n, &p, pdl, &k, pdScores) ;
+		
+		delete [] pdlOrigin ;
+		delete [] pdTempN ;
+		delete [] pnOrder ;
+
+}

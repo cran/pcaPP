@@ -78,10 +78,10 @@ maxhalf = 5, scale = NULL, center = l1median, control)
   principal components.}
   \item{call}{the matched call.}
 }
-\references{ 
-  C. Croux, P. Filzmoser, M. Oliveira (2004)
-  \emph{Projection-pursuit Estimators for Robust Principal Component Analysis,
-        Technical Report TS-04-4, Vienna University of Technology, Austria}
+\references{
+  C. Croux, P. Filzmoser, M. Oliveira, (2007).
+  Algorithms for Projection-Pursuit Robust Principal Component Analysis,
+  \emph{Chemometrics and Intelligent Laboratory Systems}. To appear.
 }
 \author{ Heinrich Fritz, Peter Filzmoser <\email{P.Filzmoser@tuwien.ac.at}>}
 \seealso{ \code{\link{PCAgrid}}, \code{\link{ScaleAdv}}, \code{\link{princomp}} }

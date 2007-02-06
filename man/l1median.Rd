@@ -15,9 +15,10 @@ l1median(X, MaxStep = 200, ItTol = 10^-8)
 \value{
   returns the vector of the coordinates of the L1 median.
 }
-\references{ C. Croux, P. Filzmoser, M. Oliveira (2004)
-  \emph{Projection-pursuit Estimators for Robust Principal Component Analysis,
-        Technical Report TS-04-4, Vienna University of Technology, Austria}
+\references{
+  C. Croux, P. Filzmoser, M. Oliveira, (2007).
+  Algorithms for Projection-Pursuit Robust Principal Component Analysis,
+  \emph{Chemometrics and Intelligent Laboratory Systems}. To appear.
 }
 \author{Heinrich Fritz, Peter Filzmoser <\email{P.Filzmoser@tuwien.ac.at}>}
 
