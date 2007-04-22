@@ -26,6 +26,12 @@ PCAproj = function (x, k = 2, method = c ("mad", "sd","qn"), CalcMethod = c("eac
 
 	DataObj = ScaleAdv (x, scale = scale, center = center)
 
+        if (pold > n) # center and scale must have original data dimension:
+	{
+		DataObj$center <- as.vector(svdx$u%*%DataObj$center)
+		DataObj$scale <- ScaleAdv(x%*%t(svdx$u),center=NULL,scale=scale)$scale
+	}
+
 	y = DataObj$x
 
 #	m = l1median(x)

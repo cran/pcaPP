@@ -28,6 +28,13 @@ PCAgrid = function (x, k = 2, method = c("mad", "sd", "qn"), maxiter = 10, split
 
 	DataObj = ScaleAdv (x, scale = scale, center = center)
 
+        if (pold > n) # center and scale must have original data dimension:
+        {
+                DataObj$center <- as.vector(svdx$u%*%DataObj$center)
+                DataObj$scale <- ScaleAdv(x%*%t(svdx$u),center=NULL,scale=scale)$scale
+        }
+
+
 	if (scores)
 		res = .C("rpcgrid", PACKAGE="pcaPP",
 			as.double (DataObj$x),
