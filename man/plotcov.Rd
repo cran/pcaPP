@@ -36,7 +36,7 @@ plotcov(cov1, cov2, method1, labels1, method2, labels2, ndigits, ...)
 \references{
   C. Croux, P. Filzmoser, M. Oliveira, (2007).
   Algorithms for Projection-Pursuit Robust Principal Component Analysis,
-  \emph{Chemometrics and Intelligent Laboratory Systems}. To appear.
+  \emph{Chemometrics and Intelligent Laboratory Systems}, Vol. 87, pp. 218-225.
 }
 \author{ Heinrich Fritz, Peter Filzmoser <\email{P.Filzmoser@tuwien.ac.at}> }
 \seealso{ \code{\link{PCAgrid}}, \code{\link{PCAproj}}, \code{\link{princomp}} }

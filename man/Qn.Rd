@@ -20,7 +20,7 @@ qn(x)
 \references{ 
   P.J. Rousseeuw, C. Croux (1993)
   Alternatives to the Median Absolute Deviation,
-  \emph{JASA}, \strong{88}, 1273-1283
+  \emph{JASA}, \strong{88}, 1273-1283.
 }
 \author{ Heinrich Fritz, Peter Filzmoser <\email{P.Filzmoser@tuwien.ac.at}>}
 

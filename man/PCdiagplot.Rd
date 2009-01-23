@@ -35,9 +35,11 @@ PCdiagplot(x, PCobj, crit = c(0.975, 0.99, 0.999), ksel = NULL, plot = TRUE, plo
         critical value (cols) }
 }
 \references{ 
-  P. Filzmoser (2007).
-  Exploring high-dimensional data with robust principal components,
-  To appear in a Proceedings Volume of CDAM'07, Minsk, Belarus.
+  P. Filzmoser and H. Fritz (2007).
+  Exploring high-dimensional data with robust principal components.
+  In  S. Aivazian, P. Filzmoser, and Yu. Kharin, editors, Proceedings of the Eighth 
+  International Conference on Computer Data Analysis and Modeling, volume 1, pp. 43-50, 
+  Belarusian State University, Minsk.
 
   M. Hubert, P.J. Rousseeuwm, K. Vanden Branden (2005).
   ROBCA: a new approach to robust principal component analysis

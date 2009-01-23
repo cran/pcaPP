@@ -44,7 +44,7 @@ maxhalf = 5, scale = NULL, center = l1median, control)
   As this algorithm has some drawbacks, especially if \code{ncol(x) > nrow(x)}
   in the data matrix, there are several improvements that can be used with this
   algorithm.
-
+\itemize{
   \item{update}{An updating step basing on the algorithm for finding the
   eigenvectors is added to the algorithm. This can be used with any 
   \code{CalcMethod} }
@@ -58,7 +58,7 @@ maxhalf = 5, scale = NULL, center = l1median, control)
   combinations of the original data \code{b_1*x_1 + ... + b_n*x_n} where the 
   coefficients \code{b_i} come from a uniform distribution in the interval 
   \code{[0, 1]}. }
-
+}
   Similar to the function \code{\link{princomp}}, there is a \code{print} method 
   for the these objects that prints the results in a nice format and the \code{plot} 
   method produces a scree plot (\code{\link{screeplot}}). There is also a 
@@ -81,7 +81,7 @@ maxhalf = 5, scale = NULL, center = l1median, control)
 \references{
   C. Croux, P. Filzmoser, M. Oliveira, (2007).
   Algorithms for Projection-Pursuit Robust Principal Component Analysis,
-  \emph{Chemometrics and Intelligent Laboratory Systems}. To appear.
+  \emph{Chemometrics and Intelligent Laboratory Systems}, Vol. 87, pp. 218-225.
 }
 \author{ Heinrich Fritz, Peter Filzmoser <\email{P.Filzmoser@tuwien.ac.at}>}
 \seealso{ \code{\link{PCAgrid}}, \code{\link{ScaleAdv}}, \code{\link{princomp}} }

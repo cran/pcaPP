@@ -11,7 +11,9 @@ PCAgrid = function (x, k = 2, method = c("mad", "sd", "qn"), maxiter = 10, split
 #
 
 	if (!missing (control))
-		ParseControlStructure (control, c("k", "method", "maxiter", "splitcircle", "scores", "anglehalving", "fact2dim"))
+		###ParseControlStructure (control, c("k", "method", "maxiter", "splitcircle", "scores", "anglehalving", "fact2dim"))
+		ParseControlStructure (control, c("k", "method", "maxiter", "splitcircle", "scores", "anglehalving", "fact2dim","center", "scale"))
+
 	method = method[1]
 
 	n = nrow (x)

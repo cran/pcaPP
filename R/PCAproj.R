@@ -1,7 +1,8 @@
 PCAproj = function (x, k = 2, method = c ("mad", "sd","qn"), CalcMethod = c("eachobs", "lincomb", "sphere"), nmax = 1000, update = TRUE, scores = TRUE, maxit = 5, maxhalf = 5, scale = NULL, center = l1median, control)
 {
 	if (!missing (control))
-		ParseControlStructure (control, c("k", "method", "CalcMethod", "nmax", "update", "scores", "maxit", "maxhalf"))
+		###ParseControlStructure (control, c("k", "method", "CalcMethod", "nmax", "update", "scores", "maxit", "maxhalf"))
+		ParseControlStructure (control, c("k", "method", "CalcMethod", "nmax", "update", "scores", "maxit", "maxhalf", "center", "scale"))
 	CalcMethod = CalcMethod[1]
 	method = method[1]
 

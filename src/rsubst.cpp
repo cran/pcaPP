@@ -354,13 +354,29 @@
 		else
 			pData_Copy = pData ;
 
-		R_rsort (pData_Copy, n) ;
+		if (n % 2)
+		{
+			rPsort(pData_Copy, n, nHalf-1);
+			*pMedian = pData_Copy[nHalf - 1] ;
+		}
+		else
+		{
+			double dTemp ;
+			rPsort(pData_Copy, n, nHalf - 1);
+			dTemp = pData_Copy[nHalf - 1] ;
+			rPsort(pData_Copy, n, nHalf);
+
+			*pMedian = (dTemp + pData_Copy[nHalf]) / 2 ;
+		}
+
+
+/*		R_rsort (pData_Copy, n) ;
 
 		if (n % 2)
 			*pMedian = pData_Copy[nHalf - 1] ;
 		else
 			*pMedian = (pData_Copy[nHalf - 1] + pData_Copy[nHalf]) / 2 ;
-
+*/
 		if (bData_ReadOnly)
 			free (pData_Copy) ;
 	}

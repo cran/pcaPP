@@ -73,7 +73,7 @@ scores = TRUE, anglehalving = TRUE, fact2dim = 10, scale = NULL, center = l1medi
 \references{
   C. Croux, P. Filzmoser, M. Oliveira, (2007).
   Algorithms for Projection-Pursuit Robust Principal Component Analysis,
-  \emph{Chemometrics and Intelligent Laboratory Systems}. To appear.
+  \emph{Chemometrics and Intelligent Laboratory Systems}, Vol. 87, pp. 218-225.
 }
 \author{Heinrich Fritz, Peter Filzmoser <\email{P.Filzmoser@tuwien.ac.at}>}
 \seealso{ \code{\link{PCAproj}}, \code{\link{ScaleAdv}}, \code{\link{princomp}} }

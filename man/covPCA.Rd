@@ -31,7 +31,7 @@ covPCAgrid(x, control)
 \references{ 
   C. Croux, P. Filzmoser, M. Oliveira, (2007).
   Algorithms for Projection-Pursuit Robust Principal Component Analysis, 
-  \emph{Chemometrics and Intelligent Laboratory Systems}. To appear.
+  \emph{Chemometrics and Intelligent Laboratory Systems}, Vol. 87, pp. 218-225.
 }
 \author{ Heinrich Fritz, Peter Filzmoser <\email{P.Filzmoser@tuwien.ac.at}> }
 \seealso{ \code{\link{PCAgrid}}, \code{\link{ScaleAdv}}, \code{\link{princomp}} }

@@ -32,6 +32,11 @@ ScaleAdv(x, center = mean, scale = sd)
 \details{
   The default \code{scale} being \code{NULL} means that no rescaling is done.
 }
+\references{
+  C. Croux, P. Filzmoser, M. Oliveira, (2007).
+  Algorithms for Projection-Pursuit Robust Principal Component Analysis,
+  \emph{Chemometrics and Intelligent Laboratory Systems}, Vol. 87, pp. 218-225.
+}
 \author{ Heinrich Fritz, Peter Filzmoser <\email{P.Filzmoser@tuwien.ac.at}>}
 \examples{
   x <- rnorm(100, 10, 5)
