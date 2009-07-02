@@ -32,11 +32,11 @@
 		SVecN m_mIsZero ;
 
 	//	User Operators
+	public:
 		class AaCmD_BpaAmA			{ CALC_4_2(void) { a = c - d; b += sm_sqr (a) ; } } ;
 		class if_C_ApaBdD			{ CALC_4_1(void) { if (c) a += b / d ; } } ;
 		class if_C_Apa_inv_b		{ CALC_3_1(void) { if (c) a += 1 / b ; } } ;
 		class Apa_abs_c_Bpa_abs_DmC	{ CALC_4_2(void) { a += fabs (c) ; b += fabs (d - c) ; } };
-
 	} ;
 
 	double calObj (const double *pdData, const double *pdM, int n, int p) ;
