@@ -413,5 +413,6 @@ double myvec [] = {0.399, 0.994, 0.512, 0.844, 0.611, 0.857, 0.669, 0.872 } ;
 		delete [] pnQ ;
 		delete [] pnP ;
 
-		*pdRet =  dn * 2.2219 * dQv ;
+		*pdRet =  dn * 2.21914446598508
+			* dQv ;
 	}

@@ -24,6 +24,10 @@ qn(x)
 }
 \author{ Heinrich Fritz, Peter Filzmoser <\email{P.Filzmoser@tuwien.ac.at}>}
 
+\section{Warning }{
+Earlier implementations used a wrong correction factor for the final result. Thus qn estimations computed with package pcaPP version > 1.8-1 differ about 0.12\% from earlier estimations (version <= 1.8-1).
+}
+
 \seealso{ \code{\link{mad}} }
 \examples{
   # data with outliers
