@@ -3,8 +3,9 @@ sPCAgrid <- function(x, k = 2, method = c ("mad", "sd", "qn"), lambda = 1#, norm
 					, maxiter = 10, splitcircle = 25, scores = TRUE, zero.tol = 1e-16, center = l1median, scale, trace = 0, store.call = TRUE, control, ...)
 {
 
-	norm.q <- 1
-	norm.s <- 1
+	norm.q <- .get_par (list (...), "norm.q", 1)
+	norm.s <- .get_par (list (...), "norm.s", 1)
+	glo.scatter <- .get_par (list (...), "glo.scatter", 0)
 
 	check.orth <- FALSE
 	dat <- list (x = x, substitute_x = substitute (x), k = k, method = method, maxiter = maxiter, splitcircle = splitcircle, check.orth = check.orth, scores = scores, lambda = lambda, zero.tol = zero.tol, center = center, store.call = store.call, trace = trace, ...)
@@ -17,7 +18,7 @@ sPCAgrid <- function(x, k = 2, method = c ("mad", "sd", "qn"), lambda = 1#, norm
 #	dat$check.orth <- FALSE		##	2do: remove this value!
 	dat$HDred <- FALSE
 	dat$cut.pc <- TRUE
-	dat$glo.scatter <- 0
+    dat$glo.scatter <- glo.scatter
 	dat$SpeedUp <- 0
 
 	dat <- .sPCAgrid..DataPreProc (dat)
@@ -149,7 +150,11 @@ PCAgrid <- function (x, k = 2, method = c ("mad", "sd", "qn"), maxiter = 10, spl
 		return (match (method, .validScaleMethods()) - 1)
 	}
 
-#	stopifnot (x < 3)	##	hack 4 the paper.. enable this line again!
+	if (x >= 3 
+		&& x != 5                                                               ## hack for the sPCAgrid-paper -> remove this line again...
+		) 
+		stop ("the method is supposed to be a value < 3")
+
 	return (x)
 }
 
@@ -378,6 +383,14 @@ PCAgrid <- function (x, k = 2, method = c ("mad", "sd", "qn"), maxiter = 10, spl
 	class (ret$loadings) <- "loadings"
 	class (ret) <- "princomp"
 
+	return (ret)
+}
+
+.get_par <- function (l, idx, default)
+{
+	ret <- l[[idx]]
+	if (is.null (ret))
+		return (default)
 	return (ret)
 }
 

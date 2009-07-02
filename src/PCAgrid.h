@@ -1,4 +1,9 @@
+#ifndef INCLUDE_PCAPP_PCAGRID_H
+#define INCLUDE_PCAPP_PCAGRID_H
+
 #include "pcaPP.h"
+
+	double ngpf (const double &d) ;
 
 	class CPCAGrid
 	{
@@ -73,3 +78,5 @@
 		double m_dGloScatter, m_dCurLambda ;
 		double m_dLoadSumThis, m_dLoadSumOther ;
 	} ;
+
+#endif  //  #ifndef INCLUDE_PCAPP_PCAGRID_H

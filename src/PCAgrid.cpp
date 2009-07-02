@@ -1,16 +1,20 @@
 #include "PCAgrid.h"
 
+
 #define CHECK_ORTH
 #define GLOBAL_POWER	2	//	use 2 for maximizing (robust) variances, 1 for maximizing (robust) standard deviations.
 
+
 #if GLOBAL_POWER == 1
-	const &double ngpf (const double &d) {return d ; }
+		double ngpf (const double &d) {return d ; }
 #else 
 	#if GLOBAL_POWER == 2
 		double ngpf (const double &d) {return d * d ; }
 	//	#else: error, because gpf not defined.
 	#endif
 #endif
+
+
 
 /////////////////
 //	CsPCAGrid  //
@@ -26,7 +30,7 @@
 		,	m_vLambda (pdLambda, m_dwK), m_vTempP (m_dwP), m_vTempPSub (m_dwP)
 		,	m_dGloScatter (1)
 	{
-		if (m_dwPHD)
+		if (m_dwPHD)															//	always false for sPCAgrid
 		{
 			m_mBackTransHD.Set (pdBackTransHD, m_dwPHD, m_dwP) ;
 			m_mBackProj.Require (m_dwP, m_dwPHD) ;
@@ -57,10 +61,10 @@
 
 		// calc new backtransformation matrix.
 
-		if (m_dwPHD)
+		if (m_dwPHD)															//	always false sPCAgrid
 			sme_matmult_R (m_mBackTransHD, m_mL.GetColRef (m_dwCurK, m_dwP), !m_mBackProj) ;
 		else
-			m_mBackProj.Copy_R (m_mL.GetColRef (m_dwCurK, m_dwP)) ;	//	2do: use a reference!
+			m_mBackProj.Copy_R (m_mL.GetColRef (m_dwCurK, m_dwP)) ;				//	2do: use a reference!
 	}
 
 	void CsPCAGrid::InitPenalty ()
@@ -68,15 +72,19 @@
 		m_vSumLoadOthers.Reset (0) ;
 		EO<SOP::ApaBmC>::VMcVct (*m_vSumLoadOthers, m_mBackProj, m_vAfin) ;
 
-		m_vSumLoadThis.Copy_R (m_mBackProj.GetColRef (m_dwCurP)) ;	//	2do: try simple assignment or use this column directly where m_vSumLoadThis is needed!
+		m_vSumLoadThis.Copy_R (m_mBackProj.GetColRef (m_dwCurP)) ;				//	2do: try simple assignment or use this column directly where m_vSumLoadThis is needed!
 	}
 
-	double CsPCAGrid::CalcObj (const double dCos, const double dSin, double &dScat, double &dScatOrth)
+																				//	computes the objective function of a direction
+	double CsPCAGrid::CalcObj ( const double dCos, const double dSin			//	the direction to be examined
+								, double &dScat									//	(output) the scatter of a matrix cbind (m_vSumLoadThis, m_vSumLoadOthers) projected onto a direction (dCos, dSin)
+								, double &dScatOrth)							//	(output) the scatter of a matrix cbind (m_vSumLoadThis, m_vSumLoadOthers) projected onto a direction (dSin, dCos)
+																				//			(-> maybe dSin and dCos are mixed up in this comment)
 	{
 		dScat = CalcProjScat (dCos, dSin) ;
 
-		if (m_dwCheckOrth)
-		{
+		if (m_dwCheckOrth)														//	don't care about the experimental "m_dwCheckOrth" - option so far
+		{																		//	it's always off for sPCAgrid
 //			CalcMaha (dScat) ;
 
 
@@ -88,11 +96,27 @@
 ////			dCurObj /= ngpf (dScatOrth + dCurScat * 0.001) ;
 ////			dCurObj /= (m_dGloScatter + ngpf (dScatOrth)) ;
 		}
-		return ngpf (dScat) + GetPenalty (dCos, dSin) * m_dGloScatter;
+		return																	//	the objective function's value:
+			  ngpf (dScat)														//	the scatter (or variance) of the data projected onto the current direction
+																				//	ngpf(x) returns either x, or x^2, depending on the definition of GLOBAL_POWER
+																				//	NOTE: GLOBAL_POWER is now deprecated, as a "q" and an "s" parameter are available in "GetPenalty", which do provide the same functionality
+
+			+ GetPenalty (dCos, dSin)											//	+ the penalty function for the current direction
+			* m_dGloScatter;													//	* some normalization factor for the overall variance of the data in the currently considered subspace
 	}
 
-	double CsPCAGrid::GetPenalty (const double& dCos, const double& dSin)
+																				//	computes the sparseness - penalty term for a direction
+	double CsPCAGrid::GetPenalty (const double& dCos, const double& dSin)		//	dCos & dSin specify the direction to be checked
 	{
+/*		//	computing the Sparseness penalty:
+
+		r = c (dSin, dCos) ;
+		z = cbind (m_vSumLoadOthers, m_vSumLoadThis)
+
+		return sum ((abs (z %*% r))^q)^p ;	// the sparseness - criterion
+
+*/
+
 		ASSERT (!m_nSpeedUp) ;	//	the old penalty stuff has not been implemented here...
 
 		if (m_dCurLambda == 0)
@@ -100,32 +124,54 @@
 
 		double dRet = 0 ;
 
-		if (m_bUseQ)
+		if (m_bUseQ)															//	the q-parameter for the norm is != 1
 		{
 			const double adParams [] = {dCos, dSin, m_dQ} ;
 
-			if (fabs (dCos) <= m_dZeroTol)
-				EO<UOP::Apa_pow_abs_C_B>::SScVc (dRet, m_dQ, m_vSumLoadThis) ;
-			else if (fabs (dSin) <= m_dZeroTol)
-				EO<UOP::Apa_pow_abs_C_B>::SScVc (dRet, m_dQ, m_vSumLoadOthers) ;
-			else
+			if (fabs (dCos) <= m_dZeroTol)										//	the value of dCos is zero
+				EO<UOP::Apa_pow_abs_C_B>::SScVc (dRet, m_dQ, m_vSumLoadThis) ;	//	specific (faster) compuation for dCos == 0
+																				//	computes dRet = sum (abs (m_vSumLoadOthers) ^ m_dQ)
+/*		DESCRIPTION of matrix computation:
+
+                                       A     B       C
+    EO<UOP::Apa_pow_abs_C_B>::SScVc (dRet, m_dQ, m_vSumLoadThis)
+    Apa_pow_abs_C_B     <==>     A += pow (abs (C), B)		 (for each value of C)
+
+	pa  == plus assign (+=)
+	p = plus
+	m = multiply
+	d = divid
+	s = subtract
+
+*/
+			else if (fabs (dSin) <= m_dZeroTol)									//	the value of dSin is zero
+				EO<UOP::Apa_pow_abs_C_B>::SScVc (dRet, m_dQ, m_vSumLoadOthers) ;//	specific (faster) computation for dSim == 0
+																				//	computes dRet = sum (abs (m_vSumLoadOthers) ^ m_dQ)
+
+			else																//	dCos != 0 && dSin != 0 -> no simple computation possible
 				//EO<UOP::Apa_abs_BmDpCmE_>::SScScVcVc_NC (dRet, dCos, dSin, m_vSumLoadOthers, m_vSumLoadThis) ;
 				EO<UOP::Apa_pow_abs_B0mCpb1mD_B2>::SSVcVc_NC (dRet, adParams, m_vSumLoadOthers, m_vSumLoadThis) ;
+																				//	computes dRet = sum (abs (dCos * m_vSumLoadOthers + dSin * m_vSumLoadThis) ^ m_dQ)
 		}
 		else
 		{
 			if (fabs (dCos) <= m_dZeroTol)
 				EO<UOP::Apa_abs_B>::SVc (dRet, m_vSumLoadThis) ;
+																				//	computes dRet = sum (abs (m_vSumLoadThis))
 			else if (fabs (dSin) <= m_dZeroTol)
 				EO<UOP::Apa_abs_B>::SVc (dRet, m_vSumLoadOthers) ;
-			else
+			else																//	computes dRet = sum (abs (m_vSumLoadOthers))
 				EO<UOP::Apa_abs_BmDpCmE_>::SScScVcVc_NC (dRet, dCos, dSin, m_vSumLoadOthers, m_vSumLoadThis) ;
+																				//	computes dRet = sum (abs (dCos * m_vSumLoadOthers + dSin * m_vSumLoadThis))
 		}
 
-		if (m_bUseS)
+		if (m_bUseS)															//	the s - parameter (for the norm) is != 1
 			dRet = pow (dRet, m_dS) ;
 
 		return - dRet * m_dCurLambda ;
+
+		
+
 
 //		dRet *= - m_dCurLambda ;
 //		if (!m_dwCheckOrth)
@@ -172,16 +218,16 @@
 		{
 			TempY ().Copy (m_mX) ;
 			SetDiag_sq (!m_mL) ;
-			//m_mL.setdiag () ;			//	this MUST now happen in the calling R routine! // this has been changed when introducing the m_dwkIni argument // why not here?
+			//m_mL.setdiag () ;													//	this MUST now happen in the calling R routine! // this has been changed when introducing the m_dwkIni argument // why not here?
 		}
 
-		for (m_dwCurK = m_dwkIni; m_dwCurK < m_dwK; m_dwCurK++)
+		for (m_dwCurK = m_dwkIni; m_dwCurK < m_dwK; m_dwCurK++)					//	for each PC which to be computed
 		{
-			m_dwPSub = m_dwP - m_dwCurK ;		//	dimensionality of the subspace
+			m_dwPSub = m_dwP - m_dwCurK ;										//	dimensionality of the subspace
 
 			OnCalcPC () ;
 
-			if (m_dwPSub == 1)
+			if (m_dwPSub == 1)													//	only 1 dimension left -> return this direction
 			{
 				m_vSDev (m_dwCurK) = ApplyMethod (TempY ().GetColRef (0)) ;
 				continue ;	//	break ;
@@ -189,11 +235,11 @@
 
 			m_vScl.Reshape (m_dwPSub) ;
 			m_vOrd.Reshape (m_dwPSub) ;
-			ApplyMethod (TempY (), m_vScl) ;	//	2do: m_vScl can be a temporary vector
+			ApplyMethod (TempY (), m_vScl) ;									//	2do: m_vScl can be a temporary vector
 
-			meal_sort_order_rev (m_vScl, m_vOrd, m_vScl.size ()) ;
+			meal_sort_order_rev (m_vScl, m_vOrd, m_vScl.size ()) ;				//	gets the order (m_vOrd) of the dimensions regarding to their variance (m_vScl) in decreasing order
 
-			m_dwCurP = m_vOrd(0) ;				//	index of the coloumn of x with biggest scatter
+			m_dwCurP = m_vOrd(0) ;												//	index of the coloumn of x with biggest scatter
 
 			m_vAfinBest.Reshape (m_dwPSub) ;
 			m_vAfin.Reshape (m_dwPSub) ;
@@ -201,7 +247,7 @@
 			m_vAfin.Reset (0) ;
 			m_vAfin (m_dwCurP) = 1 ;
 
-			CopyCol (*m_vYOpt, TempY (), m_dwCurP) ;
+			CopyCol (*m_vYOpt, TempY (), m_dwCurP) ;							//	loads the loading with max scatter as the initial solution
 
 			t_size i, j ;
 			double dCurSplit ;
@@ -209,26 +255,28 @@
 			double dScatBest = 0 ;
 
 			double dObjBest = 0 ;
-			for (i = 0; i <= m_dwMaxIter; i++)
+			for (i = 0; i <= m_dwMaxIter; i++)									//	the outer iteration, which subsequently decreases the gridsize ( = dCurSplit)
 			{
 				//double dScat, dObj, dSumAbsDelta = 0 ;
+																				// 2do: check if it's better to use  * 0.5 each time?
+				dCurSplit = pow (0.5, (double) i) ;								//	the current gridSize
 
-				dCurSplit = pow (0.5, (double) i) ;		// or use  * 0.5 each time?
-
-				for (j = 0; j < m_dwPSub; j++)
+				for (j = 0; j < m_dwPSub; j++)									//	for each loading in the current solution
 				{
-					m_dwCurP = m_vOrd (j) ;
-					m_vCurY = TempY ().GetColRef (m_dwCurP) ;	//	2do: move this 2 rows down.
+					m_dwCurP = m_vOrd (j) ;										//	m_dwCurP = the j-th largest coponent
+																				//	the m_dwCurP-st loading in tje current solution is now altered in order to increase the objective function
+
+					m_vCurY = TempY ().GetColRef (m_dwCurP) ;					//	2do: move this 2 rows down.
 					m_pdCurY = m_vCurY ;
 
-					const double dL = m_vAfin (m_dwCurP) ;	//	current loading 
+					const double dL = m_vAfin (m_dwCurP) ;						//	current loading 
 					if (fabs (dL) == 1)
 						continue ;
 					RemoveLoading (/*i*/) ;
 
 					m_dNL = dL ;
-					GridPlane (dCurSplit) ;
-					AddLoading (m_dNL, m_dNCL) ;
+					GridPlane (dCurSplit) ;										//	increasing the objective function by trying several directions on a grid
+					AddLoading (m_dNL, m_dNCL) ;								//	add the found loading tho the current solution
 
 					//double dNL = dL, dNCL ;
 					//GridPlane (dNL, dNCL, dScat, dObj, dCurSplit) ;
@@ -236,9 +284,9 @@
 					//dSumAbsDelta += fabs (dL - dNL) ;
 				}
 
-				EO<SOP::a_divide>::VSc (*m_vAfin, norm2 (m_vAfin)) ;	//	2do: check norm of m_vAfin. should be 1 anyway!, if not it's sufficient to perform this normalization after this for loop, only with the m_vAfinBest - vector!
+				EO<SOP::a_divide>::VSc (*m_vAfin, norm2 (m_vAfin)) ;			//	2do: check norm of m_vAfin. should be 1 anyway!, if not it's sufficient to perform this normalization after this for loop, only with the m_vAfinBest - vector!
 
-				if (!i || dObjBest <= m_dBestObj)
+				if (!i || dObjBest <= m_dBestObj)								//	checking whether we've found a better solution -> if true store it.
 				{
 					dObjBest = m_dBestObj ;
 					m_vAfinBest.Copy_NC (m_vAfin) ;
@@ -287,7 +335,7 @@
 
 		SMatD mProjSorted (tempRef (1), m_dwPSub, m_dwPSub) ;
 
-		mProjSorted.CopyCol_Order_NC (m_mTempPP, *m_vOrd) ;						//	undo some kind of sorting
+		mProjSorted.CopyCol_Order_NC (m_mTempPP, *m_vOrd) ;						//	undo sorting
 
 		SMatD mOldLoadings (tempRef (2), m_dwP, m_dwPSub) ;						//	2do: copying cols should be done in constructor (using GetColRef ()
 		CopyCol (!mOldLoadings, m_mL, m_dwCurK, m_dwP) ;
@@ -304,9 +352,9 @@
 		if (dL == 0)
 			return ;
 
-		const double dCL = sqrt (1.0 - sm_sqr (dL)) ;	//	current loading and complementary loading, such that dL^2 + dCL^2 == 1
+		const double dCL = sqrt (1.0 - sm_sqr (dL)) ;							//	current loading and complementary loading, such that dL^2 + dCL^2 == 1
 
-		EO<UOP::Aa_AsDmB_dC>::VScScVc (*m_vYOpt, dL, dCL, m_vCurY) ;
+		EO<UOP::Aa_AsDmB_dC>::VScScVc (*m_vYOpt, dL, dCL, m_vCurY) ;			//	m_vYOpt = m_vYOpt
 		EO<SOP::a_divide>::VSc (*m_vAfin, dCL) ;
 		m_vAfin(m_dwCurP) = 0 ;
 	}
@@ -316,10 +364,13 @@
 		//	dNL		...	New Loading
 		//	dNCL	... New Complement Loading
 
-		EO<UOP::Aa_AmC_p_DmB>::VScScVc (*m_vYOpt, dNL, dNCL, m_vCurY) ;
+		EO<UOP::Aa_AmC_p_DmB>::VScScVc (*m_vYOpt, dNL, dNCL, m_vCurY) ;			//	m_vYOpt = m_vYOpt * dNCL + dNL * m_vCurY
 
-		EO<SOP::a_multiply>::VSc (*m_vAfin, dNCL) ;
-		m_vAfin (m_dwCurP) = dNL ;
+		//	Aa_AmC_p_DmB = A = A*C + D*B
+		//(*m_vYOpt, dNL, dNCL, m_vCurY)  == (A, B, C, D)
+
+		EO<SOP::a_multiply>::VSc (*m_vAfin, dNCL) ;								//	m_vAfin = m_vAfin * dNCL
+		m_vAfin (m_dwCurP) = dNL ;												//	m_vAfin[m_dwCurP] = dNL
 	}
 
 	double CPCAGrid::ApplyMethodMean (const SCMatD &m)
@@ -344,12 +395,14 @@
 		return ::ApplyMethod (v, m_dwMethod) ;
 	}
 
+
+																				//	projects the (2d) scores cbind (m_pdCurLC, m_pdCurY) onto the direction c(dCos, dSin) and computes a scale estimate of the projected data
 	double CPCAGrid::CalcProjScat (const double dCos, const double dSin)
 	{
 		const double *pYOpt = m_pdCurLC, *pCurY = m_pdCurY ;
 		double *pProj = m_pdProj ;
 
-		while (pYOpt < m_pdCurLCEnd)		//	projecting the data
+		while (pYOpt < m_pdCurLCEnd)											//	projecting the data
 		{
 			*pProj = *pYOpt * dCos + *pCurY  * dSin ;
 			++pProj ;
@@ -357,7 +410,7 @@
 			++pCurY ;
 		}
 
-		return ApplyMethod (m_vProj) ;
+		return ApplyMethod (m_vProj) ;											//	computing the scale estimate
 	}
 
 /*	void CPCAGrid::CalcMaha (const double dScat)
@@ -379,7 +432,7 @@
 	{
 		dScat = CalcProjScat (dCos, dSin) ;
 
-		if (m_dwCheckOrth)
+		if (m_dwCheckOrth)														//	always false for  PCAgrid
 		{
 //			CalcMaha (dScat) ;
 
@@ -392,7 +445,7 @@
 ////			dCurObj /= (m_dGloScatter + ngpf (dScatOrth)) ;
 		}
 
-		return ngpf (dScat) ;
+		return ngpf (dScat) ;													//	the PCAgrid objective function is equal to the scatter of the projected data
 	}
 
 	void CPCAGrid::EvalDirection (const double dCos, const double dSin)
@@ -500,7 +553,7 @@
 
 			EvalDirection (cos (dAngle), sin (dAngle)) ;
 		}
-		if (m_dwCheckOrth)
+		if (m_dwCheckOrth)														//	always false for PCAgrid and sPCAgrid
 			m_dCurScat = sqrt (CalcVarTrimmed (m_dNCL, m_dNL, m_dCurScat, m_dCurScatOrth)) ;
 
 //			m_dCurScat = CalcScatTrimmed (m_dNCL, m_dNL, m_dCurScat, m_dCurScatOrth) ;

@@ -33,6 +33,5 @@
 //			case 4: sd_st (dRet, v) ; break ;
 			case 5: dRet = mom2 (v) ; break ;
 		}
-
 		return dRet ;
 	}

@@ -1,6 +1,6 @@
-8d1f097f6e3b73a5bc157ca43c44848f *DESCRIPTION
+561e68cfc3501d80491dec3ba69d0b51 *DESCRIPTION
 50052f588147ef014c89ca474e4a458b *NAMESPACE
-da89fbcd9a9a5642a15a0cf3953b769c *R/PCAgrid.R
+f1d72a6596d83be5660241ea21586eb6 *R/PCAgrid.R
 68fb912d40ee5b1b9c5386b27d67728a *R/PCAproj.R
 a79daba9fc15d1e5cf7a1f6854c99442 *R/PCdiagplot.R
 f19604d5eebfda9a3490aca36a85279c *R/ScaleAdv.R
@@ -12,13 +12,13 @@ de8b271aa6aea29b08fc2f95cd04d055 *R/opt.TPO.R
 74a53ca213ddc068941018a7f26c2c5c *R/pcaPP-internal.R
 1afc8741f217d90bcb8b1c9063de358e *R/plot.opt.TPO.R
 26641019f10b72cec0b730d3eabc1b47 *R/plotcov.R
-00a5ef8f623951d120a35a6f96f87db2 *R/qn.R
+b7c64d26432ffbb646aba5042f0bb55d *R/qn.R
 53341a9a59d7ce972a77694cc9c3692c *R/sPCAgrid.obj.R
 da6e5bb651d4890cfed2c320d6863620 *R/sPCAgrid_R.R
 be57f0d8d50d109e203990c57553d0b2 *R/vignette.matlab.R
 ae969654e37fc177b4a27628b1486138 *inst/doc/load.package.name.R
 7b292ac6fd24a2eb975abf3633986ce8 *inst/doc/matlab.example.txt
-f36601c7bbcb88d6e1536e80bcba6b23 *inst/doc/matlab.pdf
+4b6ca39aa373dd09e714e88c140f325e *inst/doc/matlab.pdf
 75133c85758f26d5f9fc169861deb96c *inst/doc/matlab.rnw
 d6d549ddc4087f18768b4b728fca3b34 *man/PCAgrid.Rd
 5d5aac20cf26fabf54e597ca66d87263 *man/PCAproj.Rd
@@ -69,8 +69,8 @@ ef72f6926440f161f4ae5d1f9ec72349 *src/ML_package.h
 5190547fb04c808c41fed4bfaf34a7be *src/ML_passrng.cpp
 33f5c7321b954c7b25874fc49fea65a4 *src/ML_passrng.h
 4c0d792bef0f5df1a722caea26f4ded0 *src/Makevars
-8bcc3e3bf64b3e0961a661bb304ca306 *src/PCAgrid.cpp
-6b78c7b0cc2ce7289a68a87ea3ff9755 *src/PCAgrid.h
+83ac5bece74b47c90a6bc09bbbc18bdf *src/PCAgrid.cpp
+203750b33c1f918dfb0ac2d8fd33159e *src/PCAgrid.h
 ae70a374c98e90e3bc138fc2dd43a234 *src/PCAproj.cpp
 5f517d32072969ea6e496a1624a4675e *src/PCAproj.h
 55421a030d9e0cd85b3c41cc7ab0fed4 *src/R.Inc.h
@@ -86,7 +86,7 @@ c2082e97dbf33bd5c43bd313aced10e3 *src/defint64.h
 2669381fb4e6567222c5559c8dad8e76 *src/l1median.cpp
 eb7beca41a2b26f28a995aef3be5d739 *src/outSDo.cpp
 41578212ab83ff545c8dd1903b099f3d *src/outSDo.h
-4165167d40a59edac277d1160679b637 *src/pcaPP.cpp
+7bda81ab9ac227089e3c1d6fccc0b23b *src/pcaPP.cpp
 da9be3ca652e21a39a8c1414de66359f *src/pcaPP.h
 8ad5313fabf3b19d951888eeedc24455 *src/perftimer.h
 e78ff72e051dd9c5b050ebbcbf2990f0 *src/qnn.cpp
@@ -94,7 +94,7 @@ e78ff72e051dd9c5b050ebbcbf2990f0 *src/qnn.cpp
 544f9315ec8806345cd943b0b8f98d70 *src/smat.base.h
 af5cff60469d564e5db1e5d38e84abcc *src/smat.cpp
 f707f51fb21bdac052a9cc47a30e8099 *src/smat.def.h
-c634f9e0a63749129037b14d3d521733 *src/smat.elop.h
+1f1bf349e92c2089032ce88cbb7d6c22 *src/smat.elop.h
 be18645c82a502d4cdf0a26113a4b1d7 *src/smat.h
 75ef01065bb651f9becf0754043e3932 *src/smat.math.h
 81aabd3bda88afce83348d87a209217e *src/smat.matop.h

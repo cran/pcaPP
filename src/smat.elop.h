@@ -100,9 +100,9 @@
 
 		//	1 argument
 		class a_neg			{ CALC_1_1(void)	{ a = -a ; } } ;
-		class a_exp			{ CALC_1_1(void)	{ a = (TA) exp ((double) a) ; }	} ;
-		class a_log			{ CALC_1_1(void)	{ a = (TA) log ((double) a) ; }	} ;
-		class a_sqrt		{ CALC_1_1(void)	{ a = (TA) sqrt ((double) a) ; }	} ;
+		class a_exp			{ CALC_1_1(void)	{ a = (TA) ::exp ((double) a) ; }	} ;
+		class a_log			{ CALC_1_1(void)	{ a = (TA) ::log ((double) a) ; }	} ;
+		class a_sqrt		{ CALC_1_1(void)	{ a = (TA) ::sqrt ((double) a) ; }	} ;
 		class a_pow2		{ CALC_1_1(void)	{ a = sm_sqr(a) ; }	} ;
 		class a_pow3		{ CALC_1_1(void)	{ a = sm_sqr(a) * a ; }	} ;
 		class a_pow4		{ CALC_1_1(void)	{ a = sm_sqr (sm_sqr (a)) ; }	} ;
@@ -136,7 +136,7 @@
 
 		class Apa_sqr_B		{ CALC_2_1(void)	{ a += sm_sqr (b) ; } } ;
 		class Apa_sqr_BsC		{ CALC_3_1(void)	{ a += sm_sqr (b-c) ; } } ;
-		class Apa_sqrt_B	{ CALC_2_1(void)	{ a += sqrt (b) ; } } ;
+		class Apa_sqrt_B	{ CALC_2_1(void)	{ a += ::sqrt (b) ; } } ;
 		class Apa_sqr_CdB	{ CALC_3_1(void)	{ a += (TA) sm_sqr (c / b) ; }	} ;
 		class BdaC_Apa_sqr_B{ CALC_3_2(void)	{ b /= c ; a += (TA) sm_sqr (b) ; }	} ;
 		class Apa_sq_BsC	{ CALC_3_1(void)	{ a += sm_sqr (b - c) ; }	} ;		//	calculation of var
