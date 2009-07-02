@@ -1,5 +1,8 @@
-l1median = function (X, MaxStep = 200, ItTol = 10^-8)
+l1median = function (X, MaxStep = 200, ItTol = 10^-8, trace = 0)
 {
+	if (trace >= 0)
+		warning ("This function (pcaPP::l1median)is outdated.\r\nFor better performance try any of pcaPP::l1median_* instead. Preferably pcaPP::l1median_HoCrJo.\r\nOtherwise use (trace = -1) for suppressing this warning. ")
+
 	if (class (X) != "matrix")
 	{
 		if (class (X) == "data.frame")

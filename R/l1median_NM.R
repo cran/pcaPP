@@ -1,8 +1,11 @@
 l1median_NM <-
-function (X, maxit = 200, tol = 10^-8, trace = 0, m.init = apply(X, 2, median), pscale = apply(abs(.centr(X, m.init)), 2, mean, trim = 0.40))
+#function (X, maxit = 200, tol = 10^-8, trace = 0, m.init = apply(X, 2, median), alpha = 1, beta = 0.5, gamma = 2, ...)
+function (X, maxit = 200, tol = 10^-8, trace = 0, m.init = apply(X, 2, median), ...)
 {
-#	centr <- function(X,m) X - rep(m, each = nrow (X))
-
+	alpha = 1
+	beta = 0.5
+	gamma = 2
+	
 	if (class (X) != "matrix")
 	{
 		if (class (X) == "data.frame")
@@ -11,17 +14,20 @@ function (X, maxit = 200, tol = 10^-8, trace = 0, m.init = apply(X, 2, median), 
 			X = matrix(X, ncol = 1)
 	}
 	
+	if (length (m.init) != ncol (X))
+		stop (paste ("length of vector m.init (=", length (m.init), ") does not match the number of columns of data object X (=", ncol (X),")", sep = ""))
+		
 	ret = .C ("l1median_NM", PACKAGE="pcaPP", NAOK = TRUE, 
-		npar = as.integer (c(dim (X), maxit, 0, 0, 0)),
-		dpar = as.double (c(-Inf, tol, 0, 1, 0.5, 2)),
+		npar = as.integer (c(dim (X), maxit, 0, 0, 0, 0, trace)),
+		dpar = as.double (c(-Inf, tol, 0, alpha, beta, gamma)),
 		as.double (X),
-		as.double (pscale),
+		#as.double (pscale),
 		med = as.double (m.init)#double (ncol(X))
 		)
 
 	if (trace >= 1)
 		cat ("l1median returned", ret$npa, ret$dpar, "\r\n") ;
 
-	return (list (par = ret$med, value = ret$dpar[3], code = ret$npar[4], iterations = ret$npar [6]))
+	return (list (par = ret$med, value = ret$dpar[3], code = ret$npar[4], iterations = ret$npar [6], time = ret$npar[7]))
 }
 

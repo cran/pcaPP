@@ -121,3 +121,5 @@ typedef int                 BOOL;
 
 	void MatSetMat (double *pdBig, double *pdSmall, int nNB, /*int nPB,*/ int nNS, int nPS, int nOffsetN, int nOffsetP) ;
 	void SwapPtrs (double **pptr1, double **pptr2) ;
+
+	void ResetVect (double *pdData, int *pnLength, double dVal = 0) ;

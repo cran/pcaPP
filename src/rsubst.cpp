@@ -735,3 +735,11 @@
 		*pptr1 = *pptr2 ;
 		*pptr2 = ptr3 ;
 	}
+
+	void ResetVect (double *pdData, int *pnLength, double dVal)
+	{
+		int i ;
+		for (i = *pnLength - 1; i != -1; i--)
+			pdData[i] = dVal ;
+
+	}
