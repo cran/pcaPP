@@ -1,4 +1,4 @@
-0cd533fe52c0d5df71d14085d97891e5 *DESCRIPTION
+8d1f097f6e3b73a5bc157ca43c44848f *DESCRIPTION
 50052f588147ef014c89ca474e4a458b *NAMESPACE
 da89fbcd9a9a5642a15a0cf3953b769c *R/PCAgrid.R
 68fb912d40ee5b1b9c5386b27d67728a *R/PCAproj.R
@@ -18,7 +18,7 @@ da6e5bb651d4890cfed2c320d6863620 *R/sPCAgrid_R.R
 be57f0d8d50d109e203990c57553d0b2 *R/vignette.matlab.R
 ae969654e37fc177b4a27628b1486138 *inst/doc/load.package.name.R
 7b292ac6fd24a2eb975abf3633986ce8 *inst/doc/matlab.example.txt
-982673b490e577481a54f40412b24731 *inst/doc/matlab.pdf
+f36601c7bbcb88d6e1536e80bcba6b23 *inst/doc/matlab.pdf
 75133c85758f26d5f9fc169861deb96c *inst/doc/matlab.rnw
 d6d549ddc4087f18768b4b728fca3b34 *man/PCAgrid.Rd
 5d5aac20cf26fabf54e597ca66d87263 *man/PCAproj.Rd
@@ -91,7 +91,7 @@ da9be3ca652e21a39a8c1414de66359f *src/pcaPP.h
 8ad5313fabf3b19d951888eeedc24455 *src/perftimer.h
 e78ff72e051dd9c5b050ebbcbf2990f0 *src/qnn.cpp
 383842a520b736e834442a0d4d0def36 *src/qnn.h
-0b932e0c45e0545885af2d08bc85bcc7 *src/smat.base.h
+544f9315ec8806345cd943b0b8f98d70 *src/smat.base.h
 af5cff60469d564e5db1e5d38e84abcc *src/smat.cpp
 f707f51fb21bdac052a9cc47a30e8099 *src/smat.def.h
 c634f9e0a63749129037b14d3d521733 *src/smat.elop.h

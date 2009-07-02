@@ -879,7 +879,7 @@
 
 		void Copy (const tc_this &vec) const
 		{
-			THROW (EqualDims (vec)) ;
+			THROW (this->EqualDims (vec)) ;
 			Copy_NC (vec) ;
 		}
 
@@ -891,7 +891,7 @@
 
 		void Copy_NC (const tc_this &vec) const
 		{
-			ASSERT (EqualDims (vec)) ;
+			ASSERT (this->EqualDims (vec)) ;
 			memcpy (t_this::GetData (), vec.GetData (), t_this::GetSize () * sizeof (T)) ;
 		}
 
@@ -1260,13 +1260,13 @@ template <class T> class SVMat ;
 
 		void Copy (const tc_this &mat) const
 		{
-			THROW (EqualDims (mat)) ;
+			THROW (this->EqualDims (mat)) ;
 			Copy_NC (mat) ;
 		}
 
 		void Copy_NC (const tc_this &mat) const
 		{
-			ASSERT (EqualDims (mat)) ;
+			ASSERT (this->EqualDims (mat)) ;
 			memcpy (t_this::GetData (), mat.GetData (), t_this::GetSize () * sizeof (T)) ;
 		}
 
