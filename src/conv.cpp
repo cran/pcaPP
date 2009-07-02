@@ -617,6 +617,7 @@ function(X, m)
 		}
 	}
 
+	const double cLog2 = ::log ((double) 2.0) ;
 
 	extern void l1median(double *pdData, int *pnRow, int *pnCol, double *pdMRet, int *pnRet, int *pnMaxStep, double *pdItTol)
 	{		//	abgesehen von (k > nMaxStep) (am schluss) validated
@@ -698,7 +699,7 @@ function(X, m)
 			if(dND < dItTol)
 				dMaxHalf = 0 ;
 			else
-				dMaxHalf = log (dND/dItTol)/log(2) ;
+				dMaxHalf = ::log (dND/dItTol)/cLog2 ;
 
 					//	m <- mold
 			matcpy (pdM, pdMRet, nDataCol) ;
