@@ -45,9 +45,15 @@
 
 #define CALC_5_1(TYPE)	public: template <class TA, class TB, class TC, class TD, class TE>	 inline static TYPE Calc (		TA &a, const	TB &b, const	TC &c, const	TD &d, const	TE &e)
 
-	
+	//	some functions: Renamed 4 Clang (clang complains when calling ::exp from a method of a class named "exp" )
+	static	inline double r4c_exp (double a0) { return ::exp (a0) ; }
+	static	inline double r4c_log (double a0) { return ::log (a0) ; }
+	static	inline double r4c_pow (double a0, double a1) { return ::pow (a0, a1) ; }
+
 	class SOP		//	standard operators
 	{				//	2do: renamo to OP
+
+
 	public:
 		class assign		{ CALC_2_1(void)	{ a = (TA) b ; }	} ;
 		class add			{ CALC_3_1(void)	{ a = (TA)		(b + c) ; }	} ;
@@ -57,15 +63,15 @@
 		class divide		{ CALC_3_1(void)	{ a = (TA)		(b / c) ; }	} ;
 		class divide_r		{ CALC_3_1(void)	{ a = (TA)		(c / b) ; }	} ;
 		class multiply		{ CALC_3_1(void)	{ a = (TA)		(b * c) ; }	} ;
-		class pow			{ CALC_3_1(void)	{ a = (TA) ::pow(b, c)	; } } ;
-		class pow_r			{ CALC_3_1(void)	{ a = (TA) ::pow(c, b)	; } } ;
+		class pow			{ CALC_3_1(void)	{ a = (TA) ::r4c_pow(b, c)	; } } ;
+		class pow_r			{ CALC_3_1(void)	{ a = (TA) ::r4c_pow(c, b)	; } } ;
 
 		class mod			{ CALC_3_1(void)	{ a = (TA)		(b % c)	; }	} ;
 		class neg			{ CALC_2_1(void)	{ a = -b ; }	} ;
 		class inv			{ CALC_2_1(void)	{ a = (TA) (1 / b) ; }	} ;
 
-		class exp			{ CALC_2_1(void)	{ a = (TA) ::exp ((double) b) ; }	} ;
-		class log			{ CALC_2_1(void)	{ a = (TA) ::log ((double) b) ; }	} ;
+		class exp			{ CALC_2_1(void)	{ a = (TA) ::r4c_exp ((double) b) ; }	} ;
+		class log			{ CALC_2_1(void)	{ a = (TA) ::r4c_log ((double) b) ; }	} ;
 		class pow2			{ CALC_2_1(void)	{ a = (TA) (b * b) ; }	} ;
 		class sign			{ CALC_2_1(void)	{ a = (b > 0) ? (TA) 1 : (b < 0) ? (TA) -1: (TA) 0 ; }	} ;
 		class abs			{ CALC_2_1(void)	{ a = (b < 0) ? (TA) -b : (TA) b  ; }	} ;
@@ -100,15 +106,14 @@
 
 		//	1 argument
 		class a_neg			{ CALC_1_1(void)	{ a = -a ; } } ;
-		class a_exp			{ CALC_1_1(void)	{ a = (TA) ::exp ((double) a) ; }	} ;
-		class a_log			{ CALC_1_1(void)	{ a = (TA) ::log ((double) a) ; }	} ;
+		class a_exp			{ CALC_1_1(void)	{ a = (TA) ::r4c_exp ((double) a) ; }	} ;
+		class a_log			{ CALC_1_1(void)	{ a = (TA) ::r4c_log ((double) a) ; }	} ;
 		class a_sqrt		{ CALC_1_1(void)	{ a = (TA) ::sqrt ((double) a) ; }	} ;
 		class a_pow2		{ CALC_1_1(void)	{ a = sm_sqr(a) ; }	} ;
 		class a_pow3		{ CALC_1_1(void)	{ a = sm_sqr(a) * a ; }	} ;
 		class a_pow4		{ CALC_1_1(void)	{ a = sm_sqr (sm_sqr (a)) ; }	} ;
 		class a_abs			{ CALC_1_1(void)	{ if (a < 0) a = -a ; }	} ;
-		class a_pow			{ CALC_2_1(void)	{ a = ::pow ((double) a, (double)b) ; } } ;
-
+		class a_pow			{ CALC_2_1(void)	{ a = ::r4c_pow ((double) a, (double)b) ; } } ;
 
 
 		class a_not			{ CALC_1_1(void)	{ a = ~a ; }	} ;
@@ -146,9 +151,9 @@
 //		class ApaBmB_BmaC	{ CALC_3_2(void)	{ a += sm_sqr (b) ; b *= c ; } } ;
 //		class ApaBmBpCmC_BmaC	{ CALC_3_2(void)	{ a += sm_sqr (b) + sm_sqr (c) ; b *= c ; } } ;
 
-		class ApaBmB		{ CALC_2_1(void)	{ a += ::pow (b, 2.0) ; } } ;
-		class ApaBmB_BmaC	{ CALC_3_2(void)	{ a += ::pow (b, 2.0) ; b *= c ; } } ;
-		class ApaBmBpCmC_BmaC	{ CALC_3_2(void)	{ a += ::pow (b, 2.0) + ::pow (c, 2.0) ; b *= c ; } } ;
+		class ApaBmB		{ CALC_2_1(void)	{ a += ::r4c_pow (b, 2.0) ; } } ;
+		class ApaBmB_BmaC	{ CALC_3_2(void)	{ a += ::r4c_pow (b, 2.0) ; b *= c ; } } ;
+		class ApaBmBpCmC_BmaC	{ CALC_3_2(void)	{ a += ::r4c_pow (b, 2.0) + ::r4c_pow (c, 2.0) ; b *= c ; } } ;
 
 		class AmaB_BmaC		{ CALC_3_2(void)	{ a *= b ; b *= c; } } ;
 		class AmaBmD_BmaC	{ CALC_4_2(void )	{ a *= b * d ; b *= c; } } ;

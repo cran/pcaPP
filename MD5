@@ -1,10 +1,10 @@
-561e68cfc3501d80491dec3ba69d0b51 *DESCRIPTION
+0d657cf5ddd69a4107ababca3837b02a *DESCRIPTION
 50052f588147ef014c89ca474e4a458b *NAMESPACE
 f1d72a6596d83be5660241ea21586eb6 *R/PCAgrid.R
 68fb912d40ee5b1b9c5386b27d67728a *R/PCAproj.R
 a79daba9fc15d1e5cf7a1f6854c99442 *R/PCdiagplot.R
 f19604d5eebfda9a3490aca36a85279c *R/ScaleAdv.R
-3f2460e14f106f061eeac6f0bd836481 *R/cor.fk.R
+ee9b5d9229d5ae0eb84bf7e7e2551549 *R/cor.fk.R
 bf8bed078f60f6f96e71cdd760b499a1 *R/covPC.R
 7a2b51fcd735fd28d5d1bbd3903a9d01 *R/data.Zou.R
 0bea852309bfc6f1206313408ad8714e *R/l1median.R
@@ -18,7 +18,7 @@ da6e5bb651d4890cfed2c320d6863620 *R/sPCAgrid_R.R
 be57f0d8d50d109e203990c57553d0b2 *R/vignette.matlab.R
 ae969654e37fc177b4a27628b1486138 *inst/doc/load.package.name.R
 7b292ac6fd24a2eb975abf3633986ce8 *inst/doc/matlab.example.txt
-4b6ca39aa373dd09e714e88c140f325e *inst/doc/matlab.pdf
+25177c2fdcd1dce5b1769cd05820bed7 *inst/doc/matlab.pdf
 75133c85758f26d5f9fc169861deb96c *inst/doc/matlab.rnw
 d6d549ddc4087f18768b4b728fca3b34 *man/PCAgrid.Rd
 5d5aac20cf26fabf54e597ca66d87263 *man/PCAproj.Rd
@@ -94,7 +94,7 @@ e78ff72e051dd9c5b050ebbcbf2990f0 *src/qnn.cpp
 544f9315ec8806345cd943b0b8f98d70 *src/smat.base.h
 af5cff60469d564e5db1e5d38e84abcc *src/smat.cpp
 f707f51fb21bdac052a9cc47a30e8099 *src/smat.def.h
-1f1bf349e92c2089032ce88cbb7d6c22 *src/smat.elop.h
+c2f1f4800e5c2bb239f13dd155f1eec8 *src/smat.elop.h
 be18645c82a502d4cdf0a26113a4b1d7 *src/smat.h
 75ef01065bb651f9becf0754043e3932 *src/smat.math.h
 81aabd3bda88afce83348d87a209217e *src/smat.matop.h
