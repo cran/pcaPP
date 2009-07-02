@@ -41,7 +41,6 @@ ScaleAdv(x, center = mean, scale = sd)
 \examples{
   x <- rnorm(100, 10, 5)
   x <- ScaleAdv(x)$x
-  c(mean(x), sd(x))
 
   # can be used with multivariate data too
   library(mvtnorm)

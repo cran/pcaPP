@@ -85,3 +85,16 @@
 	cat (...)
 	flush.console ()	
 }
+
+
+
+.colSds <- function (x)	##	function for replacing sd until the R-people remove the sd matrix warning message
+{
+    if (is.data.frame(x)) 
+        x <- as.matrix(x)
+
+    if (!is.array (x) || length (dim (x)) != 2)
+	stop ("'x' must be an array of two dimensions")
+
+    apply (x, 2, sd)
+}

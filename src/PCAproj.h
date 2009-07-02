@@ -8,7 +8,9 @@
 
 		void Calc () ;
 
+
 	protected:
+		void SetSingular (t_size dwK) ;
 
 		virtual void Update (const SVecD &vCurEVec) {}
 

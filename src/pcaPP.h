@@ -13,7 +13,14 @@
 		class Aa_AsDmB_dC			{ CALC_4_1(void) { a = (a-d*b)/c ; }	} ;		//	adding and removing loadings for pcaPP::sPCAGrid...
 		class Aa_AmC_p_DmB			{ CALC_4_1(void) { a = a * c + d * b ; }	} ;
 		class Apa_abs_BmDpCmE_		{ CALC_5_1(void) { a += fabs (b * d + c * e) ; }	} ;
+
+		class Apa_pow_abs_B0mCpb1mD_B2	{ CALC_4_1(void) { a += pow (fabs (b[0] * c + b[1] * d), b[2]) ; }	} ;
+
+
 		class Apa_abs_B				{ CALC_2_1(void) { a += fabs (b) ; }	} ;
+
+		class Apa_pow_abs_C_B		{ CALC_3_1(void) { a += pow (fabs (c), b) ; }	} ;
+
 		class aB_cA_C_le_D			{ CALC_4_2(void) { if (c < d) {b = 1 ; a += 1 ;} else b = 0 ; }	} ;	//	b = c < d; a += c < d
 		class Ba_BpC_d2_Apa_sq_B	{ CALC_3_2(void) { b = (b + c) / 2.0; a += sm_sqr (b) ; } } ;
 		class ApaBm_signC			{ CALC_3_1(void) { if (c < 0) a-= b ; else a += b ; }	} ;

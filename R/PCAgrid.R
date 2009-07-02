@@ -1,6 +1,11 @@
 
-sPCAgrid <- function(x, k = 2, method = c ("mad", "sd", "qn"), lambda = 1, maxiter = 10, splitcircle = 25, scores = TRUE, zero.tol = 1e-16, center = l1median, scale, trace = 0, store.call = TRUE, control, ...)
+sPCAgrid <- function(x, k = 2, method = c ("mad", "sd", "qn"), lambda = 1#, norm.q = 1, norm.s = 1
+					, maxiter = 10, splitcircle = 25, scores = TRUE, zero.tol = 1e-16, center = l1median, scale, trace = 0, store.call = TRUE, control, ...)
 {
+
+	norm.q <- 1
+	norm.s <- 1
+
 	check.orth <- FALSE
 	dat <- list (x = x, substitute_x = substitute (x), k = k, method = method, maxiter = maxiter, splitcircle = splitcircle, check.orth = check.orth, scores = scores, lambda = lambda, zero.tol = zero.tol, center = center, store.call = store.call, trace = trace, ...)
 
@@ -23,7 +28,7 @@ sPCAgrid <- function(x, k = 2, method = c ("mad", "sd", "qn"), lambda = 1, maxit
 	ret.C <- .C ("sPCAgrid", PACKAGE = "pcaPP", NAOK = TRUE
 				, nParIn = as.integer (c(dim (dat$x), dat$k, dat$splitcircle, dat$maxiter, dat$method, dat$trace, dat$k.ini, dat$check.orth, dat$glo.scatter, dat$pHD, dat$SpeedUp))
 				, nParOut = integer (1)
-				, dParIn = as.double (dat$zero.tol)
+				, dParIn = as.double (c (dat$zero.tol, norm.q, norm.s))
 				, as.double (dat$x)
 				, l = as.double (dat$l)
 				, sdev = as.double (dat$sdev)
@@ -71,7 +76,7 @@ PCAgrid <- function (x, k = 2, method = c ("mad", "sd", "qn"), maxiter = 10, spl
 	return (.PCAgrid..PostProc (dat, ret.C))
 }
 
-.sPCAgrid.ini <- function	(x, k = 2, method = c ("mad", "sd", "qn"), maxiter = 10, splitcircle = 25, scores = TRUE, zero.tol = 1e-16, center = l1median, scale, store.call = TRUE, trace = 0, cut.pc = TRUE, 
+.sPCAgrid.ini <- function	(x, k = 2, method = c ("mad", "sd", "qn"), norm.q = 1, norm.s = 1, maxiter = 10, splitcircle = 25, scores = TRUE, zero.tol = 1e-16, center = l1median, scale, store.call = TRUE, trace = 0, cut.pc = TRUE, 
 							pc.ini, k.ini, ord.all = FALSE, HDred = FALSE, lambda = 1, glo.scatter = 0, SpeedUp = 0, check.orth = FALSE, control, ...)
 {
 	dat <- list (x = x, substitute_x = substitute (x), k = k, method = method, maxiter = maxiter, splitcircle = splitcircle, scores = scores, lambda = lambda, zero.tol = zero.tol, center = center, store.call = store.call, trace = trace, cut.pc = cut.pc, glo.scatter = glo.scatter, ord.all = ord.all, HDred = HDred, SpeedUp = SpeedUp, check.orth = check.orth, ...)
@@ -91,7 +96,7 @@ PCAgrid <- function (x, k = 2, method = c ("mad", "sd", "qn"), maxiter = 10, spl
 	ret.C <- .C ("sPCAgrid", PACKAGE = "pcaPP", NAOK = TRUE
 				, nParIn = as.integer (c(dim (dat$x), dat$k, dat$splitcircle, dat$maxiter, dat$method, dat$trace, dat$k.ini, dat$check.orth, dat$glo.scatter, dat$pHD, dat$SpeedUp))
 				, nParOut = integer (1)
-				, dParIn = as.double (dat$zero.tol)
+				, dParIn = as.double (c (dat$zero.tol, norm.q, norm.s))
 				, as.double (dat$x)
 				, l = as.double (dat$l)
 				, sdev = as.double (dat$sdev)
@@ -144,7 +149,7 @@ PCAgrid <- function (x, k = 2, method = c ("mad", "sd", "qn"), maxiter = 10, spl
 		return (match (method, .validScaleMethods()) - 1)
 	}
 
-	stopifnot (x < 3)
+#	stopifnot (x < 3)	##	hack 4 the paper.. enable this line again!
 	return (x)
 }
 

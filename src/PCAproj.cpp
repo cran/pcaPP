@@ -72,6 +72,17 @@
 		EO<UOP::if_B_gr_0_AamA>::VVc (*vLastCol, vTemp2) ;									//	assigns the negative signs of vector vTemp2 to vector vCurEVec (assuming that vCurEVec has only positive elemts)
 	}
 
+	void CPCAproj::SetSingular (t_size dwK)
+	{
+		m_mZ.GetColRef (dwK, m_dwK).Reset (0) ;
+		m_vSDev.GetDataRef (dwK, m_dwK).Reset (0) ;
+		if (!dwK)
+			SetDiag (!m_mL) ;
+		else
+			m_vSDev.GetDataRef (dwK, m_dwK).Reset (-1) ;	//	sets the sdev to -1, indicating, that the according columns of the Loadings Matrix are invalid!
+			
+	}
+
 	void CPCAproj::Calc ()
 	{
 		SVecD vPcol (m_dwN), vVH (m_dwP), vHlp (m_dwN), vHlpS (vHlp) ;
@@ -79,7 +90,7 @@
 
 		SVecD vCurScoreS (*m_vCurScore, m_dwRealN) ;
 
-		double *pdCurLambda = m_vSDev ;
+		//double *pdCurLambda = m_vSDev ;
 
 		t_size i, j ;
 		for (i = 0; i < m_dwK; i++)
@@ -90,6 +101,13 @@
 			EO<SOP::Apa_sqr_B>::VMc (*vHlp, m_mX) ;												//R	vHlp <- rowSums (mY^2)
 			m_dwShortN = 0 ;
 			EO<UOP::aB_cA_C_le_D>::SVScVc (m_dwShortN, *m_vHelpTF, m_dZeroTol, vHlp) ;			//R	m_vHelpTF <- (vHlp>dZeroTol); m_dwShortN <- sum ()
+
+			if (!m_dwShortN)	//	all observations seem to be concentrated in one point (in the center) when considering the current subspace
+			{
+				SetSingular (i) ;
+				return ;
+			}
+
 			vHlpS.Reshape (m_dwShortN) ;
 			m_mA.Reshape (m_dwShortN, m_dwP) ;
 
@@ -126,8 +144,10 @@
 
 				if (i < m_dwK - 1)
 					EO<SOP::AsaBmC>::MVcVct (!m_mX, m_vCurScore, vCurEVec) ;						//R	m_mX <- m_mX - m_vCurScore %*% vCurEVec
-				*pdCurLambda = m_dCurLambda ;
-				++pdCurLambda ;
+
+				m_vSDev (i) = m_dCurLambda ;
+//				*pdCurLambda = m_dCurLambda ;
+//				++pdCurLambda ;
 			}
 			else
 			{
@@ -138,7 +158,8 @@
 				EO<SOP::ApaBmC>::VMcVct (*m_vCurScore, m_mX, vCurEVec) ;							//R m_vCurScore <- m_mX %*% vCurEVec			//RR	scorevec <- y%*%(A[istar,])
 								//	2do -> pass this to BLAS
 
-				*pdCurLambda = ApplyMethod (m_vCurScore, m_nScal) ;									//R	dCurLambda = fscale (m_vCurScore)
+				//*pdCurLambda = 
+				m_vSDev (i) = ApplyMethod (m_vCurScore, m_nScal) ;									//R	dCurLambda = fscale (m_vCurScore)
 
 				if (m_nScores)
 					Copy (*m_mZ.GetColRef (i), vCurScoreS) ;

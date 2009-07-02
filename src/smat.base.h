@@ -936,6 +936,14 @@
 			t_base::SetDim_NC (dwSize) ;
 		}
 
+		const t_this GetDataRef (t_size dwStart, t_size dwEnd) const
+		{
+			ASSERT (dwStart <= dwEnd) ;
+			ASSERT (dwEnd <= size ()) ;
+			return t_this (**this, dwStart, dwEnd - dwStart) ;
+		}
+
+
 
 		protected:
 //		const t_this &operator = (t_this &p ) const { THROW (FALSE) ; return NULL ; }	//	this MUST never be called, as you can't change a constant matrix/vector! Thus it's protected!

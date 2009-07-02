@@ -12,7 +12,8 @@ ScaleAdv <- function (x, center = mean, scale = sd)
 
 	m = array (0, p)
 
-
+	if (missing (scale))	## 2be removed as soon as the matrix-warning message in "sd" disappears.
+		scale <- .colSds
 
 	if (is.character (center))
 		center = eval (parse (text = center))

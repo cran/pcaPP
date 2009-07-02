@@ -20,6 +20,9 @@
 	CsPCAGrid::CsPCAGrid (int *pnParamIn, int *pnParamOut, double *pdParamIn, double *pdData, double *pdLoadings, double *pdSDev, double *pdObj/*, double *pdMaxMaha*/, double *pdLambda, double *pdBackTransHD)
 		:	CPCAGrid (pnParamIn, pnParamOut, pdParamIn, pdData, pdLoadings, pdSDev, pdObj/*, pdMaxMaha*/)
 		,	m_nGloScatter (pnParamIn[9]), m_nSpeedUp (pnParamIn[11]), m_dwPHD (pnParamIn[10])
+		,	m_dQ (pdParamIn[1]), m_dS (pdParamIn[2])
+		,	m_bUseQ (m_dQ != 1.0), m_bUseS (m_dS != 1.0)
+//		,	m_bUseQ (TRUE), m_bUseS (TRUE)
 		,	m_vLambda (pdLambda, m_dwK), m_vTempP (m_dwP), m_vTempPSub (m_dwP)
 		,	m_dGloScatter (1)
 	{
@@ -97,12 +100,30 @@
 
 		double dRet = 0 ;
 
-		if (fabs (dCos) <= m_dZeroTol)
-			EO<UOP::Apa_abs_B>::SVc (dRet, m_vSumLoadThis) ;
-		else if (fabs (dSin) <= m_dZeroTol)
-			EO<UOP::Apa_abs_B>::SVc (dRet, m_vSumLoadOthers) ;
+		if (m_bUseQ)
+		{
+			const double adParams [] = {dCos, dSin, m_dQ} ;
+
+			if (fabs (dCos) <= m_dZeroTol)
+				EO<UOP::Apa_pow_abs_C_B>::SScVc (dRet, m_dQ, m_vSumLoadThis) ;
+			else if (fabs (dSin) <= m_dZeroTol)
+				EO<UOP::Apa_pow_abs_C_B>::SScVc (dRet, m_dQ, m_vSumLoadOthers) ;
+			else
+				//EO<UOP::Apa_abs_BmDpCmE_>::SScScVcVc_NC (dRet, dCos, dSin, m_vSumLoadOthers, m_vSumLoadThis) ;
+				EO<UOP::Apa_pow_abs_B0mCpb1mD_B2>::SSVcVc_NC (dRet, adParams, m_vSumLoadOthers, m_vSumLoadThis) ;
+		}
 		else
-			EO<UOP::Apa_abs_BmDpCmE_>::SScScVcVc_NC (dRet, dCos, dSin, m_vSumLoadOthers, m_vSumLoadThis) ;
+		{
+			if (fabs (dCos) <= m_dZeroTol)
+				EO<UOP::Apa_abs_B>::SVc (dRet, m_vSumLoadThis) ;
+			else if (fabs (dSin) <= m_dZeroTol)
+				EO<UOP::Apa_abs_B>::SVc (dRet, m_vSumLoadOthers) ;
+			else
+				EO<UOP::Apa_abs_BmDpCmE_>::SScScVcVc_NC (dRet, dCos, dSin, m_vSumLoadOthers, m_vSumLoadThis) ;
+		}
+
+		if (m_bUseS)
+			dRet = pow (dRet, m_dS) ;
 
 		return - dRet * m_dCurLambda ;
 
@@ -328,7 +349,7 @@
 		const double *pYOpt = m_pdCurLC, *pCurY = m_pdCurY ;
 		double *pProj = m_pdProj ;
 
-		while (pYOpt < m_pdCurLCEnd)
+		while (pYOpt < m_pdCurLCEnd)		//	projecting the data
 		{
 			*pProj = *pYOpt * dCos + *pCurY  * dSin ;
 			++pProj ;

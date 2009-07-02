@@ -83,8 +83,14 @@ PCAproj <- function (x, k = 2, method = c ("mad", "sd", "qn"), CalcMethod = c("e
 				, lambda = double (k)
 			)
 
-
 	veig = matrix (ret.C$loadings, ncol = k)
+
+	idx.mo <- ret.C$lambda == -1
+	if (any (idx.mo))
+	{
+		veig [, idx.mo] <- .Null (veig[, !idx.mo])
+		ret.C$lambda[idx.mo] <- 0
+	}
 
    if(pold>n)
 		veig = svdx$u %*% veig
@@ -95,6 +101,14 @@ PCAproj <- function (x, k = 2, method = c ("mad", "sd", "qn"), CalcMethod = c("e
 		.DataPostProc (DataObj, ret.C$lambda, veig, NULL, match.call(), scores)
 }
 
+.Null <- function (M)	##	 Null function from package MASS -> 2do: move calls to LAPACK to C++ code
+{
+    tmp <- qr(M)
+    set <- if (tmp$rank == 0L)
+        1L:ncol(M)
+    else -(1L:tmp$rank)
+    qr.Q(tmp, complete = TRUE)[, set, drop = FALSE]
+}
 
 .DataPostProc <- function (DataObj, obj, loadings, scores, cl, bScores)
 {

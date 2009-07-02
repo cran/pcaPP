@@ -64,6 +64,9 @@
 
 		const int m_nGloScatter, m_nSpeedUp ;
 		const t_size m_dwPHD ;
+		const double m_dQ, m_dS ;
+		const BOOL m_bUseQ, m_bUseS ;
+
 		SMatD m_mBackTransHD, m_mBackProj ;
 		SVecD m_vLambda, m_vLoadHD, m_vTempP, m_vTempPSub, m_vSumLoadOthers, m_vSumLoadThis ;
 

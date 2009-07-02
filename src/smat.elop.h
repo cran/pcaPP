@@ -638,7 +638,6 @@
 				++ pD ;
 				++ pE ;
 			}
-			
 		}
 
 		template <class TA, class TB, class TC>							//	matrix impl

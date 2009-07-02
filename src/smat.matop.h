@@ -106,6 +106,23 @@
 	}
 
 	template <class TA>
+	void SetDiag (const SVMat <TA> &a)
+	{
+		t_size dwR, dwC ;
+		t_size const dwREnd = a.nrow () ;
+		TA * pA = a ;
+		TA const * const pAEnd = a.GetDataEnd () ;
+
+		for (dwC = 0; pA < pAEnd; ++dwC)
+			for (dwR = 0; dwR < dwREnd; ++dwR)
+			{
+				*pA = (dwC == dwR) ? 1.0 : 0.0 ;
+				++pA ;
+			}
+	}
+
+
+	template <class TA>
 	void SetDiag_sq (const SVMat <TA> &a)
 	{
 		THROW (a.ncol () == a.nrow ()) ;
