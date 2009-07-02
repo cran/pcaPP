@@ -3,6 +3,8 @@
 #include <R_ext/RS.h>
 #include <R_ext/BLAS.h>
 
+#include "Rversion.h"
+
 
 #ifndef _MB_CONST
 	#define _MB_CONST	const 
@@ -275,6 +277,8 @@
 		);
 	}
 
+#if defined(R_VERSION) && R_VERSION >= R_Version(2, 12, 0)
+
 	void meal_ger (const _MB_INT *m, const _MB_INT *n, const _MB_TYPE_D *alpha, const _MB_TYPE_D *x, const _MB_INT *incx, const _MB_TYPE_D *y, const _MB_INT *incy, _MB_TYPE_D *a, const _MB_INT *lda)
 	{
 		F77_CALL (dger)
@@ -290,6 +294,27 @@
 			(_MB_CONST _MB_INT *)		lda
 		);
 	}
+
+#else
+
+	void meal_ger (const _MB_INT *m, const _MB_INT *n, const _MB_TYPE_D *alpha, _MB_TYPE_D *x, const _MB_INT *incx, _MB_TYPE_D *y, const _MB_INT *incy, _MB_TYPE_D *a, const _MB_INT *lda)
+	{
+		F77_CALL (dger)
+		(
+			(_MB_CONST _MB_INT *)		m,
+			(_MB_CONST _MB_INT *)		n,
+			(_MB_CONST _MB_TYPE_D *)	alpha,
+			(_MB_TYPE_D *)	x,
+			(_MB_CONST _MB_INT *)		incx,
+			(_MB_TYPE_D *)	y,
+			(_MB_CONST _MB_INT *)		incy,
+			(_MB_TYPE_D *)				a,
+			(_MB_CONST _MB_INT *)		lda
+		);
+	}
+
+
+#endif
 
 	void meal_syr (const _MB_CHAR *uplo, const _MB_INT *n, const _MB_TYPE_D *alpha, const _MB_TYPE_D *x, const _MB_INT *incx, _MB_TYPE_D *a, const _MB_INT *lda)
 	{

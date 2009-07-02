@@ -22,6 +22,7 @@
 #ifndef SMAT_MEAL_H
 #define SMAT_MEAL_H
 
+
 ////////////
 //  BLAS  //
 ////////////
@@ -33,6 +34,12 @@
 	void meal_axpy(const int *n, const double *alpha, const double *dx, const int *incx, double *dy, const int *incy) ;
 
 //	Level 2
+
+#ifdef IMPL_BLAS_R_CONST_ERROR
+	void meal_ger (const int *m, const int *n, const double *alpha, double *x, const int *incx, double *y, const int *incy, double *a, const int *lda) ;
+#else
+	void meal_ger (const int *m, const int *n, const double *alpha, const double *x, const int *incx, const double *y, const int *incy, double *a, const int *lda) ;
+#endif
 
 //	Level 3
 	void meal_gemm (const char *transa, const char *transb, const int *m, const int *n, const int *k, const double *alpha, const double *a, const int *lda, const double *b, const int *ldb, const double *beta, double *c, const int *ldc) ;
