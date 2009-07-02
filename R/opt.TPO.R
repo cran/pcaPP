@@ -2,7 +2,7 @@
 opt.TPO <- function (x, k.max = ncol (x), n.lambda = 30, lambda.max, ...)
 {
 	store.opt = TRUE
-	ret <- .sPCAgrid.opt.ind (x = x, k.max = k.max, n.lambda = n.lambda, lambda.max = lambda.max, store.PC = store.opt, f.eval = .TPO, ...)
+	ret <- .sPCAgrid.opt.ind (x = x, k.max = k.max, n.lambda = n.lambda, lambda.max = lambda.max, store.PCs = store.opt, f.eval = .TPO, ...)
 	class (ret) <- c (class (ret), "opt.TPO")
 	return (ret)
 }
@@ -10,7 +10,7 @@ opt.TPO <- function (x, k.max = ncol (x), n.lambda = 30, lambda.max, ...)
 opt.BIC <- function (x, k.max = ncol (x), n.lambda = 30, lambda.max, ...)
 {
 	store.opt = TRUE
-	ret <- .sPCAgrid.opt.tot (x = x, k.max = k.max, n.lambda = n.lambda, lambda.max = lambda.max, store.PC = store.opt, f.eval = .BIC.RSS, ...)
+	ret <- .sPCAgrid.opt.tot (x = x, k.max = k.max, n.lambda = n.lambda, lambda.max = lambda.max, store.PCs = store.opt, f.eval = .BIC.RSS, ...)
 	class (ret) <- c (class (ret), "opt.BIC")
 	return (ret)
 }

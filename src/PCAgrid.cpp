@@ -191,7 +191,7 @@
 			{
 				//double dScat, dObj, dSumAbsDelta = 0 ;
 
-				dCurSplit = pow (0.5, i) ;		// or use  * 0.5 each time?
+				dCurSplit = pow (0.5, (double) i) ;		// or use  * 0.5 each time?
 
 				for (j = 0; j < m_dwPSub; j++)
 				{
@@ -258,7 +258,7 @@
 
 		if (dNorm > m_dZeroTol)
 		{
-			static const double dSqrt2 = sqrt (2) ;
+			static const double dSqrt2 = sqrt ((double) 2.0) ;
 			EO<SOP::a_divide>::VSc (*m_vAfinBest, dNorm / dSqrt2) ;
 			EO<SOP::AsaBmC>::MVcVct (!m_mTempPP, m_vAfinBest, m_vAfinBest) ;
 		}
@@ -282,7 +282,7 @@
 		if (dL == 0)
 			return ;
 
-		const double dCL = sqrt (1 - sm_sqr (dL)) ;	//	current loading and complementary loading, such that dL^2 + dCL^2 == 1
+		const double dCL = sqrt (1.0 - sm_sqr (dL)) ;	//	current loading and complementary loading, such that dL^2 + dCL^2 == 1
 
 		EO<UOP::Aa_AsDmB_dC>::VScScVc (*m_vYOpt, dL, dCL, m_vCurY) ;
 		EO<SOP::a_divide>::VSc (*m_vAfin, dCL) ;
