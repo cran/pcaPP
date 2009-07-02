@@ -1,140 +1,99 @@
 #include "L1Median.h"
-#include "ext.h"
-#include "perftimer.h"
 
-	inline double AddSqr (double &d, const double &pAdd)	{ return d += pAdd * pAdd ;  }
-
-	double calObj (double *pdData, double *pdM, int n, int p)
+	double calObj (const SCMatD &mXc, const SCVecD &vMed)
 	{
-		double dSum = 0, dRowSum ;
-		int r, c ;
+		ASSERT_TEMPRANGE (0, 0) ;
+		SVecD vTemp (tempRef (0), mXc.nrow ()) ;
 
-		for (r = n - 1; r != -1; r--)
-		{
-			dRowSum = 0 ;
+		vTemp.Reset (0) ;
+		EO<SOP::Apa_sqr_BsC>::VMcVct_NC (*vTemp, mXc, vMed) ;
 
-			for (c = p - 1; c != -1; c--)
-				AddSqr (dRowSum, pdData [r + c * n] - pdM [c]) ;
-
-			dSum += ::sqrt (dRowSum) ;
-		}
+		double dSum = 0 ;
+		EO<SOP::Apa_sqrt_B>::SVc (dSum, vTemp) ;
 		return dSum ;
 	}
 
-	void l1median_HoCr (int *pnParam_In, int *pnParam_Out, double *pdParam_In, double *pdParam_Out, double *pdData, double *pdMRet)
+	int l1median_HoCr (const SCMatD &mX, const SVecD &vdMedian, double dZeroTol, double dTol, int dwMaxit, int nTrace, int *pdwIterCount)
 	{
-		const double dLog2 = log (2) ;
+		const double dLog2 = log ((double) 2.0) ;
+		const int n = mX.nrow (), &p = mX.ncol () ;
 
-		int &n = pnParam_In [0], &p = pnParam_In [1], &dwMaxit = pnParam_In[2], &dwTrace = pnParam_In [3] ;
+		SVecD vdMedianOld (p), vdNorms (n), vdNormsOrdered, vdWeights (n), vdDelta (p) ;
+		SMatD mXc (n, p) ;
+		SVecN vinter (n) ;
 
-		int &dwIterCount = pnParam_Out [0], &dwStepHalvingSteps = pnParam_Out [1] = 0, &dwCode = pnParam_Out[2] = 0, &nTime = pnParam_Out[3] ;
-		double &dTol = pdParam_In[0] ;
+		int nK, &k = pdwIterCount ? *pdwIterCount : nK, dwNStep, dwMaxHalf = 0 ;
 
-		double &dObj = pdParam_Out [0], dObjOld, dND  ;
-		IVecD vdMedian (p, pdMRet), vdMedianOld (p), vdNorms (n), vdNormsOrdered, vdWeights (n), vdDelta (p) ;
-		IMatD mdData (n, p, pdData), mdDataZ (n, p) ;
+		double * pdNorms, * const pdStartNorms = vdNorms, * const pdEndNorms = vdNorms.GetDataEnd (), * const pdNormsHalf = pdStartNorms + ((n + 1) >> 1) ;
+		double * const pdWeights = vdWeights ;
+		int *pnOrder, * const pnStartOrder = vinter ;
 
-
-		IVecDW vinter (n) ;
-
-		int &k = dwIterCount, i, dwNStep, dwMaxHalf ;
-
-		int nNHalf = n >> 1 ;
-
-		CPerfTimer tim ;
+		double dND, dObj, dObjOld = 0 ;
 
 		for (k = 0; k < dwMaxit; k++)
 		{
-			vdMedianOld << vdMedian ;
+			vdNorms.Reset (0) ;
+			EO<CL1Median_VZ::AaCmD_BpaAmA>::MVMcVct (!mXc, *vdNorms, mX, vdMedian) ;
 
-			dObjOld = k ? dObj : calObj (pdData, pdMRet, n, p) ;
+			if (!k)	//	in the first round we (cheaply) calculate the "old" (=initial) objective function's value, as half of it we've already calculated with vector "vdNorms"
+				EO<SOP::Apa_sqrt_B>::SVc (dObjOld, vdNorms) ;
 
-			FC_ElOp<FC::FC_minus, double>::OpMV_row (mdData, vdMedian, mdDataZ) ;	//	mdDataZ =  scale (mdData, center = vdMedian, scale = FALSE)	
-
-			SqrtrowSumSqs (mdDataZ, vdNorms) ;
-
-			vdNorms.order (vinter) ;
-
-			vdNormsOrdered = vdNorms (ISub (vinter)) ;
-
-			mdData = mdData (ISub (vinter), ISub ()) ;
-			mdDataZ = mdDataZ (ISub (vinter), ISub ()) ;
+			sort_order (*vdNorms, *vinter) ;
 
 			double dSumWeights = 0 ;
-			DWORD dwCountZeroDiff = 0 ;
-			for (i = n - 1; i != (int) -1; i--)
+
+			pnOrder = pnStartOrder ;
+			pdNorms = pdStartNorms ;
+			while (pdNorms < pdEndNorms)
 			{
-				double &dCurVal = vdNormsOrdered (i) ;
-
-				if (dCurVal == 0)
+//				if (*pdNorms <= dZeroTol)
+				if (*pdNorms <= 0)
 				{
-					vdWeights (i) = 0 ;
-					dwCountZeroDiff++ ;
+					pdWeights[*pnOrder] = 0 ;
 
-					if (i > nNHalf)	//	there's more than half of the values concentrated at the current median estimation -> return this estimation
-					{
-						if (dwTrace >= 1)
-							Rprintf ("A concentration of %d >= n/2 = %d observations in one point has been detected (return code 3).\r\n", i + 1, nNHalf) ;
-						dwCode = 3 ;
-						dObj = dObjOld ;
-						nTime = tim.GetTimeMS () ;
-						return ;
-					}
-
-
+					if (pdNorms > pdNormsHalf)	//	there's more than half of the values concentrated at the current median estimation -> return this estimation
+						return 3 ;
 				}
 				else
-					dSumWeights += (vdWeights (i) = 1 / dCurVal) ;
+					dSumWeights += (pdWeights[*pnOrder] = pow (*pdNorms, -0.5)) ;
+				++pdNorms ;
+				++pnOrder ;
 			}
 
-			ColSumWeighted (mdDataZ, vdWeights, vdDelta) ;
-			vdDelta /= dSumWeights ;
-			sqrtsumsq (vdDelta, dND) ;
+			vdDelta.Reset (0) ;
+			EO<SOP::ApaBmC>::VtMcVc (*vdDelta, mXc, vdWeights) ;
 
-			if (dwTrace >= 3)	Rprintf ("nd at %g in iteration %d (tol at %g)\r\n", dND, k, dTol) ;
+			dND = 0 ;
+			EO<SOP::BdaC_Apa_sqr_B>::SVSc(dND, *vdDelta, dSumWeights) ;
+			dND = sqrt (dND) ;
 
-			vdMedian += vdDelta ;
+			if (nTrace >= 3)	meal_printf ("nd at %g in iteration %d (tol at %g)\r\n", dND, k, dTol) ;
+
+			vdMedianOld.Copy_NC (vdMedian) ;
+			EO<SOP::a_plus>::VVc_NC (*vdMedian, vdDelta) ;
+			dObj = calObj (mX, vdMedian) ;
 
 			if (dND < dTol)	//	converged
-			{
-				dObj = calObj (pdData, pdMRet, n, p) ;	//	calc current objective function
-				nTime = tim.GetTimeMS () ;
-				return  ;
-			}
+				return 0 ;
 
 			dwMaxHalf = (int) ceil (log (dND / dTol) / dLog2) ;
 
-			for (dwNStep = 0; dwNStep < dwMaxHalf && (dObj = calObj (pdData, pdMRet, n, p)) >= dObjOld; dwNStep++)
+			for (dwNStep = dwMaxHalf; dObj >= dObjOld; --dwNStep)	//	do step-halving
 			{
-				dwStepHalvingSteps++ ;
-				vdDelta /= 2.0 ;
+				EO<SOP::a_divide>::VSc (*vdDelta, 2) ;
+				EO<SOP::add>::VVcVc_NC (*vdMedian, vdMedianOld, vdDelta) ;
+				dObj = calObj (mX, vdMedian) ;
 
-				FC_ElOp<FC::FC_plus, double>::OpVV  (vdMedianOld, vdDelta, vdMedian) ;
+				if (!dwNStep)
+				{	
+					vdMedian.Copy (vdMedianOld) ;
+					dObj = dObjOld ;
+					return 2 ;		//	step-halving failed
+				}
 			}
 
-			if (dwNStep >= dwMaxHalf)
-			{	
-				if (dwTrace >= 1)
-					Rprintf ("step halving failed in %d steps (return code 2)\r\n", dwMaxHalf) ;
-				dwCode = 2 ;
-				vdMedian << vdMedianOld ;
-				dObj = dObjOld ;
-				nTime = tim.GetTimeMS () ;
-				return ;
-			}
-
+			dObjOld = dObj ;
 		}
-		nTime = tim.GetTimeMS () ;
 
-		dwCode = 1 ;	//	algorithm did not converge
-
-		if (dwTrace >= 1)
-			Rprintf ("Algorithm did not converve (return code 1).\r\n") ;
-	}
-
-	void foo ()
-	{
-		IDim mydim(20) ;
-
-		mydim.GetSize () ;
+		return 1 ;	//	did not converge
 	}

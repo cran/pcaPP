@@ -1,4 +1,4 @@
 exportPattern("^[^\\.]")
 useDynLib(pcaPP)
-
-
+S3method (plot, opt.TPO)
+S3method (plot, opt.BIC)

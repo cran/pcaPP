@@ -1,8 +1,5 @@
+#include "package.h"
 #include "math.h"
-#include "R.h"
-#include "rsubst.h"
-#include "fastpca.h"
-#include "ext.h"
 
 void Hess_Sub (int p, double *pdX_i, double *pdMu, double *pdHess, double *pdTempP)
 {

@@ -5,10 +5,11 @@
   Returns a scale estimation as calculated by the (robust) Qn estimator.
 }
 \usage{
-qn(x)
+qn(x, corrFact)
 }
 \arguments{
   \item{x}{ a vector of data }
+  \item{corrFact}{ the finite sample bias correction factor. By default a value of ~ 2.219144 is used (assuming normality). }
 }
 \details{
   The Qn estimator computes the first quartile of the pairwise absolute 

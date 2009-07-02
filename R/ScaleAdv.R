@@ -1,8 +1,8 @@
 ScaleAdv <- function (x, center = mean, scale = sd)
 {
-	if (class (x) != "matrix")
+	if (!is.matrix (x))
 	{
-		if (class (x) == "data.frame")
+		if (is.data.frame (x))
 			x = as.matrix(x)
 		else
 			x = matrix (x, ncol = 1)
@@ -20,7 +20,10 @@ ScaleAdv <- function (x, center = mean, scale = sd)
 	if (is.function (center))
 	{
 		m = center (x)
-		if (length (m) != p)
+		
+		if (is.list (m))
+			m <- m$par
+		else if (length (m) != p)
 			m = apply (x, 2, center)
 		x = x - matrix(1, nrow = n) %*% m
 	}
@@ -50,7 +53,6 @@ ScaleAdv <- function (x, center = mean, scale = sd)
 	}
 	else if (!is.null (scale))
 		warning ("Unknown scale specification! Scaling will be omitted.\n")
-		
 
 	return (list (x = x, center = m, scale = s))
 }

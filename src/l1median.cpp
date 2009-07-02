@@ -1,22 +1,36 @@
+#include "package.h"
+
 #include "R.h"
-#include "rsubst.h"
 #include "R_ext/Applic.h"
-#include "ext.h"
+
 #include "perftimer.h"
 
 	void Hess (int p, int n, double *pdX, double *pdMu, double *pdHess, double *pdTempP1, double *pdTempP2) ;	
 
-/////////////////////////
-// new l1median start  //
-/////////////////////////
+	void ResetVect (double *p, int n, double v)						//	2do: replace this function by SVec - operation
+	{
+		double * const pEnd = p + n ;
+		for (; p < pEnd; ++p )
+			*p = v ;
+	}
 
+	void VectorMultVector (double *pA, double const * pB, int n)	//	2do: replace this function by SVec - operation
+	{
+		double * const pEndA = pA + n ;
+		while (pA < pEndA)
+		{
+			*pA *= *pB ;
+			++pA ;
+			++pB ;
+		}
+	}
 
 	inline double AddSqr (double &d, double pAdd)
 	{
 		return d += pAdd * pAdd ; 
 	}
 
-	class L1MinStruct
+	class L1MinStruct									//2do: move to header file!
 	{
 	public:
 		L1MinStruct (int n, int p, double *pdX, double *pdParScale = 0) ;
@@ -33,7 +47,7 @@
 
 	} ;
 	
-	class L1MinStruct_Hess : public L1MinStruct
+	class L1MinStruct_Hess : public L1MinStruct			//2do: move to header file!
 	{
 	public:
 		L1MinStruct_Hess (int n, int p, double *pdX, double *pdParScale = 0) :
@@ -83,26 +97,19 @@
 	double L1MinStruct::calcall (double *pdM, double *pdMRet)
 	{
 		m_nCGr++ ;
-/*
-		memcpy (m_pdM, pdM, m_p * sizeof (double)) ;
 
-		if (m_pdParScale)
-			VectorMultVector (m_pdM, &m_p, m_pdParScale) ;
-*/
 //Rprintf ("grad:\t") ;
 //Rtprintf (pdM, m_p) ;
 		int r, c ;
 		double *pdX = m_pdX + m_pn, *pdX_ = m_pdX_ + m_pn ;
 
-//		double *pdX = m_pdX, *pdX_ = m_pdX_ ;
-
 		for (r = m_n - 1; r != -1; r--)
 			m_pdDi[r] = 0 ;
 
-
         //    X. <- centr(X,m)
-         //   d.i <- rowSums(X.^2)
-		
+
+        //   d.i <- rowSums(X.^2)
+
 		for (c = m_p - 1; c != -1; c--)
 		{
 			double dXm = m_pdParScale ? pdM[c] * m_pdParScale[c] : pdM[c] ;
@@ -112,15 +119,12 @@
 				*--pdX_ = *--pdX - dXm ;
 				//*pdX_++ = *pdX++ - dXm ;
 				m_pdDi[r] += *pdX_ * *pdX_ ;
-
-
-
 			}
 		}
 
 		pdX_ = m_pdX_ + m_pn ;
 
-		for (r = m_n - 1; r != -1; r--)
+		for (r = m_n - 1; r != -1; --r)
 		{
 			m_pdDi[r] = ::sqrt ((double) m_pdDi[r]) ;
 
@@ -148,7 +152,7 @@
 		memcpy (m_pdM, pdM, m_p * sizeof (double)) ;
 
 		if (m_pdParScale)
-			VectorMultVector (m_pdM, &m_p, m_pdParScale) ;
+			VectorMultVector (m_pdM, m_pdParScale, m_p) ;
 
 		//double *pdCur = m_pdX +  m_n * m_p ;
 
@@ -171,7 +175,6 @@
 		((L1MinStruct_Hess *)pDat)->calcHess (pdMu, pdHess) ;
 	}
 
-	
 	void l1objg(int n, double *pdCurCenter, double *pdRetCenter, void *pDat)
 	{
 		((L1MinStruct *) pDat)->calcall (pdCurCenter, pdRetCenter) ;
@@ -182,15 +185,12 @@
 		*ddObj = ((L1MinStruct *) pDat)->calObj (pdCurCenter) ;
 	}
 
-	extern void l1objg(int n, double *pdCurCenter, double *pdRetCenter, void *pDat) ;
-	extern void l1obj_(int n, double *pdCurCenter, double *ddObj, void *pDat) ;
-
 	double l1obj (int n, double *pdCurCenter, void *pDat)
 	{
 		return ((L1MinStruct *) pDat)->calObj (pdCurCenter) ;
 	}
 
-	extern void l1median_NM(int *pnParam, double *pdParam, double *pdData/*, double *pdParScale*/, double *pdMRet)
+	void l1median_NM(int *pnParam, double *pdParam, double *pdData/*, double *pdParScale*/, double *pdMRet)
 	{
 		int &n = pnParam [0], &p = pnParam [1], &nMaxStep = pnParam[2], &nFail = pnParam [3], &nTrace = pnParam [4], &nFnCount = pnParam [5], &nTime = pnParam[6] ;
 		double &dAbsTol = pdParam[0], &dRelTol = pdParam[1], &dRet = pdParam[2], &dAlpha = pdParam[3], &dBeta = pdParam[4], &dGamma = pdParam[5] ;
@@ -212,7 +212,7 @@
 		delete [] pdStart ;
 	}
 
-	extern void l1median_CG(int *pnParam, int *pnParam_Out, double *pdParam, double *pdParam_Out, double *pdData/*, double *pdParScale*/, double *pdMRet)
+	void l1median_CG(int *pnParam, int *pnParam_Out, double *pdParam, double *pdParam_Out, double *pdData/*, double *pdParScale*/, double *pdMRet)
 	{
 		int &n = pnParam [0], &p = pnParam [1], &nMaxStep = pnParam[2], &nTrace = pnParam [3], nType = pnParam [4] ;
 		int &nFail = pnParam_Out [0], &nFnCount = pnParam_Out [1], &nGrCount = pnParam_Out [2], &nTime = pnParam_Out[3] ;
@@ -236,7 +236,7 @@
 		delete [] pdStart ;
 	}
 
-	extern void l1median_BFGS (int *pnParam_In, int *pnParam_Out, double *pdParam_In, double *pdParam_Out, double *pdData/*, double *pdParScale*/, double *pdMRet)
+	void l1median_BFGS (int *pnParam_In, int *pnParam_Out, double *pdParam_In, double *pdParam_Out, double *pdData/*, double *pdParScale*/, double *pdMRet)
 	{
 		int &n = pnParam_In [0], &p = pnParam_In [1], &nMaxStep = pnParam_In[2], &nTrace = pnParam_In [3], nReport = pnParam_In [4] ;
 		int &nFail = pnParam_Out [0], &nFnCount = pnParam_Out [1], &nGrCount = pnParam_Out [2], &nTime = pnParam_Out[3] ;
@@ -263,7 +263,7 @@
 		delete [] pnMask ;
 	}
 
-	extern void l1median_SA (int *pnParam_In, int *pnParam_Out, double *pdParam_In, double *pdParam_Out, double *pdData/*, double *pdParScale*/, double *pdMRet)
+	void l1median_SA (int *pnParam_In, int *pnParam_Out, double *pdParam_In, double *pdParam_Out, double *pdData/*, double *pdParScale*/, double *pdMRet)
 	{
 		int &n = pnParam_In [0], &p = pnParam_In [1], &nMaxStep = pnParam_In[2], &nTrace = pnParam_In [3], nTMax = pnParam_In [4] ;
 		int &nFnCount = pnParam_Out [0], &nTime = pnParam_Out[1] ;
@@ -284,7 +284,7 @@
 //		VectorMultVector (pdMRet, &p, pdParScale) ;
 	}
 	
-	extern void l1median_NLM (int *pnParam, double *pdParam, double *pdData, double *pdMRet/*, double *pdTypSize*/)
+	void l1median_NLM (int *pnParam, double *pdParam, double *pdData, double *pdMRet/*, double *pdTypSize*/)
 	{
 		int &n = pnParam [0], &p = pnParam [1], &nMaxStep = pnParam[2], &nFail = pnParam [3], &nTime = pnParam[5], &nMsg = pnParam[6]/*, &nTrace = pnParam[7]*/ ;
 		double &dTol = pdParam[0], &dRet = pdParam[1] ;
@@ -302,7 +302,8 @@
 				*pdA = new double [p * p],
 				*pdTypSize = new double [p] ;
 
-		ResetVect (pdTypSize, &p, 1) ;
+		
+		ResetVect (pdTypSize, p, 1) ;
 		
 		CPerfTimer tim ;
 		optif9 (	p,
@@ -343,7 +344,7 @@
 	}
 
 
-	extern void l1median_NLM_Hess (int *pnParam, double *pdParam, double *pdData, double *pdMRet/*, double *pdTypSize*/)
+	void l1median_NLM_Hess (int *pnParam, double *pdParam, double *pdData, double *pdMRet/*, double *pdTypSize*/)
 	{
 		int &n = pnParam [0], &p = pnParam [1], &nMaxStep = pnParam[2], &nFail = pnParam [3], nMethod = pnParam[4], &nTime = pnParam[5], &nMsg = pnParam[6]/*, &nTrace = pnParam[7]*/, &nGFlag = pnParam[8], &nHFlag = pnParam[9], &nExp = pnParam[10], &nDigits = pnParam[11] ;
 		double &dTol = pdParam[0], &dRet = pdParam[1] ;
@@ -361,7 +362,7 @@
 				*pdA = new double [p * p],
 				*pdTypSize = new double [p] ;
 
-		ResetVect (pdTypSize, &p, 1) ;
+		ResetVect (pdTypSize, p, 1) ;
 
 		CPerfTimer tim ;
 		optif9 (	p,
@@ -380,7 +381,7 @@
 					nMaxStep,
 					nGFlag,		/*	iagflag	*/
 					nHFlag,		/*	iahflag	*/
-					-1,		/*	dlt		*/		//	1, //1e-6,
+					-1,		/*	dlt		*/			//	1, //1e-6,
 					dTol, 		/*	gradtl	*/		//	pow(DBL_EPSILON, 0.25), //0.1,
 					1000,		/*	stepmx	*/		//	C:1e-6 / R: 1000
 					dTol,		/*	steptl	*/		//	sqrt(DBL_EPSILON), //1e-6,			
@@ -401,8 +402,3 @@
 		delete [] pdTypSize ;
 	}
 	
-
-///////////////////////
-// new l1median end  //
-///////////////////////
-

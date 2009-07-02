@@ -5,13 +5,14 @@
   Computes the multivariate L1 median (also called spatial median) of a data matrix.  
 }
 \usage{
-l1median(X, MaxStep = 200, ItTol = 10^-8, trace = 0)
+l1median(X, MaxStep = 200, ItTol = 10^-8, trace = 0, m.init = .colMedians (X))
 }
 \arguments{
-  \item{X}{ a matrix containing the values whose multivariate L1 median is to be computed.}
-  \item{MaxStep}{Maximal number of step-halvings.}
-  \item{ItTol}{Tolerance for convergence of the algorithm.}
-  \item{trace}{ The tracing level. Used for suppressing warning messages (\code{trace = -1}).}
+  \item{X}{ A matrix containing the values whose multivariate L1 median is to be computed. }
+  \item{MaxStep}{ The maximum number of iterations. }
+  \item{ItTol}{ Tolerance for convergence of the algorithm.}
+  \item{trace}{ The tracing level. }
+  \item{m.init}{ An initial estimate. }
 }
 \value{
   returns the vector of the coordinates of the L1 median.

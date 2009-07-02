@@ -1,418 +1,319 @@
-#include "math.h"
-#include "R.h"
-#include "rsubst.h"
-#include "fastpca.h"
+#include "qnn.h"
 
-	void InitD (double *pD, int n, double dVal)
+
+	double pull (double const * const pA, const int n, int k)
 	{
-		int i ;
-		for (i = 0; i < n; i++)
-			pD[i] = dVal ;
-	}
+		ASSERT_TEMPRANGE (0, 0) ;
+		double * pB = tempRef (0, pB, n) ;
+		Copy (pB, pA, n) ;
 
-	void InitN (int *pN, int n, int nVal)
-	{
-		int i ;
-		for (i = 0; i < n; i++)
-			pN[i] = nVal ;
-	}
+		double ax, buffer ;
+		int l = 0, lr = n - 1, jnc, j ;
 
-
-
-/* Time-efficient algorithm for the scale estimator :
-
-  Qn = dn * 2.2219 * (|x_i - x_j|; i<j)_(k)
-
-  Parameters of the function Qn :
-     x : real array containing the observations
-     n : number of observations (n >= 2)
-
-  The function Qn uses the procedures :
-     whimed(a,pnW,n) : finds the weighted high median of an array
-                      a of length n, using the array pnW (also of
-                      length n) with positive integer weights.
-     sort(x,n,y)    : sorts an array x of length n, and stores the
-                      result in an array y (of size at least n)
-     pull(a,n,k)    : finds the k-th order statistic of an array
-                      a of length n
-
-  When you want to use this function Qn in a program, you have to
-  declare the next types in the mainprogram :
-     type rvector = array [1..100] of real;
-     type ivector = array [1..100] of integer;.
-  You may change the number 100, which is the maximum size of n */
-
-/*
-void sort (double *pa, int n, double *pb)
-{*/
-/* Sorts an array a of length n and stores the result in the array b*/
-/*
-var jlv, jrv : ivector;
-    i, jss, jndl, jr, jnc, j, jtwe : integer;
-    xx, amm                        : real;
-begin
-  for i:= 1 to n do b[i] := a[i];
-  jss := 1;
-  jlv[1] := 1;
-  jrv[1] := n;
-  repeat
-    jndl := jlv[jss];
-    jr := jrv[jss];
-    jss := jss - 1;
-    repeat
-      jnc := jndl;
-      j := jr;
-      jtwe := (jndl + jr) div 2;
-      xx := b[jtwe];
-      repeat
-        while (b[jnc] < xx) do jnc := jnc + 1;
-        while (xx < b[j]) do j := j -1;
-        if (jnc <= j) then
-          begin
-            amm := b[jnc];
-            b[jnc] := b[j];
-            b[j] := amm;
-            jnc := jnc + 1;
-            j := j - 1
-          end;
-      until (jnc > j);
-      if ((j - jndl) >= (jr - jnc)) then
-        begin
-          if (jndl < j) then
-            begin
-              jss := jss + 1;
-              jlv[jss] := jndl;
-              jrv[jss] := j
-            end;
-          jndl := jnc
-        end
-      else
-        begin
-          if (jnc < jr) then
-            begin
-              jss := jss + 1;
-              jlv[jss] := jnc;
-              jrv[jss] := jr
-            end;
-          jr := j
-        end;
-    until (jndl >= jr);
-  until (jss = 0)
-}*/
-
-
-double pull(double *pdA, int n, int k)
-{
-
-// Finds the k-th order statistic of an array pdA of length n
-
-	double *pdB = new double [n] ;				//	: rvector;
-	double dAx, dBuffer ;		//: real;
-	int l = 0, lr = n - 1, jnc, j ;
-
-//	for i := 1 to n do
-//		pdB[i] := pdA[i];
-	memcpy (pdB, pdA, n * sizeof (double)) ;
-
-	while (l < lr)
-	{
-		dAx = pdB[k];
-		jnc = l;
-		j = lr;
-		while (jnc <= j)
+		while (l < lr)					//	20	//	2do: put into pull fct
 		{
-			while (pdB[jnc] < dAx)
-				jnc++ ;
-			while (pdB[j] > dAx)
-				j-- ;
+			ax = pB[k] ;
 
-			if (jnc <= j)
+			jnc = l ;
+			j = lr ;
+
+			while (jnc <= j)			//	30
 			{
-				dBuffer = pdB[jnc];
-				pdB[jnc] = pdB[j];
-				pdB[j] = dBuffer;
-				jnc++ ;
-				j-- ;
-			}
-		}
-		if (j < k)
-			l = jnc ;
-		if (k < jnc)
-			lr = j ;
-	}
+				while (pB[jnc] < ax)	//	40
+					++jnc ;
 
-	dAx = pdB[k] ;		//	dAx wird ab hier nur mehr als temp  var verwendet..
-	delete [] pdB ;
+				while (pB[j] > ax)		//	50
+					--j ;
 
-	return dAx ;
-
-}
-
-
-/* Algorithm to compute the weighted high median in O(n) time.
-
-  The whimed is defined as the smallest a[j] such that the sum
-  of the weights of all a[i] <= a[j] is strictly greater than
-  half of the total weight.
-
-  Parameters of this function :
-     a : real array containing the observations
-     n : number of observations
-    pnW : array of integer weights of the observations.
-
-  This function uses the function pull.
-
-  The size of acand, iwcand must be at least n.*/
-
-double whimed (double *pdA, int *pnW, int n)
-{
-	int i, nWtotal = 0, nWrest = 0, nWleft, nWmid, nWright, nKCand ;
-    double dTrial ;
-    double *pdAcand = new double [n] ;	//XX Length?!	//					: rvector;
-	InitD (pdAcand, n, 0) ;
-    int *pnWcand = new int [n] ;		//XX Length?!	//					: ivector;
-	InitN (pnWcand, n, 0) ;
-    bool bFound = false;				//					: boolean;
-
-	double dRet = 0 ;
-
-		//	for i = 1 to n do nWtotal = nWtotal + pnW[i];
-	for (i = 0; i < n; i++)
-		nWtotal += pnW[i];
-
-	while (!bFound)
-	{
-			//	trial = pull(a,n,n div 2 + 1);
-//		dTrial = pull(pdA,n,n / 2 + 1);
-		dTrial = pull(pdA,n,n / 2);
-
-		nWleft  = 0;
-		nWmid = 0;
-		nWright = 0;
-			//	for i = 1 to n do
-		for (i = 0; i < n; i++)
-			if (pdA[i] < dTrial)
-				nWleft += pnW[i] ;
-			else if (pdA[i] > dTrial)
-				nWright += pnW[i] ;
-			else
-				nWmid += pnW[i] ;
-		
-		if ((2 * nWrest + 2 * nWleft) > nWtotal)
-		{
-			nKCand = 0;
-			for (i = 0; i < n; i++)
-				if (pdA[i] < dTrial)
+				if(jnc <= j)			//	60
 				{
-					pdAcand[nKCand] = pdA[i] ;
-					pnWcand[nKCand]= pnW[i] ;
-					nKCand ++ ;
+					sm_swap (pB [jnc], pB[j], buffer) ;
+					++jnc ;
+					--j ;
 				}
-			n = nKCand ;
-		}
-		else if ((2*nWrest+2*nWleft+2*nWmid) > nWtotal)
-		{
-			dRet = dTrial;
-			bFound = true ;
-		}
-		else
-		{
-			nKCand = 0;
-			for (i = 0; i < n; i++)
-				if (pdA[i] > dTrial)
-				{
-					pdAcand[nKCand] = pdA[i];
-					pnWcand[nKCand] = pnW[i] ;
-					nKCand ++ ;
-				}
-			n = nKCand;
-			nWrest += nWleft + nWmid ;
+			}							//	70
+
+			if (j < k)
+				l = jnc ;
+			if (k < jnc)
+				lr = j ;
 		}
 
-		memcpy (pdA, pdAcand, n * sizeof (double)) ;
-		memcpy (pnW, pnWcand, n * sizeof (int)) ;
-/*		for (i = 0; i < n; i++)
-		{
-			pdA[i] = pdAcand[i] ;
-			pnW[i] = pnWcand[i] ;
-		}
-*/
+		return pB [k] ;
 	}
 
-    delete [] pdAcand ;
-    delete [] pnWcand ;
-
-	return dRet ;
-}
-
-
-/* Testsource
-
-library (pcaPP)
-r = matrix (rnorm (10000), 100, 100)
-for (i in 1:1000)
-  qna = qn(r)
-
-*/
-
-double myvec [] = {0.399, 0.994, 0.512, 0.844, 0.611, 0.857, 0.669, 0.872 } ;
-
-	void Qn (double *pdX, int *pn, double *pdRet)
+	double whimed (double * const pA, int * const pIw, int n)
 	{
-		int n = *pn ;
-		double *pdWork = new double [n]; //, *pdY = new double [n];							//XX Length?!	//	: rvector;
+		ASSERT_TEMPRANGE (1, 2) ;
+		int i ; //= (n + 1) >> 1 ;
 
-		InitD (pdWork, n, 0) ;
-//		InitD (pdY, n, 0) ;
-		
-		int *pnLeft = new int [n],
-			*pnRight = new int [n],
-			*pnWeight = new int [n],
-			*pnQ = new int [n],
-			*pnP = new int [n];	//XX Length?!	//	: ivector;
+		double * pAcand = tempRef (2, pAcand, n) ;
+		int * pIWcand = tempRef (1, pIWcand, n) ;
 
+		int64_t nWtotal ; 
+		sum (pIw, n, nWtotal) ;
+		if (!nWtotal)
+			return meal_NaN () ;
 
-		InitN (pnLeft, n, 0) ;
-		InitN (pnRight, n, 0) ;
-		InitN (pnWeight, n, 0) ;
-		InitN (pnQ, n, 0) ;
-		InitN (pnP, n, 0) ;
+		int64_t nTemp, nWrest = 0,nWleft= 0, nWmid = 0,nWright = 0 ;
+		int nKcand, nn = n ;
 
-		double dn, dTrial, dQv = 0 ;										//	: real;
-		int h, k, nKNew,nJHelp, nL, nR,nSumQ, nSumP, i, j, jj ;				//	: integer;
-		bool bFound ;													//	: boolean;
-
-			//h = n div 2 + 1;
-		h = n / 2 + 1;
-		k = h * (h - 1) / 2;
-
-//		sort(pdX,n,pdY);
-		double *pdY = new double [n] ;
-		memcpy (pdY, pdX, n * sizeof (double) ) ;
-		R_rsort (pdY, n) ;
-//		doublesort (pdY, n) ;
-
-			//	for (i = 0; i < n; i++)
-		for (i = n-1; i >= 0; i--)
+		while (1)
 		{
-			pnLeft[i] = n - i + 1;		//	 2 abziehen: 1 für den idx generell & 1 da ja mit geringeren indizes gerechnet wird..
-			pnRight[i] = n ;
-		}
+			double dTrial = pull(pA, nn, (nn >> 1)) ;
 
-		nJHelp = (n * (n + 1)) / 2;
-		nKNew = k + nJHelp;
-		nL = nJHelp;
-		nR = n*n;
-		bFound = false;
-		while ((nR-nL > n) && (!bFound))
-		{
-			j = 0;
-			for (i = 1; i < n; i++)
+			nWleft = nWright = nWmid = 0 ;
+			for (i = 0; i < nn; ++i)
 			{
-				if (pnLeft[i] <= pnRight[i]) 
+				if (pA[i] < dTrial)
+					nWleft += pIw [i] ;
+				else if (pA [i] > dTrial)
+					nWright += pIw [i] ;
+				else
+					nWmid += pIw [i] ;
+			}
+
+			nTemp = nWrest + nWleft ;
+			if ((nTemp << 1)> nWtotal)
+			{
+				nKcand = 0 ;
+				for (i = 0; i < nn; ++i)
 				{
-					pnWeight[j] = pnRight[i] - pnLeft[i] + 1;
-					nJHelp = pnLeft[i] + pnWeight[j] / 2;
-					pdWork[j] = pdY[i] - pdY[n -  nJHelp];
-					j++ ;
+				  if (pA [i] < dTrial)
+				  {
+					  pAcand [nKcand] = pA [i] ;
+					  pIWcand [nKcand] = pIw [i] ;
+					  ++nKcand ;
+				  }
 				}
-			}
-			dTrial = whimed(pdWork,pnWeight,j/* - 1*/);
-			j = 0;
-			for (i = n - 1; i >= 0; i--)
-			{
-				while ((j < n) && (pdY[i] - pdY[n - j - 1] < dTrial))
-					j++ ;
-				pnP[i] = j ;
-			}
-			j = n + 1;
-			for (i = 0; i < n; i++)
-			{
-				while (pdY[i] - pdY[n - j + 1] > dTrial)
-					j-- ;
-				pnQ[i] = j ;
-			}
-			nSumP = 0;
-			nSumQ = 0;
 
-			//for (i = 0; i < n; i++)
-			for (i = n-1; i >= 0; i--)
-			{
-				nSumP += pnP[i];
-				nSumQ += pnQ[i] - 1 ;
+				nn = nKcand ;
 			}
-			if (nKNew <= nSumP) 
-			{
-				//	//	for i = 1 to n do
-				//for (int i = n-1; i >= 0; i--)
-				//	pnRight[i] = pnP[i] ;
-				memcpy (pnRight, pnP, n* sizeof (int)) ;
-				nR = nSumP ;
-			}
-			else if (nKNew > nSumQ) 
-			{
-				//	//for i = 1 to n
-				//for (int i = n-1; i >= 0; i--)
-				//	pnLeft[i] = pnQ[i];
-				memcpy (pnLeft, pnQ, n* sizeof (int)) ;
-
-				nL = nSumQ ;
-			}
+			else if (((nTemp + nWmid) << 1) > nWtotal)
+				return dTrial ;
 			else
 			{
-				dQv = dTrial;
-				bFound = true ;
-			}
-		}
-		if (!bFound) 
-		{
-			j = 0;
-			for (i = 1; i < n; i++)
-			{
-				if (pnLeft[i] <= pnRight[i]) 
-					for (jj = pnLeft[i]; jj <= pnRight[i]; jj++)
+				nKcand = 0 ;
+				for (i = 0; i < nn; ++i)
+				{
+					if(pA [i] > dTrial)
 					{
-						pdWork[j] = pdY[i] - pdY[n - jj];
-						j++ ;
+						pAcand [nKcand] = pA [i] ;
+						pIWcand [nKcand] = pIw [i] ;
+						++nKcand ;
 					}
+				}
+				nn = nKcand ;
+				nWrest += nWleft + nWmid ;
 			}
-			dQv = pull(pdWork,j,nKNew-nL - 1) ;
+			Copy (pA, pAcand, nn) ;
+			Copy (pIw, pIWcand, nn) ;
+		}
+	}
+
+#ifdef _MSC_VER
+	#define NO_INLINE								//	MS compilers don't make problems here when using the helper functions..
+#else
+	#define NO_INLINE	 __attribute__ ((noinline))	//	other compilers (e.g. MinGW) are not supposed to inline these functions...
+#endif
+
+													//	workaround of some compiler optimization - issue:
+													//	when computing  a-b < x, whereas a-b == x the resulting value was 
+													//	sometimes "true" on windows machines (using MS VS6.0 and Mingw, various versions)
+													//	in some very rare occasions this caused the qn algo to end in an infinite loop.
+	BOOL NO_INLINE  isgr_s (const double &a, const double &b) 	//
+	{												//	the same code worked without problems on linux.
+		return a > b ;								//	an assumption is, that some compilers "optimize" the expression 
+	}												//		
+													//						"a-b < x"
+	BOOL NO_INLINE isle_s (const double &a, const double &b)	//				to
+	{												//			"a - b - x < 0" or "a - x - b < 0"  (or sth similar)
+		return a < b ;								//
+	}												//	which then gives numerical problems.
+													//	
+													//	QUICKFIX:
+													//	Thus by using functions "isgr_s" and "isle_s" which are not allowed to be 
+													//	inlined, this optimization is avoided and the algorithm runs smoothly. \o/
+													//
+													//	SOLUTION:
+													//	Directly turning off the corresponding optimization for these lines.
+													//		("#pragma optimize ("", off")" didn't help so far)
+
+	double qn_raw (double *pY, const int n)
+	{
+		TEMP_GUARD ;
+		ASSERT_TEMPRANGE (3, 8) ;
+		const int ns1 = n - 1 ;
+
+		double * const pWork = tempArray<double> (8, n) ;
+		int * const pLeft = tempArray<int> (7, n), * const pRight = tempArray<int> (6, n), * const pWeight = tempArray<int> (5, n), * const pQ = tempArray<int> (4, n), * const pP = tempArray<int> (3, n) ;
+
+		tempArray<double> (0, n) ;
+		tempArray<double> (1, n) ;
+		tempArray<double> (2, n) ;
+		int i ;
+		double dTrial ;
+
+		const int64_t h = n/2+1 ;
+		int64_t 
+			k = h * (h-1) >> 1 ,
+			jhelp = (n*((int64_t)n+1)) >> 1,
+			knew = k + jhelp,
+			nL = jhelp,
+			nR = ((int64_t) n) * n,
+			dwSumQ, dwSumP, j ;
+
+		meal_sort (pY, n) ;
+
+		for (i = n - 1; i != -1; --i)
+		{
+			pLeft[i] = n - i ;
+			pRight [i] = n ;
 		}
 
-		if (n <=9)
-			dn = myvec[n - 2] ;
-		else if (n & 1)
-			dn = n/(n+1.4) ;
-		else
-			dn = n/(n + 3.8) ;
-
-
-/*		if (n <= 9) 
+		while (nR - nL > n)												 //F 200   continue	
 		{
-			if (n=2)  dn = 0.399;
-			if (n=3)  dn = 0.994;
-			if (n=4)  dn = 0.512;
-			if (n=5)  dn = 0.844;
-			if (n=6)  dn = 0.611;
-			if (n=7)  dn = 0.857;
-			if (n=8)  dn = 0.669;
-			if (n=9)  dn = 0.872
+			j = 0 ;
+			for (i = 1; i < n; ++i)
+			{
+				if (pLeft[i] < pRight [i])
+				{
+					pWeight [j] = pRight[i] - pLeft[i] ;				//F	weight(j)=right(i)-left(i)+1
+					jhelp = pLeft[i] + (pWeight[j] >> 1) ;				//F	jhelp=left(i)+weight(j)/2
+					pWork[j] = pY[i] - pY[n - jhelp - 1] ;				//F	work(j)=y(i)-y(n+1-jhelp)
+					++j ;
+				}
+			}
+			dTrial = whimed (pWork, pWeight, int (j)) ;					//F	trial=whimed(work,weight,j-1)
+
+			dwSumP = dwSumQ = j = 0 ;									//F j = n + 1
+
+			for (i = n - 1; i != -1; --i)
+			{
+
+				while (j < n && isle_s ((pY[i] - pY[ns1 - j]), dTrial))	//F	if ((j.lt.n).and.((y(i)-y(n-j)).lt.trial)) then
+					++j ;
+//				while (j < n && (pY[i] - pY[ns1 - j]) < dTrial)			//F	if ((j.lt.n).and.((y(i)-y(n-j)).lt.trial)) then
+//					++j ;
+
+				pP[i] = int (j) ;
+				dwSumP += int (j) ;										//F	sumP+P(i)
+			}
+			j = n ;
+			for (i = 0; i < n; i++)
+			{
+				while (isgr_s(pY[i] - pY[n - j], dTrial))					//F	if ((y(i)-y(n-j+2)).gt.trial) then
+					--j ;
+//				while (pY[i] - pY[n - j] > dTrial)							//F	if ((y(i)-y(n-j+2)).gt.trial) then
+//					--j ;
+				pQ[i] = int (j) ;
+				dwSumQ += int (j) ;
+			}
+
+			if (knew <= dwSumP)
+			{
+				Copy (pRight, pP, n) ;
+				nR = dwSumP ;
+			}
+			else if (knew > dwSumQ)
+			{
+				Copy (pLeft, pQ, n) ;
+				nL = dwSumQ ;
+			}
+			else
+				return dTrial ;
 		}
-		else 
+		int jj ;
+
+		j = 0 ; //j=1
+		for (i = 1; i < n; ++i)											//F	do 90 i=2,n
 		{
-			if (n % 2 = 1)   dn = n/(n+1.4);
-			if (n % 2 = 0)   dn = n/(n + 3.8)
-		}*/
+			if (pLeft[i] < pRight[i])									//F	if (left(i).le.right(i)) then
+			{
+				for (jj = pLeft[i]; jj < pRight[i]; ++jj)				//F	do 100 jj=left(i),right(i)
+				{
+					pWork[j] = pY[i] - pY[ns1-jj] ;						//F	work(j)=y(i)-y(n-jj+1)
+					++j ;
+				}
+			}															//F	100
+		}																//F	90
 
-		delete [] pdY ;
+		return pull (pWork, int (j), int (knew-nL - 1)) ;				//F	Qn=pull(work,j-1,knew-nL)
+	}
 
-		delete [] pdWork ;
-		delete [] pnLeft ;
-		delete [] pnRight ;
-		delete [] pnWeight ;
-		delete [] pnQ ;
-		delete [] pnP ;
+	double qn_corrN (const int n, const double dQnCNorm)
+	{
+		if (n <= 9)
+		{
+			static const double adCorrFact [] = {0.400, 0.993, 0.514, 0.845, 0.612, 0.859, 0.670, 0.874} ;
+			return dQnCNorm * adCorrFact[n - 2] ;
+		}
 
-		*pdRet =  dn * 2.21914446598508
-			* dQv ;
+		if (n & 1)				
+			return dQnCNorm * n / (n + 1.4) ;	//	odd
+		return dQnCNorm * n / (n + 3.8) ;		//	even
+	}
+
+	void qn_nc (double &dQn, const double *pX, const int n)
+	{
+		TEMP_GUARD ;
+		ASSERT_TEMPRANGE (9, 9) ;
+
+		double * const pY = tempArray<double> (9, n) ;
+		Copy (pY, pX, n) ;
+
+		dQn = qn_raw (pY, n) ;
+	}
+
+	void qn_V (double &dQn, double *pX, const int n)
+	{
+		dQn = qn_raw (pX, n) ; 
+		dQn *= qn_corrN (n) ;
+	}
+
+	void qn (double &dQn, const double *pX, const int n)
+	{
+		qn_nc (dQn, pX, n) ;
+		dQn *= qn_corrN (n) ;
+	}
+
+/*
+	double qn (const double *pX, t_size n)
+	{
+		double dQn ;
+		qn (dQn, pX, n) ;
+		return dQn ;
+	}
+
+	EXPORT void ex_pull (int *pnParIn, double *pnParOut, double const * const pA)
+	{
+		pnParOut[0] = pull (pA, pnParIn[0], pnParIn[1]) ;
+	}
+
+	EXPORT void ex_whimed (int *pnParIn, double *pnParOut, double * const pA, int * const pIw)
+	{
+		pnParOut[0] =  whimed (pA, pIw, pnParIn[0]) ;
+	}
+*/
+
+
+/*
+	void qn (const double *x, int *npLength, double *pdQn)								//	used by sPCApp: 2do: change scale function definition ...
+	{
+		qn (*pdQn, x, *npLength) ;
+	}
+*/
+
+	double qn (const SVDataD &a)
+	{
+		double dRet ;
+		qn (dRet, a.GetData (), a.size ()) ;
+		return dRet ;
+	}
+
+	double qn (const SCDataD &a)
+	{
+		double dRet; 
+		qn (dRet, a.GetData (), a.size ()) ;
+		return dRet ;
 	}

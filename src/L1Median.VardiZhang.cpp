@@ -1,127 +1,136 @@
 #include "L1Median.h"
-#include "ext.h"
-#include "perftimer.h"
 
-	DWORD CL1Median_VZ::CheckRowSums (const double &dThreshold)
+	t_size CL1Median_VZ::CheckRowSums (const double &dThreshold)
 	{		//	counts the elements in array m_vRowSums which are greater than dThreshold
-		DWORD i ;
-		DWORD dwRet = 0 ;
-		for (i = m_vRowSums.size () - 1; i != (DWORD) -1; i--)
-			if (m_mIsZero(i) = m_vRowSums  (i) > dThreshold)
+		t_size dwRet = 0 ;
+
+		ASSERT (m_mIsZero.size () == m_vRowSums.size ()) ;
+
+		const double *pRS = m_vRowSums, * const pEndRS = m_vRowSums.GetDataEnd () ;
+		int *pZero = m_mIsZero ;
+
+		while (pRS < pEndRS)
+		{
+			*pZero = *pRS > dThreshold ;
+			if (*pZero)
 				dwRet ++ ;
+			++pRS ;
+			++pZero ;
+		}
+		
 		return m_dwN - dwRet ;	
 	}
 
 	BOOL CL1Median_VZ::Iter ()
 	{
-		m_mX_ << m_mX ;
-		m_mX_.byrow () -= m_vMed ;	//	centering data matrix
-
-		SqrtrowSumSqs (m_mX_, m_vRowSums) ;
+		m_vRowSums.Reset (0) ;
+		EO<AaCmD_BpaAmA>::MVMcVct (!m_mXc, *m_vRowSums, m_mX, m_vMed) ;
+		EO<SOP::a_sqrt>::V (*m_vRowSums) ;
 
 		double dMin = min (m_vRowSums) ;
 
-		DWORD dwGreater = m_dwN - m_vRowSums.CountLess (dMin / m_dZeroTol) ;
+		t_size dwGreater = 0 ;
+		EO<SOP::inc_a_if_b_lesseq_c>::SScVc (dwGreater, dMin / m_dZeroTol, m_vRowSums) ;
 
 		if (dwGreater * 2 > m_dwN)
 		{	//	some of the elements of m_vRowSums are zero
-			m_dwEqs++ ;
+			m_nEqs++ ;
 
-			//double dCheckMedian = median (m_vRowSums, m_vTemp) ;
-			DWORD dwZero = CheckRowSums (median (m_vRowSums, m_vTemp) * m_dZeroTol) ;
+			t_size dwZero = CheckRowSums (median (m_vRowSums) * m_dZeroTol) ;
 
 			if (dwZero > m_dwNHalf)	//	there's more than half of the observations concentrated in one single point
 			{
-				if (m_dwTrace >= 1)
-					Rprintf ("%d >= n / 2 = %d observations concentrated in one point found.\r\n", dwZero) ;
+				if (m_nTrace >= 1)
+					meal_printf ("%d >= n / 2 = %d observations concentrated in one point found.\r\n", dwZero) ;
 				return FALSE ;
-				
 			}
 
-			if (m_dwTrace >= 1)
-				Rprintf ("%d observations are exatly at the median.\r\n", dwZero) ;
-			if (int (m_dwTrace) >= 0 && dwZero > 1)
-				Rf_warning ("The current L1median estimate is ident with more than one observation. The resulting l1median estimation might be incorrect. [CL1Median_VZ::Iter]") ;
+			if (m_nTrace >= 1)
+				meal_printf ("%d observations are exatly at the median.\r\n", dwZero) ;
+			if (m_nTrace >= 0 && dwZero > 1)
+				meal_warning ("The current L1median estimate is ident with more than one observation. The resulting l1median estimation might be incorrect. [CL1Median_VZ::Iter]") ;
 
-			IMatD	X_0	(m_mX_	(ISub (m_mIsZero), ISub ())), 
-					X0	(m_mX	(ISub (m_mIsZero), ISub ())) ;
-			IVecD	vID (m_vRowSums (ISub (m_mIsZero))) ;
+			m_vTt.Reset (0) ;
+			EO<if_C_ApaBdD>::VtMcVcVc_NC (*m_vTt, m_mX, m_mIsZero, m_vRowSums) ;
 
-			vID ^= -1 ;
+			m_vRt.Reset (0) ;
+			EO<if_C_ApaBdD>::VtMcVcVc_NC (*m_vRt, m_mXc, m_mIsZero, m_vRowSums) ;
 
-			ColSumWeighted (X_0, vID, m_vRt) ;
-			ColSumWeighted (X0, vID, m_vTt) ;
-			m_vTt /= sum (vID) ;
+			double dTemp = 0 ;
+			EO<if_C_Apa_inv_b>::SVcVc (dTemp, m_vRowSums, m_mIsZero) ;
+			EO<SOP::a_divide>::VSc (*m_vTt, dTemp) ;
 
-			double edivr = dwZero / sqrtsumsq (m_vRt) ;
+			dTemp = 0 ;
+			EO<SOP::Apa_sqr_B>::SVc (dTemp, m_vRt) ;
+			double edivr = dwZero / sqrt (dTemp) ;
+
+			if (edivr > 1)
+				EO<SOP::a_multiply>::VSc (*m_vMed, edivr) ;
+
 			if (edivr < 1)
-				m_vMed *= edivr ;
-
-			if(edivr < 1)
-			{
-				m_vTt *= 1 - edivr ;
-				m_vMed += m_vTt ;
-			}
+				EO<SOP::ApaBmC>::VScVc (*m_vMed, 1 - edivr, m_vTt) ;
 		}
 		else
 		{
-			m_vRowSums ^= -1 ;
+			m_vMed.Reset (0) ;
+			EO<SOP::ApaBdC>::VtMcVc_NC (*m_vMed,m_mX, m_vRowSums) ;
 
-			ColSumWeighted (m_mX, m_vRowSums, m_vMed) ;
-			m_vMed /= sum (m_vRowSums) ;
+			double dSum = 0 ;
+			EO<SOP::Apa1dB>::SVc (dSum, m_vRowSums) ;
+
+			EO<SOP::a_divide>::VSc (*m_vMed, dSum) ;
 		}
 		return TRUE ;
-	}
+ 	}
 
-	CL1Median_VZ::CL1Median_VZ (DWORD *pdwPar, double *pdPar, double *pdDat, double *pdMed, double *pdWeights) :
-		m_dwN (pdwPar[0]), m_dwNHalf (m_dwN >> 1), m_dwP (pdwPar[1]), m_dwMaxIt (pdwPar[2]), m_dwUseWeights (pdwPar[3]), m_dwTrace (pdwPar[4]), m_dwEqs (0), m_dwTime (pdwPar[5]),
-		m_dTol (pdPar[0]), m_dZeroTol (pdPar [1]),
-		m_mX (m_dwN, m_dwP, pdDat), m_mX_ (m_dwN, m_dwP),
-		m_vMed (m_dwP, pdMed), m_vRt (m_dwP), m_vTt (m_dwP), m_vOldMed (m_dwP), 
-		m_vWeights (m_dwN, pdWeights), m_vRowSums (m_dwN), m_vTemp (m_dwN),
-		m_mIsZero (m_dwN)
+	CL1Median_VZ::CL1Median_VZ (int *pnParIn, int *pnParOut, double *pdParIn, double *pdX, double *pdMed, double *pdWeights)
+		: m_dwN (pnParIn[0]), m_dwP (pnParIn[1]), m_dwMaxIt (pnParIn[2]), m_dwUseWeights (pnParIn[3])
+		, m_nTrace (pnParIn[4])
+		, m_nRetCode (pnParOut[0]), m_nIter (pnParOut[1])
+
+		, m_dTol (pdParIn[0]), m_dZeroTol (pdParIn [1])
+
+		, m_dwNHalf (m_dwN >> 1)
+		, m_nEqs (0)
+
+		, m_mX (pdX, m_dwN, m_dwP), m_mXc (m_dwN, m_dwP)
+		, m_vMed (pdMed, m_dwP), m_vRt (m_dwP), m_vTt (m_dwP), m_vOldMed (m_dwP)
+		//, m_vWeights (pdWeights, m_dwN)
+		, m_vRowSums (m_dwN), m_vTemp (m_dwN)
+		, m_mIsZero (m_dwN)
 	{ 
-		DWORD i ;
 
-		double dAbsDiff, dAbsSum ; 
+		if (pdWeights)
+			m_vWeights.Set (pdWeights, m_dwN) ;
 
-		CPerfTimer tim ;
-		for (i = m_dwMaxIt - 1; i != (DWORD) -1; i--)
+		t_size i ;
+
+		for (i = m_dwMaxIt - 1; i != NAI; i--)
 		{
-			m_vOldMed << m_vMed ;
+			m_vOldMed.Copy (m_vMed) ;
 			if (!Iter ())
 				break ;
-			m_vOldMed -= m_vMed ;
 
-			dAbsDiff = sumabs (m_vOldMed) ;
-			dAbsSum = sumabs (m_vMed) ;
+			double dAbsDiff = 0, dAbsSum = 0 ; 
+			EO<Apa_abs_c_Bpa_abs_DmC>::SSVcVc_NC (dAbsSum, dAbsDiff, m_vMed, m_vOldMed) ;
 
-			if (m_dwTrace >= 2)
-				if (m_dwTrace >= 3)
+			if (m_nTrace >= 2)
+			{
+				if (m_nTrace >= 3)
 				{
-					Rprintf ("k=%3d rel.chg=%12.15g, m=(",m_dwMaxIt - i, dAbsDiff/dAbsSum),
-					Rprintf (")\n") ;
+					meal_printf ("k=%3d rel.chg=%12.15g, m=(",m_dwMaxIt - i, dAbsDiff/dAbsSum),
+					meal_printf (")\n") ;
 				}
 				else
-					Rprintf (".") ;
-
+					meal_printf (".") ;
+			}
 
 			if (dAbsDiff < m_dTol * dAbsSum)
 				break ;
 		}
-		m_dwTime = (DWORD) tim.GetTimeMS () ;
 
-        if(m_dwTrace)
-			Rprintf (" needed %d iterations (%d of which had y==x_k)\r\n", m_dwMaxIt - i, m_dwEqs) ;
+        if(m_nTrace)
+			meal_printf (" needed %d iterations (%d of which had y==x_k)\r\n", m_dwMaxIt - i, m_nEqs) ;
 
-		m_dwMaxIt -= i ;
-
+		m_nIter = m_dwMaxIt - i ;
 	}
-
-	
-	
-	EXPORT void l1Median_VZ (DWORD *pdwPar, double *pdPar, double *pdDat, double *pdMed, double *pdWeights)
-	{
-		CL1Median_VZ (pdwPar, pdPar, pdDat, pdMed, pdWeights) ;
-	}
-

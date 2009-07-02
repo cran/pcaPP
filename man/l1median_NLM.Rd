@@ -11,13 +11,13 @@
   Computes the multivariate L1 median (also called spatial median) of a data matrix \code{X}.  
 }
 \usage{
-l1median_NM (X, maxit = 200, tol = 10^-8, trace = 0, m.init = apply(X, 2, median), ...)
-l1median_CG (X, maxit = 200, tol = 10^-8, trace = 0, m.init = apply(X, 2, median), ...)%, type = 1)
-l1median_BFGS (X, maxit = 200, tol = 10^-8, trace = 0, m.init = apply(X, 2, median), REPORT = 10, ...)
-%l1median_SA (X, maxit = 200, tol = 10^-8, trace = 0, m.init = apply(X, 2, median), TMax = 10, TempInit = 10)
-l1median_NLM (X, maxit = 200, tol = 10^-8, trace = 0, m.init = apply(X, 2, median), ...)
-l1median_HoCr (X, maxit = 200, tol = 10^-8, trace = 0, m.init = apply (X, 2, median), ...)
-l1median_VaZh (X, maxit = 200, tol = 10^-8, zero.tol = 1e-15, trace = 0, m.init = apply (X, 2, median), ...)
+l1median_NM (X, maxit = 200, tol = 10^-8, trace = 0, m.init = .colMedians (X), ...)
+l1median_CG (X, maxit = 200, tol = 10^-8, trace = 0, m.init = .colMedians (X), ...)%, type = 1)
+l1median_BFGS (X, maxit = 200, tol = 10^-8, trace = 0, m.init = .colMedians (X), REPORT = 10, ...)
+%l1median_SA (X, maxit = 200, tol = 10^-8, trace = 0, m.init = .colMedians (X), TMax = 10, TempInit = 10)
+l1median_NLM (X, maxit = 200, tol = 10^-8, trace = 0, m.init = .colMedians (X), ...)
+l1median_HoCr (X, maxit = 200, tol = 10^-8, zero.tol = 1e-15, trace = 0, m.init = .colMedians (X), ...)
+l1median_VaZh (X, maxit = 200, tol = 10^-8, zero.tol = 1e-15, trace = 0, m.init = .colMedians (X), ...)
 }
 \arguments{
   \item{X}{ a matrix of dimension \code{n} x \code{p}.}
@@ -27,7 +27,7 @@ l1median_VaZh (X, maxit = 200, tol = 10^-8, zero.tol = 1e-15, trace = 0, m.init 
   \item{m.init}{ A vector of length \code{p} containing the initial value of the L1-median. }
 %  \item{pscale}{ A vector of length \code{p} containing the variables scale to be used. }
   \item{REPORT}{ A parameter internally passed to \code{\link[stats]{optim}}. }
-  \item{zero.tol}{ The zero-tolerance level used in \code{l1median_VaZh} for determining the equality of two observations (i.e. an observation and a current center estimate). }
+  \item{zero.tol}{ The zero-tolerance level used in \code{l1median_VaZh} and \code{l1median_HoCr} for determining the equality of two observations (i.e. an observation and a current center estimate). }
   \item{\dots}{ Further parameters passed from other functions. }
 %  \item{TMax}{  }
 %  \item{TempInit}{  }

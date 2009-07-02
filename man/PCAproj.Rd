@@ -8,7 +8,7 @@
 \usage{
 PCAproj(x, k = 2, method = c("mad", "sd", "qn"), CalcMethod = c("eachobs",
 "lincomb", "sphere"), nmax = 1000, update = TRUE, scores = TRUE, maxit = 5, 
-maxhalf = 5, scale = NULL, center = l1median, control)
+maxhalf = 5, scale = NULL, center = l1median_NLM, zero.tol = 1e-16, control)
 }
 \arguments{
   \item{x}{ a numeric matrix or data frame which provides the data for the 
@@ -34,7 +34,9 @@ maxhalf = 5, scale = NULL, center = l1median, control)
   \item{center}{ this argument indicates how the data is to be centered. It
   can be a function like \code{\link{mean}} or \code{\link{median}} or a vector
   of length \code{ncol(x)} containing the center value of each column. }
-  \item{control}{ a list whose elements must be the same as (or a subset of) 
+  \item{zero.tol}{ the zero tolerance used internally for checking 
+  convergence, etc. }
+  \item{control}{ a list which elements must be the same as (or a subset of) 
   the parameters above. If the control object is supplied, the parameters from 
   it will be used and any other given parameters are overridden. }
 }

@@ -1,13 +1,15 @@
-PCAproj = function (x, k = 2, method = c ("mad", "sd","qn"), CalcMethod = c("eachobs", "lincomb", "sphere"), nmax = 1000, update = TRUE, scores = TRUE, maxit = 5, maxhalf = 5, scale = NULL, center = l1median, control)
+
+PCAproj <- function (x, k = 2, method = c ("mad", "sd", "qn"), CalcMethod = c("eachobs", "lincomb", "sphere"), nmax = 1000, update = TRUE, scores = TRUE, maxit = 5, maxhalf = 5, scale = NULL, center = l1median_NLM, zero.tol = 1e-16, control)
 {
 	if (!missing (control))
 		###ParseControlStructure (control, c("k", "method", "CalcMethod", "nmax", "update", "scores", "maxit", "maxhalf"))
-		ParseControlStructure (control, c("k", "method", "CalcMethod", "nmax", "update", "scores", "maxit", "maxhalf", "center", "scale"))
-	CalcMethod = CalcMethod[1]
-	method = method[1]
+		.ParseControlStructure (control, c("k", "method", "CalcMethod", "nmax", "update", "scores", "maxit", "maxhalf", "center", "scale", "zero.tol"))
 
-	if (!any (CalcMethod == c("eachobs", "lincomb", "sphere")))
-		stop (paste ("Unknown calcmethod:", CalcMethod))
+	method <- .getScaleMethod (method)
+
+	CalcMethod <- match.arg (CalcMethod[1], c("eachobs", "lincomb", "sphere"))
+
+	x <- .Conv2Matrix (x, substitute (x))
 
 	n = nrow (x)
 	p = ncol (x)
@@ -15,19 +17,18 @@ PCAproj = function (x, k = 2, method = c ("mad", "sd","qn"), CalcMethod = c("eac
 	if( k > min(n,p))
 		stop ('k too large')
 
-        if(p > n)
-        {
-                svdx = svd(t(x))
-                x = svdx$v %*% diag(svdx$d)
-                pold=p
-                p=n
-        } else
-                pold=p
-
+	if(p > n)
+	{
+			svdx = svd(t(x))
+			x = svdx$v %*% diag(svdx$d)
+			pold=p
+			p=n
+	} else
+			pold=p
 
 	DataObj = ScaleAdv (x, scale = scale, center = center)
 
-        if (pold > n) # center and scale must have original data dimension:
+    if (pold > n) # center and scale must have original data dimension:
 	{
 		DataObj$center <- as.vector(svdx$u%*%DataObj$center)
 		DataObj$scale <- ScaleAdv(x%*%t(svdx$u),center=NULL,scale=scale)$scale
@@ -39,9 +40,9 @@ PCAproj = function (x, k = 2, method = c ("mad", "sd","qn"), CalcMethod = c("eac
 #	y = t(t(x) - m)
 
 	if (scores)
-		scoresize = n*k
+		scoresize <- n * k
 	else
-		scoresize = 0
+		scoresize <- 0
 
 	if (CalcMethod == "lincomb")
 	{
@@ -55,7 +56,7 @@ PCAproj = function (x, k = 2, method = c ("mad", "sd","qn"), CalcMethod = c("eac
 	else if (CalcMethod == "sphere")
 	{
 		update = FALSE
-		if(nmax>n)
+		if(nmax  >n)
 			#y[(n+1):nmax,] =	rmvnorm(nmax-n, rep(0,p), diag (p))
 			y = rbind (y,		rmvnorm(nmax-n, rep(0,p), diag (p)))
 	}
@@ -63,28 +64,32 @@ PCAproj = function (x, k = 2, method = c ("mad", "sd","qn"), CalcMethod = c("eac
 	nn = nrow (y)
 
 	if (update)
-		ret = .C ("rpcnup", PACKAGE="pcaPP",
-                          as.double (y), 
-                          as.integer (c(nn, p, k, ParseDevString (method), scores, maxit, maxhalf, n)),
-			scores = double (scoresize),
-			loadings = double (p * k),
-			lambda = double (k))
+		ret.C = .C ("pcaProj_up", PACKAGE="pcaPP"
+				, as.integer (c(nn, p, n, k, method, scores, maxit, maxhalf))
+				, as.double (zero.tol)
+				, as.double (y)
+				, scores = double (scoresize)
+				, loadings = double (p * k)
+				, lambda = double (k)
+			)
 	else
-		ret = .C ("rpcn",  PACKAGE="pcaPP",
-                          as.double (y), 
-                          as.integer (c(nn, p, k, ParseDevString (method), scores, n)),
-			scores = double (scoresize),
-			loadings = double (p * k),
-			lambda = double (k))
+		ret.C = .C ("pcaProj",  PACKAGE="pcaPP"
+				, as.integer (c(nn, p, n, k, method, scores))
+				, as.double (zero.tol)
+				, as.double (y)
+				, scores = double (scoresize)
+				, loadings = double (p * k)
+				, lambda = double (k)
+			)
 
 
-	veig = matrix (ret$loadings, ncol = k)
+	veig = matrix (ret.C$loadings, ncol = k)
 
-       if(pold>n)
-            veig = svdx$u %*% veig
+   if(pold>n)
+		veig = svdx$u %*% veig
 
 	if (scores)
-		DataPostProc (DataObj, ret$lambda, veig, matrix (ret$scores, ncol = k) , match.call(), scores)
+		.DataPostProc (DataObj, ret.C$lambda, veig, matrix (ret.C$scores, ncol = k) , match.call(), scores)
 	else
-		DataPostProc (DataObj, ret$lambda, veig, NULL, match.call(), scores)
+		.DataPostProc (DataObj, ret.C$lambda, veig, NULL, match.call(), scores)
 }
