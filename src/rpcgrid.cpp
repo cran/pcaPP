@@ -227,8 +227,8 @@ extern 	void rpcgrid (double *pdx, int *pnParams, double *pdObj, double *pdl, do
 						
 						matcpy (pdTempN, pdBase, nCurDimCount) ;
 						VectorSubstractVector (pdTempN, &nCurDimCount, pCurLPos) ;			//	pdTempN = u  = 1 x nCurDimCount
-						dFoo = sqrt (calcsumsqrVectorDiff (pdBase, pCurLPos, nCurDimCount)) ;
-						VectorMult (pdTempN, &nCurDimCount, 1 / sqrt (calcsumsqrVectorDiff (pdBase, pCurLPos, nCurDimCount))) ;
+						dFoo = ::sqrt (calcsumsqrVectorDiff (pdBase, pCurLPos, nCurDimCount)) ;
+						VectorMult (pdTempN, &nCurDimCount, 1 / ::sqrt (calcsumsqrVectorDiff (pdBase, pCurLPos, nCurDimCount))) ;
 
 									//	hlp=t(u)%*%Base
 						matmult (pdTempN, &nOne, &nCurDimCount, pdBase, &nCurDimCount, pdTempP) ;	//	pdTempP = hlp = 1 x nCurDimCount

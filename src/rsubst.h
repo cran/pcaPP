@@ -69,6 +69,10 @@ typedef int                 BOOL;
 	void median (double *pData, int *npLength, double *pMedian, int bData_ReadOnly) ;
 	void ColMedian (double *pData, int *npRows, int *npCols, double *pMedians, int bData_ReadOnly) ;
 
+	double median (double *pdData, int nSize) ;
+	double median (double *pdData, double *pdWork, int nSize) ;
+	double median_raw (double *pdWork, int nSize) ;
+
 	int compare (struct OrderStruct *elem1, struct OrderStruct *elem2 ) ;
 
 	void order  (double *pData, int *npLength, int*pnOrder) ;

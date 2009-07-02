@@ -139,7 +139,7 @@
 	{
 		int i ;
 		for (i = *pn - 1; i >=0; i--)
-			x[i] = fabs (x[i]);
+			x[i] = ::fabs (x[i]);
 	}
 
 	void VectorSign (double *pdData, int n, double *pSgn)
@@ -160,7 +160,10 @@
 	{
 		int i ;
 		for (i = *pnLength-1; i >= 0; i--)
-			*pdData++ = 1 / *pdData ;
+		{
+			*pdData = 1 / *pdData ;
+			pdData++ ;
+		}
 	}
 
 	void convolve (double *a, int *na, double *b, int *nb, double *ab)
@@ -275,7 +278,7 @@
 			dSum += dCurDistance * dCurDistance ;
 
 		}
-		*pdSd = sqrt (dSum / (*pn - 1)) ;
+		*pdSd = ::sqrt (dSum / (*pn - 1)) ;
 	}
 
 	void mean (double *pData, int *npLength, double *pMean)
@@ -381,6 +384,42 @@
 			free (pData_Copy) ;
 	}
 
+	double max (double *pdData, int nSize)
+	{
+		double dRet = *pdData ;
+		int i ;
+		for (i = nSize - 1; i; i--)
+			if (dRet < pdData[i])
+				dRet = pdData[i] ;
+		return dRet ;
+	}
+
+	double median (double *pdData, int nSize)
+	{
+		double *pdWork = (double *) malloc (nSize * sizeof(double)) ;
+		memcpy (pdWork, pdData, nSize * sizeof (double)) ;
+		double dMedian = median_raw (pdWork, nSize) ;
+		free (pdWork) ;
+		return dMedian ;
+	}
+
+	double median (double *pdData, double *pdWork, int nSize)
+	{
+		memcpy (pdWork, pdData, nSize * sizeof (double)) ;
+		return median_raw (pdWork, nSize) ;
+	}
+
+	double median_raw (double *pdWork, int nSize)
+	{
+		int nHalf = nSize >> 1 ;
+		rPsort(pdWork, nSize, nHalf) ;
+		if (nSize % 2)
+			return pdWork [nHalf] ;
+		//rPsort(pdWork, nSize, nHalf + 1);
+		return (pdWork [nHalf] + max (pdWork, nHalf)) / 2 ;
+		//return (pdWork [nHalf] + pdWork [nHalf + 1]) / 2 ;
+	}
+
 	void ColMedian (double *pData, int *pnRows, int *pnCols, double *pMedians, int bData_ReadOnly)
 	{
 		int i ;
@@ -388,7 +427,6 @@
 		for (i = *pnCols - 1; i >= 0; i--)
 			median (pData + i * nRows, pnRows, pMedians + i, bData_ReadOnly) ;
 	}
-
 
 	struct OrderStruct
 	{
@@ -406,7 +444,7 @@
 	}
 
 	void order  (double *pData, int *npLength, int*pnOrder)
-	{
+	{	//	is actually done by R as well... ;)
 		struct OrderStruct *pOrder = (struct OrderStruct *) malloc (*npLength * sizeof (struct OrderStruct)) ;
 		int i ;
 		for (i = *npLength - 1; i >= 0; i--)
@@ -624,7 +662,7 @@
 	{
 		int i ;
 		for (i = *pnLength - 1; i >= 0; i--)
-			pdSqrt [i] = sqrt (pdData[i]) ;
+			pdSqrt [i] = ::sqrt (pdData[i]) ;
 	}
 
 	void RepData (double *pdData, int nLength, int nCount, double *pdDest)
