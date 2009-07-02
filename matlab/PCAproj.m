@@ -83,8 +83,8 @@ function [ ret ] = PCAproj (x, k, method, CalcMethod, nmax, update, scores, maxi
 		if (nmax > n)
             aux = rand (nmax - n, n) ;
 			%aux = matrix (runif ((nmax-n) * n), nrow = nmax-n) ;
-            yadd = (aux * x) - (ones (size (aux, 1), 1) * DataObj.center) ;
-            %yadd = (aux * y) ; % shouldn't this be better?
+            %yadd = (aux * x) - (ones (size (aux, 1), 1) * DataObj.center) ;
+            yadd = (aux * y) ; % shouldn't this be better?
             y = [y ; yadd] ;
 			%y = rbind (y, t(t(aux * as.matrix(x)) - DataObj.center)) ;
         end

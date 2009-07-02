@@ -1,7 +1,7 @@
-8cd7f268d26b9a37dce869c07673daa8 *DESCRIPTION
+9c6058eb711c0dc8ed3c45c00f694ce6 *DESCRIPTION
 50052f588147ef014c89ca474e4a458b *NAMESPACE
 b86eb06cf933bc826055879e6700d672 *R/PCAgrid.R
-fd1f6dd27cd588bc25fccfd3b47ec0e4 *R/PCAproj.R
+1b267ef0c530887eb4dc44b903fa71a5 *R/PCAproj.R
 a79daba9fc15d1e5cf7a1f6854c99442 *R/PCdiagplot.R
 51b867d863dca4a68f02f8733672a2e3 *R/ScaleAdv.R
 3f2460e14f106f061eeac6f0bd836481 *R/cor.fk.R
@@ -15,8 +15,10 @@ bf8bed078f60f6f96e71cdd760b499a1 *R/covPC.R
 00a5ef8f623951d120a35a6f96f87db2 *R/qn.R
 53341a9a59d7ce972a77694cc9c3692c *R/sPCAgrid.obj.R
 da6e5bb651d4890cfed2c320d6863620 *R/sPCAgrid_R.R
-3c7d389a4f2bd8833fe332c691deb37f *inst/doc/matlab.pdf
-1b30efa9990e5f2506f69c71e74cec06 *inst/doc/matlab.rnw
+08566938dc86b175f5625e18ee17f574 *R/vignette.matlab.R
+ae969654e37fc177b4a27628b1486138 *inst/doc/load.package.name.R
+98f61e5dbe92ef9649ed6df019a52976 *inst/doc/matlab.pdf
+75133c85758f26d5f9fc169861deb96c *inst/doc/matlab.rnw
 d6d549ddc4087f18768b4b728fca3b34 *man/PCAgrid.Rd
 5d5aac20cf26fabf54e597ca66d87263 *man/PCAproj.Rd
 654f3e7236bf3e37b35d0a93db4f216b *man/PCdiagplot.Rd
@@ -33,7 +35,7 @@ a0c50d86061249f9053a6e4a69c0fae1 *man/objplot.Rd
 3718c7b284fc62b5c42efc87a47230d2 *man/plot.opt.TPO.Rd
 57f4136e044461aa977a9ca2a5e91373 *man/plotcov.Rd
 49d676572e92e83d60db9bd9e8312380 *matlab/PCAgrid.m
-29cf98fd3babdc8cf5d05b6da4a4c123 *matlab/PCAproj.m
+92adb9834debdfbf32d60c96b044eb08 *matlab/PCAproj.m
 cb4501fe4fc5e3a0f53e861a81cba7f5 *matlab/l1median_HoCr.m
 59cc37fa6ed880da2bf15a92184c5d3d *matlab/l1median_VaZh.m
 b30b403d84c8b68c915406558b40d0fc *matlab/p_Check_DimRed.m
@@ -55,6 +57,7 @@ d88e2a285d2c8023954e68396f32d647 *matlab/p_orderPCs.m
 4f914fdce775d2dfbe0f80cca6f8bfc9 *matlab/p_sPCAgrid_PostProc.m
 33cb0251f228e31a272846190f88c7cb *matlab/qn.m
 86feb2c3a8ce56aa8587811cd954fc08 *matlab/sPCAgrid.m
+aaeb09e8f09c9c7100aa6f953cbc418e *matlab/setup.m
 d2269a51f3b82d40b4a98f85224f6bbb *src/L1Median.h
 8c1dcf3de0b0ee7a1524ed48e7c7abd8 *src/L1Median_HoCr.cpp
 f67d656a430979062aaa24258d14c8eb *src/L1Median_VardiZhang.cpp

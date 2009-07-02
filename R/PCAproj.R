@@ -50,8 +50,8 @@ PCAproj <- function (x, k = 2, method = c ("mad", "sd", "qn"), CalcMethod = c("e
 		if (nmax > n)
 		{
 			aux = matrix (runif ((nmax-n) * n), nrow = nmax-n)
-			y = rbind (y, t(t(aux %*% x) - DataObj$center))
-			##y = rbind (y, aux %*% y) ## use this instead?
+			##y = rbind (y, t(t(aux %*% x) - DataObj$center))
+			y <- rbind (y, aux %*% y) ## use this instead?
 		}
 	}
 	else if (CalcMethod == "sphere")
