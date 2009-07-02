@@ -885,7 +885,7 @@
 
 		void Copy (const tb_DataContC &vec) const
 		{
-			ASSERT (size () == vec.size ()) ;
+			ASSERT (t_this::size () == vec.size ()) ;
 			Copy_NC (vec) ;
 		}
 
@@ -897,7 +897,7 @@
 
 		void Copy_NC (const tb_DataContC &vec) const
 		{
-			ASSERT (size () == vec.size ()) ;
+			ASSERT (t_this::size () == vec.size ()) ;
 			memcpy (t_this::GetData (), vec.GetData (), t_this::GetSize () * sizeof (T)) ;
 		}
 
@@ -939,7 +939,7 @@
 		const t_this GetDataRef (t_size dwStart, t_size dwEnd) const
 		{
 			ASSERT (dwStart <= dwEnd) ;
-			ASSERT (dwEnd <= size ()) ;
+			ASSERT (dwEnd <= t_this::size ()) ;
 			return t_this (**this, dwStart, dwEnd - dwStart) ;
 		}
 
@@ -1214,7 +1214,7 @@ template <class T> class SVMat ;
 		const t_this GetColRef (t_size dwStart, t_size dwEnd) const
 		{
 			ASSERT (dwStart <= dwEnd) ;
-			ASSERT (dwEnd <= ncol ()) ;
+			ASSERT (dwEnd <= t_this::ncol ()) ;
 			return t_this (**this, t_this::GetIdx (0, dwStart), t_this::nrow (), dwEnd - dwStart) ;
 		}
 

@@ -63,8 +63,8 @@ opt.BIC <- function (x, k.max = ncol (x), n.lambda = 30, lambda.max, ...)
 		k.ini <- 0
 	}
 
-	if (missing (lambda) && !missing (lambda.max))
-		lambda.max <- rep (lambda.max, len = k.max)
+#	if (missing (lambda) && !missing (lambda.max))								##	Change 20120407
+#		lambda.max <- rep (lambda.max, len = k.max)								##	Change 20120407
 
 	p <- ncol (x)
 	if (k.ini == p)
@@ -78,10 +78,12 @@ opt.BIC <- function (x, k.max = ncol (x), n.lambda = 30, lambda.max, ...)
 
 	if (missing (lambda))
 	{
-		if (missing (lambda.max) || is.na (lambda.max[i]))
+#		if (missing (lambda.max) || is.na (lambda.max[i]))						##	Change 20120407
+		if (missing (lambda.max) || is.na (lambda.max))
 			max.fs <- .FSgetLambda (x = x, k = k.max, pc.ini = pc.ini, f.pca = f.pca, scores = FALSE, trace = trace, ...)
 		else
-			max.fs <- lambda.max[i]
+#			max.fs <- lambda.max[i]												##	Change 20120407
+			max.fs <- lambda.max[1]
 
 		lambda <- seq (0, max.fs, len = n.lambda)
 	}
