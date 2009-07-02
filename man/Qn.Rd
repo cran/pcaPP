@@ -30,6 +30,7 @@ Earlier implementations used a wrong correction factor for the final result. Thu
 }
 
 \seealso{ \code{\link{mad}} }
+\note{See the vignette "Compiling pcaPP for Matlab" which comes with this package to compile and use this function in Matlab.}
 \examples{
   # data with outliers
   x <- c(rnorm(100), rnorm(10, 10))

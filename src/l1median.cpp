@@ -1,3 +1,5 @@
+#ifdef R_PACKAGE_FILE	//	this is an R specific source file, using built-in optimizers..
+
 #include "R_package.h"
 
 #include "R.h"
@@ -407,3 +409,4 @@
 		delete [] pdTypSize ;
 	}
 	
+#endif	//	#ifdef R_PACKAGE_FILE

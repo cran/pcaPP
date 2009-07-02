@@ -202,9 +202,9 @@
 			j = n ;
 			for (i = 0; i < n; i++)
 			{
-				while (isgr_s(pY[i] - pY[n - j], dTrial))					//F	if ((y(i)-y(n-j+2)).gt.trial) then
+				while (isgr_s(pY[i] - pY[n - j], dTrial))				//F	if ((y(i)-y(n-j+2)).gt.trial) then
 					--j ;
-//				while (pY[i] - pY[n - j] > dTrial)							//F	if ((y(i)-y(n-j+2)).gt.trial) then
+//				while (pY[i] - pY[n - j] > dTrial)						//F	if ((y(i)-y(n-j+2)).gt.trial) then
 //					--j ;
 				pQ[i] = int (j) ;
 				dwSumQ += int (j) ;

@@ -116,6 +116,7 @@
 ////////////////
 //	CPCAGrid  //
 ////////////////
+						
 
 	CPCAGrid::CPCAGrid (int *pnParamIn, int *pnParamOut, double *pdParamIn, double *pdData, double *pdLoadings, double *pdSDev, double *pdObj/*, double *pdMaxMaha*/)
 		: m_dwN (pnParamIn[0]), m_dwP (pnParamIn[1]), m_dwK (pnParamIn[2]), m_dwSplitCircle (pnParamIn[3]), m_dwMaxIter (pnParamIn[4]), m_dwMethod (pnParamIn[5]), m_dwTrace (pnParamIn[6]), m_dwkIni (pnParamIn[7]), m_dwCheckOrth (pnParamIn[8])

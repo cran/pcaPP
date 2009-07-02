@@ -124,6 +124,7 @@ sPCAgrid (x, k = 2, method = c ("mad", "sd", "qn"), lambda = 1,
 }
 \author{Heinrich Fritz, Peter Filzmoser <\email{P.Filzmoser@tuwien.ac.at}>}
 \seealso{ \code{\link{PCAproj}}, \code{\link{princomp}} }
+\note{See the vignette "Compiling pcaPP for Matlab" which comes with this package to compile and use these functions in Matlab.}
 \examples{
   # multivariate data with outliers
   library(mvtnorm)

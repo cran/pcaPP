@@ -1,6 +1,12 @@
 #ifndef SMAT_MEAL_PASSRNG_H
 #define SMAT_MEAL_PASSRNG_H
 
+#ifdef ES_DEV_ENV
+	#include "../SMat/smat.h"
+#else
+	#include "smat.h"
+#endif
+
 	class CPassRng
 	{
 	public:

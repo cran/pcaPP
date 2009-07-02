@@ -46,6 +46,7 @@ l1median_VaZh (X, maxit = 200, tol = 10^-8, zero.tol = 1e-15, trace = 0, m.init 
 \author{Heinrich Fritz, Peter Filzmoser <\email{P.Filzmoser@tuwien.ac.at}>}
 
 \seealso{ \code{\link{median}}}
+\note{See the vignette "Compiling pcaPP for Matlab" which comes with this package to compile and use some of these functions in Matlab.}
 \examples{
 
   # multivariate data with outliers

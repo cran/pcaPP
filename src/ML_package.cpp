@@ -7,7 +7,7 @@
 #include "qnn.h"
 
 #include "PCAgrid.h"
-
+#include "PCAproj.h"
 
 
 	void mexFunction(int nlhs, mxArray* plhs[], int nrhs, mxArray *prhs[])
@@ -51,6 +51,15 @@
 			ML_sPCAgrid (nlhs, plhs, nrhs - 1, prhs + 1) ;
 			break ;
 
+		case 5:
+			ML_PCAproj (nlhs, plhs, nrhs - 1, prhs + 1) ;
+			break ;
+
+		case 6:
+			ML_PCAprojU (nlhs, plhs, nrhs - 1, prhs + 1) ;
+			break ;
+
+		
 		default:
 			meal_error ("Unknown switch argument received.") ;
 
@@ -93,7 +102,7 @@
 		const int &dwMaxit = (int) pdParIn[0], dwTrace = (int) pdParIn[1] ;
 		const double &dTol = pdParIn[2], &dZeroTol = pdParIn[3] ;
 
-		plhs [0] = mxCreateDoubleMatrix (2, 1, mxREAL) ;
+		plhs [0] = mxCreateDoubleMatrix (1, 2, mxREAL) ;
 		double *pdParOut = mxGetPr (plhs [0]) ;
 		double &dCode = pdParOut [0] ;
 		
@@ -151,7 +160,7 @@
 			)
 
 		//	Out Parameter Vector
-		plhs [0] = mxCreateDoubleMatrix (2, 1, mxREAL) ;
+		plhs [0] = mxCreateDoubleMatrix (1, 2, mxREAL) ;
 		double *pdParOut = mxGetPr (plhs [0]) ;
 		pdParOut [0] = nCode ;
 		pdParOut [1] = nIterCount ;
@@ -245,12 +254,12 @@
 
 	//	Get pdSdev (output)
 
-		plhs[1] = mxCreateDoubleMatrix (nk, 1, mxREAL) ;
+		plhs[1] = mxCreateDoubleMatrix (1, nk, mxREAL) ;
 		double *pdSDev = mxGetPr (plhs[1]) ;
 
 	//	Get	pdObj (output)
 
-		plhs[2] = mxCreateDoubleMatrix (nk, 1, mxREAL) ;
+		plhs[2] = mxCreateDoubleMatrix (1, nk, mxREAL) ;
 		double *pdObj = mxGetPr (plhs[2]) ;
 
 
@@ -335,12 +344,12 @@
 
 	//	Get pdSdev (output)
 
-		plhs[1] = mxCreateDoubleMatrix (nk, 1, mxREAL) ;
+		plhs[1] = mxCreateDoubleMatrix (1, nk, mxREAL) ;
 		double *pdSDev = mxGetPr (plhs[1]) ;
 
 	//	Get	pdObj (output)
 
-		plhs[2] = mxCreateDoubleMatrix (nk, 1, mxREAL) ;
+		plhs[2] = mxCreateDoubleMatrix (1, nk, mxREAL) ;
 		double *pdObj = mxGetPr (plhs[2]) ;
 
 
@@ -351,6 +360,116 @@
 		Int2Double (pdnParamOut, pnParamOut, 1) ;
 	}
 
+	void ML_PCAproj (int nlhs, mxArray* plhs[], int nrhs, mxArray *prhs[])
+	{
 
+		if (nlhs != 3)
+			meal_error ("3 output argument expected") ;
 
-#endif
+		if (nrhs != 3)
+			meal_error ("3 input arguments expected") ;
+		
+
+	//	Get pnParIn
+		if (mxGetM (prhs[0]) * mxGetN (prhs[0]) != 4)
+			meal_error ("pnParamIn: vector of length 4 expected.") ;
+
+		double *pdnParamIn = mxGetPr (prhs[0]) ;
+		int pnParamIn[6] ;
+		Double2Int (pnParamIn + 2, pdnParamIn, 4) ;
+
+		int nk = pnParamIn[3] ;
+
+	//	Get pdParIn
+
+		if (mxGetM (prhs[1]) * mxGetN (prhs[1]) != 1)
+			meal_error ("pdParIn: vector of length 1 expected.") ;
+
+		double *pdParamIn = mxGetPr (prhs[1]) ;
+
+	//	Get pdX
+
+		int &n = pnParamIn[0], &p = pnParamIn[1] ;
+
+		n = mxGetM (prhs[2]) ;
+		p = mxGetN (prhs[2]) ;
+
+		double *pdX = mxGetPr (prhs[2]) ;
+
+	//	Get pdZ (Scores)
+
+		plhs[0] = mxCreateDoubleMatrix (n, nk, mxREAL) ;
+		double *pdZ = mxGetPr (plhs[0]) ;
+
+	//	Get pdL (Loadings)
+
+		plhs[1] = mxCreateDoubleMatrix (p, nk, mxREAL) ;
+		double *pdL = mxGetPr (plhs[1]) ;
+
+	//	Get pdSdev (output)
+
+		plhs[2] = mxCreateDoubleMatrix (1, nk, mxREAL) ;
+		double *pdSDev = mxGetPr (plhs[2]) ;
+
+		TRY( 
+			CPCAproj (pnParamIn, pdParamIn, pdX, pdZ, pdL, pdSDev).Calc () ;
+			)		
+	}
+
+	void ML_PCAprojU (int nlhs, mxArray* plhs[], int nrhs, mxArray *prhs[])
+	{
+
+		if (nlhs != 3)
+			meal_error ("3 output argument expected") ;
+
+		if (nrhs != 3)
+			meal_error ("3 input arguments expected") ;
+
+	//	Get pnParIn
+		if (mxGetM (prhs[0]) * mxGetN (prhs[0]) != 6)
+			meal_error ("pnParamIn: vector of length 4 expected.") ;
+
+		double *pdnParamIn = mxGetPr (prhs[0]) ;
+		int pnParamIn[8] ;
+		Double2Int (pnParamIn + 2, pdnParamIn, 6) ;
+
+		int nk = pnParamIn[3] ;
+
+	//	Get pdParIn
+
+		if (mxGetM (prhs[1]) * mxGetN (prhs[1]) != 1)
+			meal_error ("pdParIn: vector of length 1 expected.") ;
+
+		double *pdParamIn = mxGetPr (prhs[1]) ;
+
+	//	Get pdX
+
+		int &n = pnParamIn[0], &p = pnParamIn[1] ;
+
+		n = mxGetM (prhs[2]) ;
+		p = mxGetN (prhs[2]) ;
+
+		double *pdX = mxGetPr (prhs[2]) ;
+
+	//	Get pdZ (Scores)
+
+		plhs[0] = mxCreateDoubleMatrix (n, nk, mxREAL) ;
+		double *pdZ = mxGetPr (plhs[0]) ;
+
+	//	Get pdL (Loadings)
+
+		plhs[1] = mxCreateDoubleMatrix (p, nk, mxREAL) ;
+		double *pdL = mxGetPr (plhs[1]) ;
+
+	//	Get pdSdev (output)
+
+		plhs[2] = mxCreateDoubleMatrix (1, nk, mxREAL) ;
+		double *pdSDev = mxGetPr (plhs[2]) ;
+
+		TRY( 
+			CPCAprojU (pnParamIn, pdParamIn, pdX, pdZ, pdL, pdSDev).Calc () ;
+			)		
+
+	}
+
+#endif	//	#ifdef MATLAB_MEX_FILE

@@ -27,7 +27,7 @@
 	void CPassRng::Set (double *pData, t_size n)
 	{
 		m_data.Require (n) ;
-		m_data.Copy (pData) ;
+		m_data.Copy (pData, n) ;
 
 		m_pCurData = m_data ;
 		m_pDataEnd = m_data.GetDataEnd () ;
@@ -58,8 +58,8 @@
 	void meal_PutRNGstate () {}
 	void meal_GetRNGstate () {}
 
-	double meal_unif_rand () { GetPassRng_runif ().Get () ; }
-	double meal_norm_rand () { GetPassRng_rnorm ().Get () ; }
-	double meal_exp_rand  () { GetPassRng_rexp  ().Get () ; }
+	double meal_unif_rand () { return GetPassRng_runif ().Get () ; }
+	double meal_norm_rand () { return GetPassRng_rnorm ().Get () ; }
+	double meal_exp_rand  () { return GetPassRng_rexp  ().Get () ; }
 
 #endif	//	#ifndef SMAT_MEAL_PASSRNG_HPP

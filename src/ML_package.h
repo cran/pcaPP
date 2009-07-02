@@ -34,6 +34,9 @@ MEX_FUNCTION_API void mexFunction(int nlhs, mxArray* plhs[], int nrhs, mxArray* 
 	void ML_qn (int nlhs, mxArray* plhs[], int nrhs, mxArray *prhs[]) ;
 	void ML_PCAgrid (int nlhs, mxArray* plhs[], int nrhs, mxArray *prhs[]) ;
 	void ML_sPCAgrid (int nlhs, mxArray* plhs[], int nrhs, mxArray *prhs[]) ;
+	void ML_PCAprojU (int nlhs, mxArray* plhs[], int nrhs, mxArray *prhs[]) ;
+	void ML_PCAproj (int nlhs, mxArray* plhs[], int nrhs, mxArray *prhs[]) ;
+
 
 
 #endif
