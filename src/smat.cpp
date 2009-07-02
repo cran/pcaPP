@@ -342,7 +342,7 @@
 
 		double one = 1.0, zero = 0.0;
 		if (a.nrow () > 0 && a.ncol () > 0 && b.nrow () > 0 && b.ncol () > 0) {
-		meal_dgemm(
+		meal_gemm(
 			"N", "N", 
 			a.nrowPtrS (), b.ncolPtrS (), b.nrowPtrS (), 
 			&one,
@@ -379,7 +379,7 @@
 
 		double one = 1.0, zero = 0.0;
 		if (a.nrow () > 0 && a.ncol () > 0 && b.nrow () > 0 && b.ncol () > 0) {
-		meal_dgemm(
+		meal_gemm(
 			bTransA ? "T" : "N", bTransB ? "T" : "N", 
 			a.GetDimPtrS_NC (bTransA), b.GetDimPtrS_NC (!bTransB), b.GetDimPtrS_NC (bTransB), 
 			&one,
@@ -531,7 +531,7 @@
 
 		double dWork ;
 
-		meal_dgeev ("V", "N", &p, NULL, &p, NULL, NULL, NULL, &p, NULL, &p, &dWork, &nWork, &nInfo) ;
+		meal_geev ("V", "N", &p, NULL, &p, NULL, NULL, NULL, &p, NULL, &p, &dWork, &nWork, &nInfo) ;
 
 		nWork = int(dWork) ;
 //		SVecD &vTemp = SVecD::TempFree_NC (2, nWork) ;
@@ -543,7 +543,7 @@
 //			SMatD &mTempVec = SMatD::TempFree_NC (3, p, p) ;
 			SMatD mTempVec (tempRef (2), p, p) ;
 
-			meal_dgeev ("V", "N", &p, A, &p, vVal, vWi, mTempVec, &p, NULL, &p, vTemp, &nWork, &nInfo) ;
+			meal_geev ("V", "N", &p, A, &p, vVal, vWi, mTempVec, &p, NULL, &p, vTemp, &nWork, &nInfo) ;
 
 			// re-order
 //			SVecN &vOrder = SVecN::TempFree_NC (0, p) ;
@@ -555,7 +555,7 @@
 		else
 		{
 			ASSERT_TEMPRANGE (0, 1) ;
-			meal_dgeev ("V", "N", &p, A, &p, vVal, vWi, mVec, &p, NULL, &p, vTemp, &nWork, &nInfo) ;
+			meal_geev ("V", "N", &p, A, &p, vVal, vWi, mVec, &p, NULL, &p, vTemp, &nWork, &nInfo) ;
 		}
 
 		THROW (!nInfo) ;
@@ -658,6 +658,31 @@
 		EO<SOP::multiply>::MMcVc (!temp, a, b) ;
 		sme_tmatmult_NC (temp, a, c, TRUE, FALSE) ;
 	}
+
+
+////////////////////
+//	matmult_a_at  //
+////////////////////
+
+	void sme_matmult_a_at_R		(const SCMatD &a, SVMatD &b, BOOL bTransA)
+	{
+		b.Require (a.GetDim (bTransA), a.GetDim (bTransA)) ;
+		sme_matmult_a_at_NC (a, b, bTransA) ;
+	}
+
+	void sme_matmult_a_at		(const SCMatD &a, const SVMatD &b, BOOL bTransA)
+	{
+		THROW (b.nrow () == b.GetDim (bTransA) && b.ncol () == a.GetDim (bTransA)) ;
+		sme_matmult_a_at_NC (a, b, bTransA) ;
+	}
+
+	void sme_matmult_a_at_NC	(const SCMatD &a, const SVMatD &b, BOOL bTransA)
+	{
+		ASSERT (b.nrow () == a.GetDim (bTransA) && b.ncol () == a.GetDim (bTransA)) ;
+
+		sme_tmatmult_NC (a, a, !b, bTransA, !bTransA) ;
+	}
+
 
 //////////////////////
 //	matmult_a_b_at  //

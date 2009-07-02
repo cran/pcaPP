@@ -34,5 +34,6 @@
 #include "smat.random.h"
 #include "smat.sort.h"
 #include "smat.stat.h"
+#include "smat.meal.h"
 
 #endif	//	#ifndef SMAT_H

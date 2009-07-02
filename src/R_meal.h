@@ -19,11 +19,13 @@
 //	R.meal.h
 //	R Mathematical Environment Abstraction Layer
 
+#ifdef R_PACKAGE_FILE
 #ifndef R_MEAL_H
 #define R_MEAL_H
-//#include "R.meal.h"
 
-	class CRmealSettings 
+
+
+	class CRmealSettings	//	2do: move to meal.h
 	{
 	public:
 		CRmealSettings () ;
@@ -35,4 +37,6 @@
 
 #define R_MEAL_SETTINGS CRmealSettings g_R_meal_settings
 
+
 #endif	//	#ifndef R_MEAL_H
+#endif	//	#ifdef R_PACKAGE_FILE

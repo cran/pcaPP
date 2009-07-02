@@ -46,6 +46,32 @@
 			m_mZ.Set (pdZ, m_dwRealN, m_dwK) ;
 	}
 
+	void NULL1 (const SMatD &a)	//	takes a pxp loadings matrix, where the last column is not filled, and computes this last column
+	{
+		ASSERT_TEMPRANGE (0, 1) ;
+		ASSERT (a.nrow () == a.ncol ()) ;
+
+		t_size p = a.nrow () ;
+
+		const SVecD &vLastCol = a.GetColRef (p-1) ;
+		const SMatD mLpm1 (a.GetColRef (0, p - 1)) ;
+
+		vLastCol.Reset (1) ;
+		EO<UOP::Aa_As_sqrB>::VMc (*vLastCol, mLpm1) ;
+		EO<SOP::a_sqrt>::V (*vLastCol) ;
+
+		int n = which_max1 (vLastCol) ;
+
+		SVecD vTemp1 (tempRef (0), p - 1), vTemp2 (tempRef (1), p) ;
+
+		CopyRow (*vTemp1, mLpm1, n) ;				//	2do: implement SnVec -> no copy..
+		vTemp2.Reset (0) ;
+		EO<SOP::ApaBmC>::VMcVct_NC (*vTemp2, mLpm1, vTemp1) ;
+
+ 		vTemp2(n) *= -1.0 ;																	//	for not triggering element n in the next line, which is positive by default...
+		EO<UOP::if_B_gr_0_AamA>::VVc (*vLastCol, vTemp2) ;									//	assigns the negative signs of vector vTemp2 to vector vCurEVec (assuming that vCurEVec has only positive elemts)
+	}
+
 	void CPCAproj::Calc ()
 	{
 		SVecD vPcol (m_dwN), vVH (m_dwP), vHlp (m_dwN), vHlpS (vHlp) ;
@@ -71,34 +97,53 @@
 			EO<SOP::divide>::MsMcVcVbc (!m_mA, m_mX, vHlp, m_vHelpTF) ;							//R	m_mA <- (m_mX / vHlp)[m_vHelpTF,]
 
 			m_vCurScore.Reshape (m_dwRealN) ;
-			t_size dwBestj = NAI;
 
-			//for (j = 0; j < m_dwShortN; ++j)
-			for (j = m_dwShortN - 1; j != NAI; --j)
+			if (i < m_dwP - 1)
 			{
-				CopyRow (*vCurA, m_mA, j) ;														//R	vCurA <- m_mA[j, ]
-				vec_mult_mat_t_partial (m_vCurScore, vCurA, m_mX, m_dwRealN, m_dwP, m_dwN) ;	//R	m_vCurScore <- vCurA %*% m_mX[1:m_dwRealN,]	//RR	Y =A %*% t(y[1:n,]);		
-				double dScat = ApplyMethod (m_vCurScore, m_nScal) ;								//R dScat = fscale (m_vCurScore)				//RR	pcol = apply (Y, 1, fs)
-				if (dwBestj == NAI || m_dCurLambda < dScat)
+				t_size dwBestj = NAI;
+
+				//for (j = 0; j < m_dwShortN; ++j)
+				for (j = m_dwShortN - 1; j != NAI; --j)
 				{
-					dwBestj = j ;																												//RR	istar <- which.max (pcol)
-					m_dCurLambda = dScat ;																										//RR	lambda[i] <- pcol[istar]
+					CopyRow (*vCurA, m_mA, j) ;														//R	vCurA <- m_mA[j, ]
+					vec_mult_mat_t_partial (m_vCurScore, vCurA, m_mX, m_dwRealN, m_dwP, m_dwN) ;	//R	m_vCurScore <- vCurA %*% m_mX[1:m_dwRealN,]	//RR	Y =A %*% t(y[1:n,]);		
+					double dScat = ApplyMethod (m_vCurScore, m_nScal) ;								//R dScat = fscale (m_vCurScore)				//RR	pcol = apply (Y, 1, fs)
+					if (dwBestj == NAI || m_dCurLambda < dScat)
+					{
+						dwBestj = j ;																												//RR	istar <- which.max (pcol)
+						m_dCurLambda = dScat ;																										//RR	lambda[i] <- pcol[istar]
+					}
 				}
+
+				CopyRow (*vCurEVec, m_mA, dwBestj) ;												//R	vCurEVec <- m_mA[dwBestj,]					//RR	vhelp <- A[istar,]
+				m_vCurScore.Reshape (m_dwN) ;
+				m_vCurScore.Reset (0) ;
+				EO<SOP::ApaBmC>::VMcVct (*m_vCurScore, m_mX, vCurEVec) ;							//R m_vCurScore <- m_mX %*% vCurEVec			//RR	scorevec <- y%*%(A[istar,])
+				Update (vCurEVec) ;
+
+				if (m_nScores)
+					Copy (*m_mZ.GetColRef (i), vCurScoreS) ;
+
+				if (i < m_dwK - 1)
+					EO<SOP::AsaBmC>::MVcVct (!m_mX, m_vCurScore, vCurEVec) ;						//R	m_mX <- m_mX - m_vCurScore %*% vCurEVec
+				*pdCurLambda = m_dCurLambda ;
+				++pdCurLambda ;
 			}
+			else
+			{
+				NULL1 (m_mL) ;	//	computes the last eigenvector (loadings vector) in m_mL
 
-			CopyRow (*vCurEVec, m_mA, dwBestj) ;												//R	vCurEVec <- m_mA[dwBestj,]					//RR	vhelp <- A[istar,]
-			m_vCurScore.Reshape (m_dwN) ;
-			m_vCurScore.Reset (0) ;
-			EO<SOP::ApaBmC>::VMcVct (*m_vCurScore, m_mX, vCurEVec) ;							//R m_vCurScore <- m_mX %*% vCurEVec			//RR	scorevec <- y%*%(A[istar,])
-			Update (vCurEVec) ;
+				m_vCurScore.Reshape (m_dwN) ;
+				m_vCurScore.Reset (0) ;
+				EO<SOP::ApaBmC>::VMcVct (*m_vCurScore, m_mX, vCurEVec) ;							//R m_vCurScore <- m_mX %*% vCurEVec			//RR	scorevec <- y%*%(A[istar,])
+								//	2do -> pass this to BLAS
 
-			if (m_nScores)
-				Copy (*m_mZ.GetColRef (i), vCurScoreS) ;
+				*pdCurLambda = ApplyMethod (m_vCurScore, m_nScal) ;									//R	dCurLambda = fscale (m_vCurScore)
 
-			if (i < m_dwK - 1)
-				EO<SOP::AsaBmC>::MVcVct (!m_mX, m_vCurScore, vCurEVec) ;						//R	m_mX <- m_mX - m_vCurScore %*% vCurEVec
-			*pdCurLambda = m_dCurLambda ;
-			++pdCurLambda ;
+				if (m_nScores)
+					Copy (*m_mZ.GetColRef (i), vCurScoreS) ;
+
+			}
 		}
 	}
 
@@ -108,13 +153,13 @@
 
 	void CPCAprojU::Update (const SVecD &vCurEVec)
 	{
-		ASSERT_TEMPRANGE (10, 11) ;
+		ASSERT_TEMPRANGE (11, 12) ;
 
 		t_size m, kk ;
 
 		SVecN	vScoreSign (tempRef (0), m_dwShortN) ;
-		SVecD	vVH (tempRef (10), m_dwP),
-				vTScores (tempRef (11), m_dwN) ;
+		SVecD	vVH (tempRef (11), m_dwP),
+				vTScores (tempRef (12), m_dwN) ;
 
 		for (m = m_dwMaxIt; m ; --m)
 		{
@@ -155,3 +200,4 @@
 			m_dCurLambda = dNewObj;
 		}
 	}
+

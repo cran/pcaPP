@@ -1,3 +1,5 @@
+#ifdef R_PACKAGE_FILE
+
 #ifdef ES_DEV_ENV
 	#include "../../../RDev/R.Inc.h"
 	#include "../../../SMat/smat.def.h"
@@ -54,3 +56,5 @@
 
 	EXPORT void SDoOut (int *pnParIn, double *pdX, double *pdMaxMaha, int *pnNChanged) ;
 
+
+#endif	//	#ifdef R_PACKAGE_FILE

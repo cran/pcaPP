@@ -1,9 +1,14 @@
-#include "package.h"
+#include "R_package.h"
 
 #include "R.h"
 #include "R_ext/Applic.h"
 
-#include "perftimer.h"
+
+#ifdef ES_DEV_ENV
+	#include "../../../RDev/perftimer.h"
+#else
+	#include "perftimer.h"
+#endif
 
 	void Hess (int p, int n, double *pdX, double *pdMu, double *pdHess, double *pdTempP1, double *pdTempP2) ;	
 
@@ -82,13 +87,13 @@
 		delete [] m_pdM ;
 	}
 
-	void Rtprintf (double *pd, int n)
+/*	void Rtprintf (double *pd, int n)
 	{
 		for (; n; n--)
 			Rprintf ("%0.10f\t", *pd++) ;
 		Rprintf ("\r\n") ;
 	}
-
+*/
 	void L1MinStruct_Hess ::calcHess (double *pdM, double *pdHess)
 	{
 		Hess (m_p, m_n, m_pdX, pdM, pdHess, m_pdTemp1, m_pdTemp2) ;

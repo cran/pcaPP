@@ -99,6 +99,30 @@
 		, m_vRowSums (m_dwN), m_vTemp (m_dwN)
 		, m_mIsZero (m_dwN)
 	{ 
+		Calc (pdWeights) ;
+	}
+
+	CL1Median_VZ::CL1Median_VZ (int n, int p, int &nCode, int &nIter, double *pdParIn, double *pdX, double *pdMed, double *pdWeights)
+		: m_dwN (n), m_dwP (p), m_dwMaxIt ((int) pdParIn[0]), m_dwUseWeights (0)
+		, m_nTrace ((int) pdParIn[1])
+		, m_nRetCode (nCode), m_nIter (nIter)
+
+		, m_dTol (pdParIn[2]), m_dZeroTol (pdParIn [3])
+
+		, m_dwNHalf (m_dwN >> 1)
+		, m_nEqs (0)
+
+		, m_mX (pdX, m_dwN, m_dwP), m_mXc (m_dwN, m_dwP)
+		, m_vMed (pdMed, m_dwP), m_vRt (m_dwP), m_vTt (m_dwP), m_vOldMed (m_dwP)
+		//, m_vWeights (pdWeights, m_dwN)
+		, m_vRowSums (m_dwN), m_vTemp (m_dwN)
+		, m_mIsZero (m_dwN)
+	{ 
+		Calc (pdWeights) ;
+	}
+
+	void CL1Median_VZ::Calc (double *pdWeights)
+	{ 
 
 		if (pdWeights)
 			m_vWeights.Set (pdWeights, m_dwN) ;

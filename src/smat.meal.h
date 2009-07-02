@@ -16,24 +16,50 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-//	smat.eal.h
-//	Environment Abstraction Layer
+//	smat.meal.h
+//	Mathematical Environment Abstraction Layer
 
-	void meal_dgeev(const char* jobvl, const char* jobvr, const int* n, double* a, const int* lda, double* wr, double* wi, double* vl, const int* ldvl, double* vr, const int* ldvr, double* work, const int* lwork, int* info) ;
+#ifndef SMAT_MEAL_H
+#define SMAT_MEAL_H
 
-//matmult
-	void meal_dgemm (const char *transa, const char *transb, const int *m, const int *n, const int *k, const double *alpha, const double *a, const int *lda, const double *b, const int *ldb, const double *beta, double *c, const int *ldc) ;
+////////////
+//  BLAS  //
+////////////
+
+//	Level 1
+	double meal_dot (const int *n, const double *dx, const int *incx, const double *dy, const int *incy);
+	double meal_nrm2 (const int *n, const double *dx, const int *incx);
+	void meal_scal (const int *n, const double *alpha, double *dx, const int *incx) ;
+	void meal_axpy(const int *n, const double *alpha, const double *dx, const int *incx, double *dy, const int *incy) ;
+
+//	Level 2
+
+//	Level 3
+	void meal_gemm (const char *transa, const char *transb, const int *m, const int *n, const int *k, const double *alpha, const double *a, const int *lda, const double *b, const int *ldb, const double *beta, double *c, const int *ldc) ;
+
+//////////////
+//  LAPACK  //
+//////////////
 
 //svd
-	void meal_dgesv (const int* n, const int* nrhs, double* a, const int* lda, int* ipiv, double* b, const int* ldb, int* info) ;
-	void meal_dgesvd (const char* jobu, const char* jobvt, const int* m, const int* n, double* a, const int* lda, double* s, double* u, const int* ldu, double* vt, const int* ldvt, double* work, const int* lwork, int* info) ;
+	void meal_gesv (const int* n, const int* nrhs, double* a, const int* lda, int* ipiv, double* b, const int* ldb, int* info) ;
+	void meal_gesvd (const char* jobu, const char* jobvt, const int* m, const int* n, double* a, const int* lda, double* s, double* u, const int* ldu, double* vt, const int* ldvt, double* work, const int* lwork, int* info) ;
 
-//	sorting
+//invert
+	void meal_geev(const char* jobvl, const char* jobvr, const int* n, double* a, const int* lda, double* wr, double* wi, double* vl, const int* ldvl, double* vr, const int* ldvr, double* work, const int* lwork, int* info) ;
+
+/////////////////////
+//	Sort Routines  //
+/////////////////////
+
 	void meal_sort (double *d, int l) ;
 	void meal_sort_order (double *, int *, int) ;
 	void meal_sort_order_rev (double *d, int *o, int l) ;
 
-//	Random stuff
+///////////////////////////////
+//  Random Number Generator  //
+///////////////////////////////
+
 	void meal_PutRNGstate () ;
 	void meal_GetRNGstate () ;
 
@@ -47,10 +73,10 @@
 //	void meal_SampleNoReplace(int k, int n, int *y, int *x) ;
 
 ////////////////////////////////////
-//	special values amd constants  //
+//	special values and constants  //
 ////////////////////////////////////
 
-	double	meal_NaN		() ;
+	double	meal_NaN	() ;
 	double	meal_PosInf	() ;
 	double	meal_NegInf	() ;
 	double	meal_NaReal	() ;
@@ -72,3 +98,5 @@
 
 	void meal_OnException (const char * szDate, const char * szFile, int nLine) ;
 	void meal_OnUException () ;
+
+#endif	//	#ifndef SMAT_MEAL_H

@@ -114,7 +114,7 @@ TA &sm_setmin_t (TA &a, const TB &b)
 	if (a > b)
 		a = b ;
 	return a ;
-}
+}		
 
 template <class TA, class TB>
 BOOL sm_setmax_b (TA &a, const TB &b)

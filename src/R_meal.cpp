@@ -19,9 +19,15 @@
 //	R.meal.cpp
 //	R Mathematical Environment Abstraction Layer
 
+#ifdef R_PACKAGE_FILE
+
+
 #define R_USE_C99_IN_CXX
 
-#include "R.meal.h"
+#include "R_meal.h"
+
+
+
 
 /////////////////////	
 //	CRmealSettings  //
@@ -49,19 +55,18 @@
 #include <R_ext/BLAS.h>
 #include <R_ext/Lapack.h>
 
-
-	void meal_dgeev (const char* jobvl, const char* jobvr, const int* n, double* a, const int* lda, double* wr, double* wi, double* vl, const int* ldvl, double* vr, const int* ldvr, double* work, const int* lwork, int* info)
+//	LAPACK
+	void meal_geev (const char* jobvl, const char* jobvr, const int* n, double* a, const int* lda, double* wr, double* wi, double* vl, const int* ldvl, double* vr, const int* ldvr, double* work, const int* lwork, int* info)
 	{ F77_CALL(dgeev)(jobvl, jobvr, n, a, lda, wr, wi, vl, ldvl, vr, ldvr, work, lwork, info) ; }
 
-	void meal_dgemm (const char *transa, const char *transb, const int *m, const int *n, const int *k, const double *alpha, const double *a, const int *lda, const double *b, const int *ldb, const double *beta, double *c, const int *ldc)
-	{ F77_CALL(dgemm)(transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc) ; }
-
-	void meal_dgesv (const int* n, const int* nrhs, double* a, const int* lda, int* ipiv, double* b, const int* ldb, int* info)
+	void meal_gesv (const int* n, const int* nrhs, double* a, const int* lda, int* ipiv, double* b, const int* ldb, int* info)
 	{ F77_CALL(dgesv)(n, nrhs, a, lda, ipiv, b, ldb, info) ; }
 
-	void meal_dgesvd (const char* jobu, const char* jobvt, const int* m, const int* n, double* a, const int* lda, double* s, double* u, const int* ldu, double* vt, const int* ldvt, double* work, const int* lwork, int* info)
+	void meal_gesvd (const char* jobu, const char* jobvt, const int* m, const int* n, double* a, const int* lda, double* s, double* u, const int* ldu, double* vt, const int* ldvt, double* work, const int* lwork, int* info)
 	{ F77_CALL(dgesvd)(jobu, jobvt, m, n, a, lda, s, u, ldu, vt, ldvt, work, lwork, info) ; }
 
+
+//	SORT
 	void meal_sort (double *d, int l)
 	{	R_qsort (d, 1, l) ;	}
 
@@ -162,20 +167,17 @@
 			"\n"
 			"  An exception occurred.\n"
 			"  Please contact the author (%s), providing\n"
-			"  the following details:\n"
+			"  the following information:\n"
 			"\n"
-			"\tR version number\n"
-			"\tPackage version number\n"
-			"\tBuild date:\t%s\n"
-			"\tFile:\t\t%s\n"
-			"\tLine:\t\t%d\n"
+			"    - The R-code which caused the problem\n"
+			"    - Eventually used data sets and the state of the random generator (seed)\n"
+			"    - R version number\n"
+			"    - Package version number\n"
+			"    - File:    %s\n"
+			"    - Line:    %d\n"
 			"\n"
-			"  If possible please include the code which caused this error, including\n"
-			"  eventual source data and the state of the random generator (seed) before\n"
-			"  experiencing this issue.\n"
-			"\n"
-			"\tYour contribution is appreciated!\n\n",
-			GetRealSettings ().GetEmail (), szDate, szFile, nLine) ;
+			"  Your contribution is appreciated!\n\n",
+			GetRealSettings ().GetEmail (), szFile, nLine) ;
 		meal_error ("An exception has occurred.") ;
 	}
 
@@ -187,14 +189,13 @@
 			"  Please contact the author (%s), providing\n"
 			"  the following details:\n"
 			"\n"
-			"\tR version number\n"
-			"\tPackage version number\n"
+			"    - The R-code which caused the problem\n"
+			"    - Eventually used data sets and the state of the random generator (seed)\n"
+			"    - R version number\n"
+			"    - Package version number\n"
 			"\n"
-			"  If possible please include the code which caused this error, including\n"
-			"  eventual source data and the state of the random generator (seed) before\n"
-			"  experiencing this issue.\n\n"
-			"\n"
-			"\tYour contribution is appreciated!\n\n",
+			"  Your contribution is appreciated!\n\n",
 			GetRealSettings ().GetEmail ()) ;
 		meal_error ("An unknown exception has occurred.") ;
 	}
+#endif	//	#ifdef R_PACKAGE_FILE

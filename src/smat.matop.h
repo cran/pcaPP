@@ -29,6 +29,10 @@
 	void sme_tmatmult				(const SCMatD &a, const SCMatD &b, const SVMatD &c, const BOOL bTransA, const BOOL bTransB) ;
 	void sme_tmatmult_NC			(const SCMatD &a, const SCMatD &b, const SVMatD &c, const BOOL bTransA, const BOOL bTransB) ;
 
+	void sme_matmult_a_at_R			(const SCMatD &a, SVMatD &b, BOOL bTransA) ;
+	void sme_matmult_a_at			(const SCMatD &a, const SVMatD &b, BOOL bTransA) ;
+	void sme_matmult_a_at_NC		(const SCMatD &a, const SVMatD &b, BOOL bTransA) ;
+
 	void sme_matmult_a_b_at_R		(const SCMatD &a, const SCMatD &b, SVMatD &c, BOOL bTransA = FALSE, BOOL bTransB = FALSE) ;
 	void sme_matmult_a_b_at		(const SCMatD &a, const SCMatD &b, SVMatD &c, BOOL bTransA = FALSE, BOOL bTransB = FALSE) ;
 	void sme_matmult_a_b_at_NC	(const SCMatD &a, const SCMatD &b, SVMatD &c, BOOL bTransA = FALSE, BOOL bTransB = FALSE) ;

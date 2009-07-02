@@ -10,13 +10,18 @@
 	class CL1Median_VZ
 	{
 	public:
-		CL1Median_VZ (int *pnParIn, int *pnParOut, double *pdParIn, double *pdDat, double *pdMed, double *pdWeights) ;
+		CL1Median_VZ (int *pnParIn, int *pnParOut, double *pdParIn, double *pdDat, double *pdMed, double *pdWeights = NULL) ;
+
+		CL1Median_VZ (int n, int p, int &nCode, int &nIter, double *pdParIn, double *pdX, double *pdMed, double *pdWeights = NULL) ;
 
 		BOOL Iter () ;
 
 		t_size CheckRowSums (const double &dThreshold) ;
 
 	protected:
+
+		void Calc (double *pdWeights) ;
+
 		t_size m_dwN, m_dwP, m_dwMaxIt, m_dwUseWeights ;			//	t_size input parameters 
 		int m_nTrace ;												//	int input parameters
 		int &m_nRetCode, &m_nIter ;									//	int output parameters

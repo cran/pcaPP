@@ -18,6 +18,7 @@
 		const double dLog2 = log ((double) 2.0) ;
 		const int n = mX.nrow (), &p = mX.ncol () ;
 
+
 		SVecD vdMedianOld (p), vdNorms (n), vdNormsOrdered, vdWeights (n), vdDelta (p) ;
 		SMatD mXc (n, p) ;
 		SVecN vinter (n) ;
@@ -29,6 +30,7 @@
 		int *pnOrder, * const pnStartOrder = vinter ;
 
 		double dND, dObj, dObjOld = 0 ;
+
 
 		for (k = 0; k < dwMaxit; k++)
 		{
@@ -44,6 +46,8 @@
 
 			pnOrder = pnStartOrder ;
 			pdNorms = pdStartNorms ;
+
+
 			while (pdNorms < pdEndNorms)
 			{
 //				if (*pdNorms <= dZeroTol)

@@ -1,4 +1,4 @@
-#include "package.h"
+#include "R_package.h"
 #include "math.h"
 
 void Hess_Sub (int p, double *pdX_i, double *pdMu, double *pdHess, double *pdTempP)

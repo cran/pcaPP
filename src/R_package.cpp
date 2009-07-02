@@ -1,4 +1,6 @@
-#include "package.h"
+#ifdef R_PACKAGE_FILE
+
+#include "R_package.h"
 #include "cov.kendall.h"
 
 #include "PCAgrid.h"
@@ -10,13 +12,14 @@
 
 #ifdef ES_DEV_ENV
 	#include "..\..\..\RDev\perftimer.h"
-	#include "..\..\..\RDev\R.meal.h"
+	#include "..\..\..\RDev\R_meal.h"
 #else
 	#include "perftimer.h"
-	#include "R.meal.h"
+	#include "R_meal.h"
 #endif	//	#ifdef ES_DEV_ENV
 
-R_MEAL_SETTINGS ("P.Filzmoser@tuwien.ac.at") ;	//	settings for the R meal - implementation
+//R_MEAL_SETTINGS ("P.Filzmoser@tuwien.ac.at") ;	//	settings for the R meal - implementation
+R_MEAL_SETTINGS ("Heinrich_Fritz@hotmail.com") ;	//	settings for the R meal - implementation
 
 ////////////////////////////////
 //	exporting functions to R  //
@@ -104,3 +107,5 @@ R_MEAL_SETTINGS ("P.Filzmoser@tuwien.ac.at") ;	//	settings for the R meal - impl
 			CSDoOut (pnParIn, pdX, pdMaxMaha, pnNChanged).Calc () ;
 			)
 	}
+
+#endif	//	#ifdef R_PACKAGE_FILE

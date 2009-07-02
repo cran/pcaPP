@@ -18,6 +18,9 @@
 		class Ba_BpC_d2_Apa_sq_B	{ CALC_3_2(void) { b = (b + c) / 2.0; a += sm_sqr (b) ; } } ;
 		class ApaBm_signC			{ CALC_3_1(void) { if (c < 0) a-= b ; else a += b ; }	} ;
 
+		class Aa_As_sqrB			{ CALC_2_1(void) { a -= sm_sqr (b) ; } } ;
+		class if_B_gr_0_AamA		{ CALC_2_1(void) { if (b > 0) a = -a ; } } ;
+
 //		class Apa_sq_B_B_setsign_C	{ CALC_3_2(void) { a += sm_sqr (b) ; if (c < 0) b = -b ; } } ;		//	2do: delete
 //		class Aa_AmB_pC				{ CALC_3_1(void) { a = (a * b) + c ; }	} ;
 //		class Aa_AsC_dB				{ CALC_3_1(void) { a = (a - c) / b ; }	} ;

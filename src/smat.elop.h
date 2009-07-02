@@ -49,7 +49,7 @@
 	class SOP		//	standard operators
 	{				//	2do: renamo to OP
 	public:
-		class assign		{ CALC_2_1(void)	{ a = (TB) b ; }	} ;
+		class assign		{ CALC_2_1(void)	{ a = (TA) b ; }	} ;
 		class add			{ CALC_3_1(void)	{ a = (TA)		(b + c) ; }	} ;
 		class subtract		{ CALC_3_1(void)	{ a = (TA)		(b - c) ; }	} ;
 		typedef subtract sub ;
@@ -141,6 +141,20 @@
 		class BdaC_Apa_sqr_B{ CALC_3_2(void)	{ b /= c ; a += (TA) sm_sqr (b) ; }	} ;
 		class Apa_sq_BsC	{ CALC_3_1(void)	{ a += sm_sqr (b - c) ; }	} ;		//	calculation of var
 		class ApaC_Bpa_sq_C	{ CALC_3_2(void)	{ a += c; b += sm_sqr (c) ; }	} ;	//	calculation of var using steiner
+
+//		class ApaBmB		{ CALC_2_1(void)	{ a += sm_sqr (b) ; } } ;
+//		class ApaBmB_BmaC	{ CALC_3_2(void)	{ a += sm_sqr (b) ; b *= c ; } } ;
+//		class ApaBmBpCmC_BmaC	{ CALC_3_2(void)	{ a += sm_sqr (b) + sm_sqr (c) ; b *= c ; } } ;
+
+		class ApaBmB		{ CALC_2_1(void)	{ a += ::pow (b, 2.0) ; } } ;
+		class ApaBmB_BmaC	{ CALC_3_2(void)	{ a += ::pow (b, 2.0) ; b *= c ; } } ;
+		class ApaBmBpCmC_BmaC	{ CALC_3_2(void)	{ a += ::pow (b, 2.0) + ::pow (c, 2.0) ; b *= c ; } } ;
+
+		class AmaB_BmaC		{ CALC_3_2(void)	{ a *= b ; b *= c; } } ;
+		class AmaBmD_BmaC	{ CALC_4_2(void )	{ a *= b * d ; b *= c; } } ;
+
+		class ApaBmB_BpaCmD { CALC_4_2(void )	{ a += sm_sqr (b); b += c * d ; } } ;
+	
 
 		class inc_a_if_b				{ CALC_2_1(void) { if (b) a += 1 ; } } ;
 		class inc_a_if_b_equals_c		{ CALC_3_1(void) { if (b == (TB) c) a += 1 ; } } ;
@@ -700,6 +714,7 @@
 				F::Calc (a, *pB, c) ;
 		}
 
+
 		template <class TA>
 		static void V (const SVData<TA> &a)
 		{
@@ -734,6 +749,83 @@
 				++ pC ;
 			}
 		}
+
+		template <class TB, class TC, class TD, class TE>	
+		static void VetMcdScgVceg (const SVData<TB> &b, const SCMat<TC> &c, const TD &d, const SCData<TE> &e)
+		{	//	g for group. 
+
+			THROW (c.nrow () == e.size ()) ;
+
+			VetMcdScgVceg_NC (b, c, d, e) ;
+		}
+
+		template <class TB, class TC, class TD, class TE>	
+		static void VetMcdScgVceg_NC (const SVData<TB> &b, const SCMat<TC> &c, const TD &d, const SCData<TE> &e)
+		{	//	g for group. 
+
+			ASSERT (c.nrow () == e.size ()) ;
+
+			//t_size dwColIncA = a.GetColInc () ;
+			TB * const pEndB = b.GetDataEnd () ;
+			TB * pB = b ;
+			TC const * pC = c ;
+			TE const * pE ;
+			TE const * pEndE = e.GetDataEnd () ;
+
+			for (; pB < pEndB; )	//	for each column of A
+			{
+				pE = e ;
+				while (pE < pEndE)
+				{
+					if (d == (TD) *pE)
+						F::Calc (*pB, *pC) ;
+					++pC ;
+					++pE ;
+				}
+				++pB ;
+
+			}
+		}
+
+		template <class TB, class TC, class TD>	
+		static void VetMcdVcei (const SVData<TB> &b, const SCMat<TC> &c, const SCData<TD> &d)
+		{	//	Main dimension: matrix c
+			//	Constant index vector d of size c.nrow () 
+			//	Vector d is of size c.ncol () 
+			//	F.Calc is executed for each element of c[,d]
+
+			THROW (b.size () == c.ncol ()) ;
+			THROW (getMaxIdx (d) < c.nrow ()) ;
+			//2do: check array d for max index!
+
+			VetMcdVcei_NC (b, c, d) ;
+		}
+
+		template <class TB, class TC, class TD>	
+		static void VetMcdVcei_NC (const SVData<TB> &b, const SCMat<TC> &c, const SCData<TD> &d)
+		{
+			ASSERT (b.size () == c.ncol ()) ;
+			ASSERT (getMaxIdx (d) < c.nrow ()) ;
+
+			//t_size dwColIncA = a.GetColInc () ;
+			t_size dwColIncC = c.GetColInc () ;
+
+			TB * pB = b ;
+			TB const * pEndB = b.GetDataEnd () ;
+
+			TC const * pC = c ;
+			TD const * pD ;
+			TD const * pEndD = d.GetDataEnd () ;
+
+			for (; pB < pEndB; )
+			{
+				for (pD = d; pD < pEndD; ++pD)
+					F::Calc (*pB, pC [(t_size) *pD]) ;
+				++pB ;
+				pC += dwColIncC ;
+			}
+		}
+
 
 
 		template <class TA, class TB, class TC>
@@ -1043,7 +1135,7 @@
 
 		}
 
-		
+
 		template <class TA, class TB, class TC>
 		static void VsVcVbc (const SVData <TA> &a, const SCData<TB> &b, const SCData<TC> &c)
 		{
@@ -1086,10 +1178,13 @@
 		static void VVc_NC (const SVData <TA> &a, const SCData<TB> &b)
 		{
 			ASSERT (a.size () == b.size ()) ;
-			
-			TA *pdA = a, * const pdEndA = a.GetDataEnd () ;
-			TB const *pdB = b ;
 
+			VVc_raw (a.GetData (), a.GetDataEnd (), b.GetData ()) ;
+		}
+
+		template <class TA, class TB>
+		static void VVc_raw (TA *pdA, TA * const pdEndA, TB const *pdB)
+		{
 			while (pdA < pdEndA)
 			{
 				F::Calc (*pdA, *pdB) ;				
@@ -1097,6 +1192,61 @@
 				++pdB ;
 			}
 		}
+
+		template <class TA, class TB, class TC>
+		static void VVSc (const SVData <TA> &a, const SVData<TB> &b, const TC &c)
+		{
+			THROW (a.size () == b.size ()) ;
+			VVSc_NC (a, b, c) ;
+		}
+		
+		template <class TA, class TB, class TC>
+		static void VVSc_NC (const SVData <TA> &a, const SVData<TB> &b, const TC &c)
+		{
+			ASSERT (a.size () == b.size ()) ;
+
+			TA *pA = a ;
+			TB *pB  = b, * const pEndB = b.GetDataEnd () ;
+
+			while (pB < pEndB)
+			{
+				F::Calc (*pA, *pB, c) ;
+				++ pA ;
+				++ pB ;
+			}
+
+		}
+
+
+		template <class TA, class TB, class TC, class TD>
+		static void VVScSc (const SVData <TA> &a, const SVData<TB> &b, const TC &c, const TD &d)
+		{
+			THROW (a.size () == b.size ()) ;
+			VVScSc_NC (a, b, c, d) ;
+		}
+		
+		template <class TA, class TB, class TC, class TD>
+		static void VVScSc_NC (const SVData <TA> &a, const SVData<TB> &b, const TC &c, const TD &d)
+		{
+			ASSERT (a.size () == b.size ()) ;
+
+			TA *pA = a ;
+			TB *pB  = b, * const pEndB = b.GetDataEnd () ;
+
+			while (pB < pEndB)
+			{
+				F::Calc (*pA, *pB, c, d) ;
+				++ pA ;
+				++ pB ;
+			}
+
+		}
+
+		
+		
+		
+		
+
 
 		template <class TA>
 		static const TA &Vc_transitive (const SCData <TA> &a)
@@ -1145,6 +1295,8 @@
 			while (--pA > pEndA)
 				F::Calc (pA[-1], pA[0]) ;
 		}
+
+
 	} ;
 
 #endif	//	#ifndef SMAT_ELOP_H
