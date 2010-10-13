@@ -17,10 +17,8 @@
 */
 
 
-#pragma once
-
 #include "ITens.h"
-#include <stdio.h>
+//#include <stdio.h>
 
 template <class T> class IMatByRow ;
 
@@ -39,9 +37,16 @@ template <class T> class IMatByRow ;
 	{
 		public:
 
-		static inline int compareDesc (OrderContainer<T> *p1, OrderContainer<T> *p2) { return -compare (p1, p2) ;}
+		//static inline int compareDesc (OrderContainer<T> *p1, OrderContainer<T> *p2) { return -compare (p1, p2) ;}
 
-		static int compare (OrderContainer<T> *p1, OrderContainer<T> *p2)
+		
+		static inline int compareDesc (const void *p1, const void *p2) { return -compare_core ((OrderContainer<T> *)p1, (OrderContainer<T> *)p2) ; }
+		static inline int compare (const void *p1, const void *p2) { return compare_core ((OrderContainer<T> *)p1, (OrderContainer<T> *)p2) ; }
+
+		
+		public:
+
+		static inline int compare_core (const OrderContainer<T> *p1, const OrderContainer<T> *p2)
 		{
 			if (p1->m_val < p2->m_val)
 				return -1 ;
@@ -59,9 +64,12 @@ template <class T> class IMatByRow ;
 	{
 		public:
 
-		static inline int compareDesc (T *p1, T *p2) { return -compare (p1, p2) ;}
+		static inline int compareDesc (const void *p1, const void *p2) { return -compare_core((const T *)p1, (const T *)p2) ; }
 
-		static int compare (T *p1, T *p2)
+		static inline int compare (const void *p1, const void *p2) { return compare_core((const T *)p1, (const T *)p2) ; }
+
+		protected:
+		static inline int compare_core (const T *p1, const T *p2)
 		{
 			if (*p1 < *p2)
 				return -1 ;
@@ -193,9 +201,9 @@ template <class T> class IMatByRow ;
 			}
 
 			if (bDecreasing)
-				qsort (pOrd, size (), sizeof (OrderContainer<T>), (int (*)(const void*, const void*)) OrderContainer<T>::compareDesc) ;
+				qsort (pOrd, size (), sizeof (OrderContainer<T>), OrderContainer<T>::compareDesc) ;
 			else
-				qsort (pOrd, size (), sizeof (OrderContainer<T>), (int (*)(const void*, const void*)) OrderContainer<T>::compare) ;
+				qsort (pOrd, size (), sizeof (OrderContainer<T>), OrderContainer<T>::compare) ;
 
 
 			for (v = size () - 1; v != (DWORD) -1; v--)
@@ -204,18 +212,23 @@ template <class T> class IMatByRow ;
 			delete [] pOrd ;
 		}
 
-		T *Detach (DWORD &dwSize = *(DWORD *) NULL)
+		T *Detach (DWORD &dwSize)
+		{
+			dwSize = size () ;
+			return Detach () ;
+		}
+
+		T *Detach ()
 		{
 			if (!t_base::IsFlat ())
 				return NULL ;
 
-			if (&dwSize)
-				dwSize = size () ;
 			IDim::Empty (t_base::m_apDim[0]) ;
 
 			return ::Detach (t_base::m_pDataRef) ;
 		}
 
+		
 		IMPL_OPERATOR_VEC(+, += , FC::FC_plus, IVec, T)
 		IMPL_OPERATOR_VEC(-, -= , FC::FC_minus, IVec, T)
 		IMPL_OPERATOR_VEC(/, /= , FC::FC_divide, IVec, T)

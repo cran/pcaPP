@@ -17,8 +17,6 @@
 */
 
 
-#pragma once
-
 	template <class T> class IMat ;
 	template <class T> class IVec ;
 //	template <class T> class IMatEdit ;
@@ -290,7 +288,6 @@
 			return ret ;
 		}
 
-
 		template <class PAR1, class U>
 		static IMat<RET> OpME (const PAR1 &mat, U val)
 		{
@@ -311,7 +308,6 @@
 			IVec<RET> ret (vec.size ()) ;
 			return OpVE (vec, val, ret) ;
 		}
-
 
 		template <class T, class U, class V>
 		static const IVec<V> &OpVE (const IVec <T> &vec, const U &val, const IVec<V> &ret)

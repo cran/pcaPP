@@ -17,8 +17,6 @@
 */
 
 
-#pragma once
-
 #ifdef _MSC_VER
 	#define EXPORT extern "C" __declspec(dllexport)
 #else
@@ -141,6 +139,9 @@
 	inline void SqrtrowSumSqs (const IMatD &A, const IVecD &vec)	{ iter_row (A, vec, sqrtsumsq) ; }
 
 	void ColSumWeighted (const IMatD &m, const IVecD &v, IVecD &s) ;
+
+	DWORD which_max_abs (const IVecD &v) ;
+	DWORD first_idx_NZ (const IVecD &v, double dZeroTol = 1e-16) ;
 
 	inline void colMeans (const IMatD &A, const IVecD &vec)	{ iter_col (A, vec, mean) ; }
 	inline void rowMeans (const IMatD &A, const IVecD &vec)	{ iter_row (A, vec, mean) ; }

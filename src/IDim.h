@@ -17,8 +17,6 @@
 */
 
 
-#pragma once
-
 #include "IRef.h"
 
 #define ARR_STOP	((DWORD) -1)

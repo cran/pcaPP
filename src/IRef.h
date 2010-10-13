@@ -20,10 +20,10 @@
 #include <math.h>
 
 #include <memory.h>
-#include <stdlib.h>
+//#include <stdlib.h>
+#include <cstdarg>
 
 #include <R.h>
-#pragma once
 
 typedef unsigned int DWORD ;
 typedef int	BOOL ;
@@ -42,31 +42,6 @@ typedef unsigned char BYTE ;
 	#define NULL	0
 #endif
 
-/*
-#ifdef __POINTER_SIZE__
-
-	#if __POINTER_SIZE__ == 8
-		#define BACK_CAST(CLASS, TO, FROM) ((TO *)(1 + ((long long int) CLASS) - ((long long int) (FROM *) (TO *) 1)))
-	#else
-
-		#if __POINTER_SIZE__ == 4
-			#define BACK_CAST(CLASS, TO, FROM) ((TO *)(1 + (( int) CLASS) - (( int) (FROM *) (TO *) 1)))
-		#endif
-	#endif
-
-#else
-
-	#define BACK_CAST(CLASS, TO, FROM) ((TO *)(1 + ((__int64) CLASS) - ((__int64) (FROM *) (TO *) 1)))
-#endif
-*/
-
-/*
-#ifndef _MSC_VER
-//	#define __int64 long long
-//typedef long int __int64
-#endif
-*/
-//#define BACK_CAST(CLASS, TO, FROM) ((TO *)(1 + ((__int64) CLASS) - ((__int64) (FROM *) (TO *) 1)))
 
 #define BACK_CAST(CLASS, TO, FROM) ((TO *)(1 + ((BYTE *) CLASS) - ((BYTE *) (FROM *) (TO *) 1)))
 
@@ -336,10 +311,11 @@ typedef unsigned char BYTE ;
 
 	enum SetDataFlag
 	{
-		sdf_modeReference,
-		sdf_modeAttach,
-		sdf_modeCopy
+		sdf_modeReference = 0,
+		sdf_modeAttach = 1,
+		sdf_modeCopy = 2
 	} ;
+
 class TClust ;
 	template <class T>
 	class CDataRef : public CRefLockBase < CDataRef <T> >

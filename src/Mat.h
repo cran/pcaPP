@@ -17,14 +17,12 @@
 */
 
 
-#pragma once
-
-#include "IRef.h"
-#include "ElOp.h"
-#include "stdio.h"
-#include "stdlib.h"
+//#include "IRef.h"
+//#include "ElOp.h"
+//#include "stdio.h"
+//#include "stdlib.h"
 #include "IMat.h"
-#include "IDim.h"
+//#include "IDim.h"
 
 //	class ISub ;
 //	class ISubR ;

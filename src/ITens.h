@@ -17,22 +17,20 @@
 */
 
 
-#pragma once
 
 #include "IDim.h"
 #include "ElOp.h"
 #include <R.h>
 
 
+#include <stdarg.h>
+
 #define DIM_SEL		((DWORD) -1)
 	
 	template <class T> class IMat ;
-//	template <class T> class IMatEdit ;
 	template <class T> class IVec ;
-//	template <class T> class IVecEdit ;
 	template <class T, class D> class ITens_ ;
 	template <class T, class D> class ITensFlat ;
-//	template <class T, class D> class ITensEdit_ ;
 	template <class T, class D> class ITensFlatEdit ;
 
 	template <class T, class D>	class ITensConst ;
@@ -891,6 +889,21 @@ for (d = 0; d < t_dims::ndim (); d++)
 			while (it.mm (itDim))
 				tSum += Element (it) ;
 			return tSum ;
+		}
+
+		T norm2 () const
+		{
+			if (!t_dims::size ())
+				return 0 ;
+
+			t_Iter	itDim = t_base::dim (),
+					it = itDim - 1 ;
+
+			T tSum = sqr (Element (it)) ;
+
+			while (it.mm (itDim))
+				tSum += sqr (Element (it)) ;
+			return sqrt (tSum) ;
 		}
 
 		T min () const

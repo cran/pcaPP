@@ -20,7 +20,7 @@
 #include <math.h>
 #include "RFunc.h"
 
-#include "IMat.h"
+//#include "IMat.h"
 
 
 #include <R_ext/BLAS.h>
@@ -396,3 +396,24 @@
 				s (c) += v(r) * m(r, c) ;
 	}
 
+	DWORD which_max_abs (const IVecD &v)
+	{
+		DWORD dwIdx = 0 ;
+		double dMax = fabs (v(0)) ;
+		DWORD i ;
+		
+		for (i = v.size () - 1; i; i--)
+			if (setmax (fabs (v(i)), dMax))
+				dwIdx = i  ;
+
+		return i ;
+	}
+
+	DWORD first_idx_NZ (const IVecD &v, double dZeroTol)
+	{
+		DWORD i ;
+		for (i = v.size () - 1; i != (DWORD) -1; i--)
+			if (fabs (v(i)) > dZeroTol)
+				return i ;
+		return -1 ;
+	}
