@@ -11,13 +11,18 @@
   Computes the multivariate L1 median (also called spatial median) of a data matrix \code{X}.  
 }
 \usage{
-l1median_NM (X, maxit = 200, tol = 10^-8, trace = 0, m.init = .colMedians (X), ...)
-l1median_CG (X, maxit = 200, tol = 10^-8, trace = 0, m.init = .colMedians (X), ...)%, type = 1)
-l1median_BFGS (X, maxit = 200, tol = 10^-8, trace = 0, m.init = .colMedians (X), REPORT = 10, ...)
-%l1median_SA (X, maxit = 200, tol = 10^-8, trace = 0, m.init = .colMedians (X), TMax = 10, TempInit = 10)
-l1median_NLM (X, maxit = 200, tol = 10^-8, trace = 0, m.init = .colMedians (X), ...)
-l1median_HoCr (X, maxit = 200, tol = 10^-8, zero.tol = 1e-15, trace = 0, m.init = .colMedians (X), ...)
-l1median_VaZh (X, maxit = 200, tol = 10^-8, zero.tol = 1e-15, trace = 0, m.init = .colMedians (X), ...)
+l1median_NM (X, maxit = 200, tol = 10^-8, trace = 0,
+             m.init = .colMedians (X), ...)
+l1median_CG (X, maxit = 200, tol = 10^-8, trace = 0,
+             m.init = .colMedians (X), ...)%, type = 1)
+l1median_BFGS (X, maxit = 200, tol = 10^-8, trace = 0,
+               m.init = .colMedians (X), REPORT = 10, ...)
+l1median_NLM (X, maxit = 200, tol = 10^-8, trace = 0,
+              m.init = .colMedians (X), ...)
+l1median_HoCr (X, maxit = 200, tol = 10^-8, zero.tol = 1e-15, trace = 0,
+               m.init = .colMedians (X), ...)
+l1median_VaZh (X, maxit = 200, tol = 10^-8, zero.tol = 1e-15, trace = 0,
+	       m.init = .colMedians (X), ...)
 }
 \arguments{
   \item{X}{ a matrix of dimension \code{n} x \code{p}.}

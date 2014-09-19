@@ -6,7 +6,8 @@
   using the projection pursuit technique.
 }
 \usage{
-PCdiagplot(x, PCobj, crit = c(0.975, 0.99, 0.999), ksel = NULL, plot = TRUE, plotbw = TRUE, raw = FALSE, colgrid = "black", ...)
+PCdiagplot(x, PCobj, crit = c(0.975, 0.99, 0.999), ksel = NULL, plot = TRUE,
+           plotbw = TRUE, raw = FALSE, colgrid = "black", ...)
 }
 \arguments{
   \item{x}{ a numeric matrix or data frame which provides the data for the
