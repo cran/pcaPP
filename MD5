@@ -1,5 +1,6 @@
-395ba3338dfa2f12c9630037d0c7a79c *DESCRIPTION
-a133abe8f80c3c176d624adb51034a85 *NAMESPACE
+2b877a1453735fd564d7f82d5bf28346 *ChangeLog
+f0d90a0c60f21bdb261e37615f51539b *DESCRIPTION
+d7ada953ab825a7c1f46b13f6345b2c9 *NAMESPACE
 f1d72a6596d83be5660241ea21586eb6 *R/PCAgrid.R
 68fb912d40ee5b1b9c5386b27d67728a *R/PCAproj.R
 a79daba9fc15d1e5cf7a1f6854c99442 *R/PCdiagplot.R
@@ -16,7 +17,7 @@ b7c64d26432ffbb646aba5042f0bb55d *R/qn.R
 53341a9a59d7ce972a77694cc9c3692c *R/sPCAgrid.obj.R
 da6e5bb651d4890cfed2c320d6863620 *R/sPCAgrid_R.R
 be57f0d8d50d109e203990c57553d0b2 *R/vignette.matlab.R
-2f8f4584af4158c6d3de58b667aaa9ae *build/vignette.rds
+d6d827e071be21db12f78b78429dde62 *build/vignette.rds
 a8a35b898ae1da4d77e5a77fa6b727d1 *inst/doc/matlab.R
 a62b76599288f111099a3c4dac761514 *inst/doc/matlab.pdf
 75133c85758f26d5f9fc169861deb96c *inst/doc/matlab.rnw

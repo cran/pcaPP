@@ -1,5 +1,5 @@
 useDynLib(pcaPP)
-import(mvtnorm)
+importFrom(mvtnorm, rmvnorm)
 
 export(PCAgrid, PCAproj, PCdiagplot, ScaleAdv, cor.fk, covPC,
        covPCAgrid, covPCAproj, data.Zou, l1median, l1median_BFGS,
