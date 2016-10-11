@@ -1,6 +1,4 @@
-"PCdiagplot" <-
-function(x,PCobj,crit=c(0.975,0.99,0.999),ksel=NULL,plot=TRUE,
-                    plotbw=TRUE,raw=FALSE,colgrid="black", ...){
+"PCdiagplot" <- function(x, PCobj, crit=c(0.975,0.99,0.999), ksel=NULL, plot=TRUE, plotbw=TRUE, raw=FALSE, colgrid="black", ...){
 #
 #  raw ... if raw==TRUE the raw SDist is computed, without using the median correction
 #
@@ -11,7 +9,7 @@ if (is.null(PCobj$scores)) stop("No PC scores have been computed! Provide scores
 
 n <- nrow(PCobj$sco)
 k <- ncol(PCobj$loadings)
-if (is.null(ksel)) {ksel <- seq(1,k)} 
+if (is.null(ksel)) {ksel <- seq(1,k)}
 kl <- length(ksel)
 if (ksel[kl]>k) {
 	ksel <- seq(1,k)
@@ -46,23 +44,28 @@ for (k in 1:kl){
 }
 
 # plot results:
-if (plot){
+if (plot)
+{
 
-require(graphics)
-if (plotbw) pg=rev(gray(seq(0,0.7,length=ncol(critSD))))  # gray level to plot
-else pg=rev(rainbow(ncol(critSD),start=0.9,end=0.1))  # color level to plot
-par(mfrow=c(1,2))
+    ## VT::10.10.2016 - remove a require(graphics) command
+    ##
+    ## require(graphics)
+    if(plotbw)  pg = rev(gray(seq(0,0.7,length=ncol(critSD))))     # gray level to plot
+    else        pg = rev(rainbow(ncol(critSD),start=0.9,end=0.1))  # color level to plot
 
-plot(0,0,xlim=c(1,n),ylim=c(min(ksel),max(ksel)),type="n",xlab="Index of the observation",
+    par(mfrow=c(1,2))
+
+    plot(0,0,xlim=c(1,n),ylim=c(min(ksel),max(ksel)),type="n",xlab="Index of the observation",
        ylab="Number of PCs", ...)
-title("Orthogonal distance")
-for (i in 1:n){
-  for (j in 1:length(ksel)){
-    howbig=sum(ODist[i,j]>critOD[j,])
-    if (howbig==0) { rect(i-0.5,ksel[j]-0.5,i+0.5,ksel[j]+0.5,border=colgrid) }
-    else { rect(i-0.5,ksel[j]-0.5,i+0.5,ksel[j]+0.5,col=pg[howbig]) }
-  }
-}
+
+    title("Orthogonal distance")
+    for (i in 1:n){
+        for (j in 1:length(ksel)){
+            howbig=sum(ODist[i,j]>critOD[j,])
+            if (howbig==0) { rect(i-0.5,ksel[j]-0.5,i+0.5,ksel[j]+0.5,border=colgrid) }
+            else { rect(i-0.5,ksel[j]-0.5,i+0.5,ksel[j]+0.5,col=pg[howbig]) }
+        }
+    }
 
 plot(0,0,xlim=c(1,n),ylim=c(min(ksel),max(ksel)),type="n",xlab="Index of the observation",
        ylab="Number of PCs", ...)
@@ -78,4 +81,3 @@ for (i in 1:n){
 }
 list(ODist=ODist,SDist=SDist,critOD=critOD,critSD=critSD)
 }
-

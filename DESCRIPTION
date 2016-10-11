@@ -1,13 +1,13 @@
 Package: pcaPP
-Version: 1.9-60
-Date: 2014-10-20
+Version: 1.9-61
+Date: 2016-10-10
 Title: Robust PCA by Projection Pursuit
 Author: Peter Filzmoser, Heinrich Fritz, Klaudius Kalcher
 Maintainer: Valentin Todorov <valentin.todorov@chello.at>
 Imports: mvtnorm
-Description: Robust PCA by Projection Pursuit
+Description: Provides functions for robust PCA by projection pursuit.
 License: GPL (>= 3)
-Packaged: 2014-10-21 19:51:01 UTC; Share
 NeedsCompilation: yes
 Repository: CRAN
-Date/Publication: 2014-10-22 00:46:26
+Packaged: 2016-10-10 21:25:53 UTC; Share
+Date/Publication: 2016-10-11 01:45:06

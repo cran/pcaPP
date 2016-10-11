@@ -21,7 +21,9 @@
 
 	double ApplyMethod_V (const SVVecD &v, const int nMethod)
 	{
-		double dRet ;
+		//VT:10.10.2016 - fix compilation warning - uninitialized variable.
+		//
+		double dRet = 0;
 		int nSize = v.size () ;
 
 		switch (nMethod)

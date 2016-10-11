@@ -1,9 +1,9 @@
-2b877a1453735fd564d7f82d5bf28346 *ChangeLog
-f0d90a0c60f21bdb261e37615f51539b *DESCRIPTION
-d7ada953ab825a7c1f46b13f6345b2c9 *NAMESPACE
+11981cc96dffce26975aed7544cc3713 *ChangeLog
+8966931f445912d992a75289fa51b935 *DESCRIPTION
+5bbe8e8682921806fb583411246ce216 *NAMESPACE
 f1d72a6596d83be5660241ea21586eb6 *R/PCAgrid.R
 68fb912d40ee5b1b9c5386b27d67728a *R/PCAproj.R
-a79daba9fc15d1e5cf7a1f6854c99442 *R/PCdiagplot.R
+c4ceeafb84ef8ad3e2ed8ddb0dc6f0da *R/PCdiagplot.R
 f19604d5eebfda9a3490aca36a85279c *R/ScaleAdv.R
 ee9b5d9229d5ae0eb84bf7e7e2551549 *R/cor.fk.R
 bf8bed078f60f6f96e71cdd760b499a1 *R/covPC.R
@@ -17,9 +17,9 @@ b7c64d26432ffbb646aba5042f0bb55d *R/qn.R
 53341a9a59d7ce972a77694cc9c3692c *R/sPCAgrid.obj.R
 da6e5bb651d4890cfed2c320d6863620 *R/sPCAgrid_R.R
 be57f0d8d50d109e203990c57553d0b2 *R/vignette.matlab.R
-d6d827e071be21db12f78b78429dde62 *build/vignette.rds
-a8a35b898ae1da4d77e5a77fa6b727d1 *inst/doc/matlab.R
-a62b76599288f111099a3c4dac761514 *inst/doc/matlab.pdf
+72c91e678012d05403d81be9b3b58c2e *build/vignette.rds
+2e54398f33df481b15c5d7e6ccde8049 *inst/doc/matlab.R
+574aa72943d76ee4ebfcfd7d702c20ef *inst/doc/matlab.pdf
 75133c85758f26d5f9fc169861deb96c *inst/doc/matlab.rnw
 d6d549ddc4087f18768b4b728fca3b34 *man/PCAgrid.Rd
 5d5aac20cf26fabf54e597ca66d87263 *man/PCAproj.Rd
@@ -52,7 +52,7 @@ ae70a374c98e90e3bc138fc2dd43a234 *src/PCAproj.cpp
 5f517d32072969ea6e496a1624a4675e *src/PCAproj.h
 55421a030d9e0cd85b3c41cc7ab0fed4 *src/R.Inc.h
 809ddf5e64ece893d6d6394e5d2f4693 *src/R_meal.cpp
-ec0a48df0e581b5640d89e2f0d2642a4 *src/R_meal.h
+cd3aceb94c28a42c529202309ef46354 *src/R_meal.h
 703214a4d2e7d23156a6e5054b291898 *src/R_meal_BLAS.cpp
 bf08285c9809b1f37cc796dcc1aef8b2 *src/R_package.cpp
 ff61424ad43ee89b96453fc5a858d6f0 *src/R_package.h
@@ -63,7 +63,7 @@ c2082e97dbf33bd5c43bd313aced10e3 *src/defint64.h
 2669381fb4e6567222c5559c8dad8e76 *src/l1median.cpp
 eb7beca41a2b26f28a995aef3be5d739 *src/outSDo.cpp
 41578212ab83ff545c8dd1903b099f3d *src/outSDo.h
-7bda81ab9ac227089e3c1d6fccc0b23b *src/pcaPP.cpp
+34304da3de5f95db56bcdd90fe9d556f *src/pcaPP.cpp
 da9be3ca652e21a39a8c1414de66359f *src/pcaPP.h
 8ad5313fabf3b19d951888eeedc24455 *src/perftimer.h
 e78ff72e051dd9c5b050ebbcbf2990f0 *src/qnn.cpp
