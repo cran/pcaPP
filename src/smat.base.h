@@ -734,8 +734,11 @@
 
 		const t_this &operator = (const t_this &p ) const { THROW (0) ;}	//	this MUST never be called, as you can't change a constant matrix! Thus it's protected!
 
-		inline			t_size &nsizeRef ()			{ return t_this::GetDimRef_NC (0) ; }
-		inline const	t_size &nsizeRef () const	{ return t_this::GetDimRef_NC (0) ; }
+		// Fix to compile on gcc-7: fix proposed by Prof. Ripley:
+		// change 0 to oU (unsigned) and comment out the const function (second line)
+		// 
+		inline		t_size &nsizeRef ()		{ return t_this::GetDimRef_NC (0U) ; }
+//		inline const	t_size &nsizeRef () const	{ return t_this::GetDimRef_NC (0U) ; }
 
 		inline void SetDim (const t_size dwSize)
 		{

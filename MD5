@@ -1,5 +1,5 @@
-11981cc96dffce26975aed7544cc3713 *ChangeLog
-8966931f445912d992a75289fa51b935 *DESCRIPTION
+d15c780a87b40ed209ae7e2012acb460 *ChangeLog
+c12464e3fac356f605a5fb479adf4f92 *DESCRIPTION
 5bbe8e8682921806fb583411246ce216 *NAMESPACE
 f1d72a6596d83be5660241ea21586eb6 *R/PCAgrid.R
 68fb912d40ee5b1b9c5386b27d67728a *R/PCAproj.R
@@ -68,7 +68,7 @@ da9be3ca652e21a39a8c1414de66359f *src/pcaPP.h
 8ad5313fabf3b19d951888eeedc24455 *src/perftimer.h
 e78ff72e051dd9c5b050ebbcbf2990f0 *src/qnn.cpp
 383842a520b736e834442a0d4d0def36 *src/qnn.h
-544f9315ec8806345cd943b0b8f98d70 *src/smat.base.h
+9a02987fc94a5c94b04c430951d157ae *src/smat.base.h
 af5cff60469d564e5db1e5d38e84abcc *src/smat.cpp
 f707f51fb21bdac052a9cc47a30e8099 *src/smat.def.h
 c2f1f4800e5c2bb239f13dd155f1eec8 *src/smat.elop.h
@@ -83,6 +83,8 @@ e7cc8752ee645ca9acd669986556fcbf *src/smat.sort.h
 720f90ec2580a91fa5070970c83d430b *src/smat.stat.h
 d5c8e1a30c94e0032f9a4b5ada5bd3ff *src/smat_meal_passrng.h
 52c8756a0535181b763022e84dc4f355 *src/smat_meal_passrng_hpp.h
+759ddbeda153877c6a97d7c4caaf0674 *tests/tpcapp.R
+399a685442d796811c6217095364cfe1 *tests/tpcapp.Rout.save
 ae969654e37fc177b4a27628b1486138 *vignettes/load.package.name.R
 7b292ac6fd24a2eb975abf3633986ce8 *vignettes/matlab.example.txt
 75133c85758f26d5f9fc169861deb96c *vignettes/matlab.rnw

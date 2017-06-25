@@ -1,23 +1,31 @@
+2017-06-25  Valentin Todorov  <valentin.todorov@chello.at>
+    *
+    * DESCRIPTION (Version): 1.9-70
+    *
+    * test/tpcapp.R - added
+    * src/smat.base.h - fix to compile on gcc-7: lines 737-741
+    *
+
 2016-10-10  Valentin Todorov  <valentin.todorov@chello.at>
     *
     * DESCRIPTION (Version): 1.9-61
     *
-    * R/PCdiagplot.R - remove a require(graphics) 
+    * R/PCdiagplot.R - remove a require(graphics)
     *
     * src/pcaPP.cpp - fix warning - uninitialized variable
     *
     * NAMESPASE - add importFrom() for functions in "grDevices", "graphics", "stats" and "utils".
     *
-    * src/R_meal.h: fix a problem on Solaris by adding 
+    * src/R_meal.h: fix a problem on Solaris by adding
     **      using namespace std;
     *   - however, I cannot test if this is sufficient
     *
-    
+
 2014-10-20  Valentin Todorov  <valentin.todorov@chello.at>
     *
     * DESCRIPTION (Version): 1.9-60
     *
-    
+
 2014-10-20  Valentin Todorov  <valentin.todorov@chello.at>
     *
     * DESCRIPTION (Version): 1.2-3
