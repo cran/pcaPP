@@ -1,9 +1,13 @@
-2017-06-25  Valentin Todorov  <valentin.todorov@chello.at>
+2017-06-27  Valentin Todorov  <valentin.todorov@chello.at>
     *
+    * DESCRIPTION (Version): 1.9-72
+    * DESCRIPTION (Version): 1.9-71
     * DESCRIPTION (Version): 1.9-70
     *
     * test/tpcapp.R - added
     * src/smat.base.h - fix to compile on gcc-7: lines 737-741
+    * C functions registered (warning "Found no calls to: ‘R_registerRoutines’,
+    *       ‘R_useDynamicSymbols’" fixed)
     *
 
 2016-10-10  Valentin Todorov  <valentin.todorov@chello.at>

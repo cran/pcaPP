@@ -65,23 +65,21 @@ PCAproj <- function (x, k = 2, method = c ("mad", "sd", "qn"), CalcMethod = c("e
 	nn = nrow (y)
 
 	if (update)
-		ret.C = .C ("pcaProj_up", PACKAGE="pcaPP"
-				, as.integer (c(nn, p, n, k, method, scores, maxit, maxhalf))
-				, as.double (zero.tol)
-				, as.double (y)
-				, scores = double (scoresize)
-				, loadings = double (p * k)
-				, lambda = double (k)
-			)
+		ret.C = .C (C_pcaProj_up,
+				as.integer (c(nn, p, n, k, method, scores, maxit, maxhalf)),
+				as.double (zero.tol),
+				as.double (y),
+				scores = double (scoresize),
+				loadings = double (p * k),
+				lambda = double (k))
 	else
-		ret.C = .C ("pcaProj",  PACKAGE="pcaPP"
-				, as.integer (c(nn, p, n, k, method, scores))
-				, as.double (zero.tol)
-				, as.double (y)
-				, scores = double (scoresize)
-				, loadings = double (p * k)
-				, lambda = double (k)
-			)
+		ret.C = .C (C_pcaProj,
+				as.integer (c(nn, p, n, k, method, scores)),
+				as.double (zero.tol),
+				as.double (y),
+				scores = double (scoresize),
+				loadings = double (p * k),
+				lambda = double (k))
 
 	veig = matrix (ret.C$loadings, ncol = k)
 
@@ -162,4 +160,3 @@ PCAproj <- function (x, k = 2, method = c ("mad", "sd", "qn"), CalcMethod = c("e
 	class (ret) <- c ("pcaPP", "princomp")
 	return (ret)
 }
-

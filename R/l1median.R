@@ -43,7 +43,7 @@ function (X, maxit = 200, tol = 10^-8, trace = 0, m.init = .colMedians (X), REPO
 		stop (paste ("length of vector m.init (=", length (m.init), ") does not match the number of columns of data object X (=", ncol (X),")", sep = ""))
 		
 		
-	ret = .C ("l1median_BFGS", PACKAGE="pcaPP", NAOK = TRUE, 
+	ret = .C (C_l1median_BFGS, NAOK = TRUE,
 		par = as.integer (c(dim (X), maxit, trace, REPORT)),
 		npar.out = integer (4),
 		dpar = as.double (c(-Inf, tol)),
@@ -73,7 +73,7 @@ function (X, maxit = 200, tol = 10^-8, trace = 0, m.init = .colMedians (X), ...)
 	if (type < 1 || type > 3)
 		stop ("parameter type MUST be either 1, 2 or 3")
 		
-	ret = .C ("l1median_CG", PACKAGE="pcaPP", NAOK = TRUE, 
+	ret = .C (C_l1median_CG, NAOK = TRUE,
 		par = as.integer (c(dim (X), maxit, trace, type)),
 		npar.out = integer (4),
 		dpar = as.double (c(-Inf, tol)),
@@ -98,13 +98,12 @@ function (X, maxit = 200, tol = 10^-8, zero.tol = 1e-15, trace = 0, m.init = .co
 	if (length (m.init) != ncol (X))
 		stop (paste ("length of vector m.init (=", length (m.init), ") does not match the number of columns of data object X (=", ncol (X),")", sep = ""))
 
-	ret.C = .C ("l1median_HoCr", PACKAGE="pcaPP"
-		, npar = as.integer (c(dim (X), maxit, trace))
-		, npar.out = integer (4)
-		, as.double (c (tol, zero.tol))
-		, as.double (X)
-		, med = as.double (m.init)
-		)
+	ret.C = .C (C_l1median_HoCr,
+        npar = as.integer (c(dim (X), maxit, trace)),
+		npar.out = integer (4),
+		as.double (c (tol, zero.tol)),
+		as.double (X),
+		med = as.double (m.init))
 
 	if (trace >= 1)
 	{
@@ -130,11 +129,11 @@ function (X, maxit = 200, tol = 10^-8, trace = 0, m.init = .colMedians (X), ...)
 	if (length (m.init) != ncol (X))
 		stop (paste ("length of vector m.init (=", length (m.init), ") does not match the number of columns of data object X (=", ncol (X),")", sep = ""))
 
-	ret = .C ("l1median_NLM", PACKAGE="pcaPP", NAOK = TRUE, 
+	ret = .C (C_l1median_NLM, NAOK = TRUE,
 		npar = as.integer (c(dim (X), maxit, 0, 0, 0, msg, trace)),
 		dpar = as.double (c(tol, 0)),
 		as.double (X),
-		med = as.double (m.init) 
+		med = as.double (m.init)
 		)
 
 	if (trace >= 1)
@@ -155,7 +154,7 @@ function (X, maxit = 200, tol = 10^-8, trace = 0, m.init = .colMedians (X), msg 
 	if (length (m.init) != ncol (X))
 		stop (paste ("length of vector m.init (=", length (m.init), ") does not match the number of columns of data object X (=", ncol (X),")", sep = ""))
 
-	ret = .C ("l1median_NLM_Hess", PACKAGE="pcaPP", NAOK = TRUE, 
+	ret = .C (C_l1median_NLM_Hess, NAOK = TRUE,
 		npar = as.integer (c(dim (X), maxit, 0, method, 0, msg, trace, GFlag, HFlag, Exp, Digits)),
 		dpar = as.double (c(tol, 0)),
 		as.double (X),
@@ -185,7 +184,7 @@ function (X, maxit = 200, tol = 10^-8, trace = 0, m.init = .colMedians (X), ...)
 	if (length (m.init) != ncol (X))
 		stop (paste ("length of vector m.init (=", length (m.init), ") does not match the number of columns of data object X (=", ncol (X),")", sep = ""))
 		
-	ret = .C ("l1median_NM", PACKAGE="pcaPP", NAOK = TRUE, 
+	ret = .C (C_l1median_NM, NAOK = TRUE,
 		npar = as.integer (c(dim (X), maxit, 0, 0, 0, 0, trace)),
 		dpar = as.double (c(-Inf, tol, 0, alpha, beta, gamma)),
 		as.double (X),
@@ -199,7 +198,7 @@ function (X, maxit = 200, tol = 10^-8, trace = 0, m.init = .colMedians (X), ...)
 	return (list (par = ret$med, value = ret$dpar[3], code = ret$npar[4], iterations = ret$npar [6], time = ret$npar[7]))
 }
 
-l1median_VaZh <- 
+l1median_VaZh <-
 function (X, maxit = 200, tol = 10^-8, zero.tol = 1e-15, trace = 0, m.init = .colMedians (X), ...)
 {
 
@@ -208,13 +207,12 @@ function (X, maxit = 200, tol = 10^-8, zero.tol = 1e-15, trace = 0, m.init = .co
 	if (length (m.init) != ncol (X))
 		stop (paste ("length of vector m.init (=", length (m.init), ") does not match the number of columns of data object X (=", ncol (X),")", sep = ""))
 
-	ret.C = .C ("l1Median_VZ", PACKAGE="pcaPP"
-		, npar = as.integer (c(dim (X), maxit, 0, trace))
-		, nParOut = integer (3)
-		, as.double (c (tol, zero.tol))
-		, as.double (X)
-		, med = as.double (m.init)
-		)
+	ret.C = .C (C_l1Median_VZ,
+        npar = as.integer (c(dim (X), maxit, 0, trace)),
+		nParOut = integer (3),
+		as.double (c (tol, zero.tol)),
+		as.double (X),
+		med = as.double (m.init))
 
 	return (list (par = ret.C$med, value = sum (sqrt (colSums ((t(X) - ret.C$med)^2))),
 		 code = ret.C$nParOut[1], iterations = ret.C$nParOut [2], time = ret.C$nParOut[3]))

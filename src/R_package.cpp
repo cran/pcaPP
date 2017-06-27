@@ -26,7 +26,7 @@ R_MEAL_SETTINGS ("Heinrich_Fritz@hotmail.com") ;	//	settings for the R meal - im
 ////////////////////////////////
 
 #ifndef ES_DEV_ENV
-	void kendallNlogN (double* arr1, double* arr2, int *pnPar, double *dRet)		//	2do: wrap other fct (N^2) too; make choice depending on n (pnPar[0])
+	void C_kendallNlogN (double* arr1, double* arr2, int *pnPar, double *dRet)		//	2do: wrap other fct (N^2) too; make choice depending on n (pnPar[0])
 	{
 		TRY( 
 			*dRet = kendallNlogN (arr1, arr2,		//	arr1, arr2
@@ -36,35 +36,35 @@ R_MEAL_SETTINGS ("Heinrich_Fritz@hotmail.com") ;	//	settings for the R meal - im
 	}
 #endif
 
-	void PCAgrid (int *pnParamIn, int *pnParamOut, double *pdParamIn, double *pdData, double *pdLoadings, double *pdSDev, double *pdObj/*, double *pdMaxMaha*/)
+	void C_PCAgrid (int *pnParamIn, int *pnParamOut, double *pdParamIn, double *pdData, double *pdLoadings, double *pdSDev, double *pdObj/*, double *pdMaxMaha*/)
 	{
 		TRY( 
 			CPCAGrid (pnParamIn, pnParamOut, pdParamIn, pdData, pdLoadings, pdSDev, pdObj/*, pdMaxMaha*/).Calc () ;
 			)
 	}
 
-	void sPCAgrid (int *pnParamIn, int *pnParamOut, double *pdParamIn, double *pdData, double *pdLoadings, double *pdSDev, double *pdObj/*, double *pdMaxMaha*/, double *pdLambda, double *pdBackTransHD)
+	void C_sPCAgrid (int *pnParamIn, int *pnParamOut, double *pdParamIn, double *pdData, double *pdLoadings, double *pdSDev, double *pdObj/*, double *pdMaxMaha*/, double *pdLambda, double *pdBackTransHD)
 	{
 		TRY( 
 			CsPCAGrid (pnParamIn, pnParamOut, pdParamIn, pdData, pdLoadings, pdSDev, pdObj/*, pdMaxMaha*/, pdLambda, pdBackTransHD).Calc () ;
 			)
 	}
 
-	void pcaProj_up (int *pnParIn, double *pdParIn, double *pdX, double *pdZ, double *pdL, double *pdSDev)
+	void C_pcaProj_up (int *pnParIn, double *pdParIn, double *pdX, double *pdZ, double *pdL, double *pdSDev)
 	{
 		TRY( 
 			CPCAprojU (pnParIn, pdParIn, pdX, pdZ, pdL, pdSDev).Calc () ;
 			)
 	}
 
-	void pcaProj (int *pnParIn, double *pdParIn, double *pdX, double *pdZ, double *pdL, double *pdSDev)
+	void C_pcaProj (int *pnParIn, double *pdParIn, double *pdX, double *pdZ, double *pdL, double *pdSDev)
 	{
 		TRY( 
 			CPCAproj (pnParIn, pdParIn, pdX, pdZ, pdL, pdSDev).Calc () ;
 			)
 	}
 
-	void l1Median_VZ (int *pnParIn, int *pnParOut, double *pdParIn, double *pdX, double *pdMed/*, double *pdWeights*/)
+	void C_l1Median_VZ (int *pnParIn, int *pnParOut, double *pdParIn, double *pdX, double *pdMed/*, double *pdWeights*/)
 	{
 		TRY( 
 			CPerfTimer tim ;
@@ -73,7 +73,7 @@ R_MEAL_SETTINGS ("Heinrich_Fritz@hotmail.com") ;	//	settings for the R meal - im
 			)
 	}
 
-	void l1median_HoCr (int *pnParIn, int *pnParOut, double *pdParIn, double *pdX, double *pdMed)
+	void C_l1median_HoCr (int *pnParIn, int *pnParOut, double *pdParIn, double *pdX, double *pdMed)
 	{
 		const int &n = pnParIn [0], &p = pnParIn [1], &dwMaxit = pnParIn[2], &dwTrace = pnParIn [3] ;
 		int &nCode = pnParOut[0] = 0, &dwIterCount = pnParOut [1] ;
@@ -89,7 +89,7 @@ R_MEAL_SETTINGS ("Heinrich_Fritz@hotmail.com") ;	//	settings for the R meal - im
 		return ;
 	}
 
-	void qn (int *pnParIn, double *pdParIn, double *pdParOut, double *pdX)
+	void C_qn (int *pnParIn, double *pdParIn, double *pdParOut, double *pdX)
 	{
 		int &n = pnParIn[0] ;
 		double &dCorrFact = pdParIn [0] ;
