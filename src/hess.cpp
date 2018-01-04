@@ -54,7 +54,7 @@ void Hess_Sub_R (int *pnPar, double *pdX_i, double *pdMu, double *pdHess)
 	double *pdTempP = new double [p] ;
 
 	Hess_Sub (pnPar [0], pdX_i, pdMu, pdHess, pdTempP) ;
-	delete pdTempP ;
+	delete [] pdTempP ;
 }
 
 void Hess_R (int *pnPar, double *pdX, double *pdMu, double *pdHess)
@@ -62,6 +62,6 @@ void Hess_R (int *pnPar, double *pdX, double *pdMu, double *pdHess)
 	double *pdTempP1 = new double [pnPar[0]], *pdTempP2 = new double [pnPar[0]] ;
 	Hess (pnPar[0], pnPar[1], pdX, pdMu, pdHess, pdTempP1, pdTempP2) ;
 
-	delete pdTempP1 ;
-	delete pdTempP2 ;
+	delete [] pdTempP1 ;
+	delete [] pdTempP2 ;
 }

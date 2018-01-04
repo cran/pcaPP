@@ -1,5 +1,5 @@
 6409222e80d4eda11ee5bf24f7deed48 *ChangeLog
-02f8ad1178bf1b5403ff6a4d80196071 *DESCRIPTION
+8915257287064437f358fbf9f036f6aa *DESCRIPTION
 d34fd6170be6273b828b421939288aed *NAMESPACE
 33b74819d8e58393a5e7291b55eaaae9 *R/PCAgrid.R
 ad60d9aaf7a8e3e1651caeb94308b56f *R/PCAproj.R
@@ -59,7 +59,7 @@ d070d10e3a11af082cf5c493e2ecff82 *src/R_package.cpp
 d47d23eea4c8825db14365911f4a1dc0 *src/cov.kendall.cpp
 7fb581db4e66072cfbec082025695d15 *src/cov.kendall.h
 c2082e97dbf33bd5c43bd313aced10e3 *src/defint64.h
-2ce1b6ccd0bf5020137b319f41aa823a *src/hess.cpp
+f7315b552ccbacce369528021ede9db5 *src/hess.cpp
 ef506c4becd2bd23e15d421303e63bc8 *src/l1median.cpp
 eb7beca41a2b26f28a995aef3be5d739 *src/outSDo.cpp
 41578212ab83ff545c8dd1903b099f3d *src/outSDo.h
