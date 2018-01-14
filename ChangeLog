@@ -1,3 +1,11 @@
+2017-01-04  Valentin Todorov  <valentin.todorov@chello.at>
+    *
+    * DESCRIPTION (Version): 1.9-73
+    *
+    * src/hess.cpp - fix warning of the type -Wmismatched-new-delete
+    *   (allocated array, deleted as single element). See mail of Prof. Ripley from 28.Nobember 2017
+    *
+
 2017-06-27  Valentin Todorov  <valentin.todorov@chello.at>
     *
     * DESCRIPTION (Version): 1.9-72

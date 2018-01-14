@@ -21,8 +21,8 @@
 //
 
 // VT:10.10.2016
-// Problem compiling on Solaris
-// 
+// Problem compiling on Solaris (mail from Prof. Ripley from 18.09.2016)
+//	- add  'using namespace std;'
 using namespace std;
 
 #ifdef R_PACKAGE_FILE

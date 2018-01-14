@@ -1,5 +1,5 @@
-6409222e80d4eda11ee5bf24f7deed48 *ChangeLog
-8915257287064437f358fbf9f036f6aa *DESCRIPTION
+11d5e523a4bc14031bf6c1b205b556a7 *ChangeLog
+120f842b874f78b412c28e21a62e3baa *DESCRIPTION
 d34fd6170be6273b828b421939288aed *NAMESPACE
 33b74819d8e58393a5e7291b55eaaae9 *R/PCAgrid.R
 ad60d9aaf7a8e3e1651caeb94308b56f *R/PCAproj.R
@@ -52,14 +52,14 @@ ae70a374c98e90e3bc138fc2dd43a234 *src/PCAproj.cpp
 5f517d32072969ea6e496a1624a4675e *src/PCAproj.h
 55421a030d9e0cd85b3c41cc7ab0fed4 *src/R.Inc.h
 809ddf5e64ece893d6d6394e5d2f4693 *src/R_meal.cpp
-cd3aceb94c28a42c529202309ef46354 *src/R_meal.h
+ef84dfe2d938f779d7658b58fe940aa7 *src/R_meal.h
 703214a4d2e7d23156a6e5054b291898 *src/R_meal_BLAS.cpp
 d070d10e3a11af082cf5c493e2ecff82 *src/R_package.cpp
 654efe9ee03475f44ea31ed914fbf5ee *src/R_package.h
 d47d23eea4c8825db14365911f4a1dc0 *src/cov.kendall.cpp
 7fb581db4e66072cfbec082025695d15 *src/cov.kendall.h
 c2082e97dbf33bd5c43bd313aced10e3 *src/defint64.h
-f7315b552ccbacce369528021ede9db5 *src/hess.cpp
+5081b6f579daba74d374660b1445f549 *src/hess.cpp
 ef506c4becd2bd23e15d421303e63bc8 *src/l1median.cpp
 eb7beca41a2b26f28a995aef3be5d739 *src/outSDo.cpp
 41578212ab83ff545c8dd1903b099f3d *src/outSDo.h
