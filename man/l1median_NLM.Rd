@@ -47,7 +47,10 @@ l1median_VaZh (X, maxit = 200, tol = 10^-8, zero.tol = 1e-15, trace = 0,
   \item{iterations_gr}{ When using a gradient function this value holds the number of times the gradient had to be computed. }
   \item{time}{The algorithms runtime in milliseconds.}
 }
-\details{The L1-median is computed using the built-in functions \code{\link[stats]{optim}} and \code{\link[stats]{nlm}}. These functions are a transcript of the \code{L1median} method of package \code{robustX} (available at ftp://stat.ethz.ch/U/maechler/R/), porting as much code as possible into C++.}
+\details{The L1-median is computed using the built-in functions 
+    \code{\link[stats]{optim}} and \code{\link[stats]{nlm}}. 
+    These functions are a transcript of the \code{L1median} 
+    method of package \code{robustX}, porting as much code as possible into C++.}
 \author{Heinrich Fritz, Peter Filzmoser <\email{P.Filzmoser@tuwien.ac.at}>}
 
 \seealso{ \code{\link{median}}}
