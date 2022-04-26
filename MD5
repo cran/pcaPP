@@ -1,6 +1,6 @@
-11d5e523a4bc14031bf6c1b205b556a7 *ChangeLog
-31de403090277c9ab851b1abd4c8f00a *DESCRIPTION
-d34fd6170be6273b828b421939288aed *NAMESPACE
+fb4bf7646df511ad3b2f6c1076fa70a6 *ChangeLog
+cd113c49a4c42ec7035603e8e38d2891 *DESCRIPTION
+9c219f5bb53f0623e48559073d45e973 *NAMESPACE
 33b74819d8e58393a5e7291b55eaaae9 *R/PCAgrid.R
 ad60d9aaf7a8e3e1651caeb94308b56f *R/PCAproj.R
 c4ceeafb84ef8ad3e2ed8ddb0dc6f0da *R/PCdiagplot.R
@@ -12,7 +12,7 @@ bf8bed078f60f6f96e71cdd760b499a1 *R/covPC.R
 de8b271aa6aea29b08fc2f95cd04d055 *R/opt.TPO.R
 74a53ca213ddc068941018a7f26c2c5c *R/pcaPP-internal.R
 1afc8741f217d90bcb8b1c9063de358e *R/plot.opt.TPO.R
-26641019f10b72cec0b730d3eabc1b47 *R/plotcov.R
+949f9d9cb7d6722f4295dde19bf8bfc1 *R/plotcov.R
 a1a1a6bfcc1d119252512e6bc2b598ef *R/qn.R
 53341a9a59d7ce972a77694cc9c3692c *R/sPCAgrid.obj.R
 da6e5bb651d4890cfed2c320d6863620 *R/sPCAgrid_R.R
@@ -45,15 +45,15 @@ a345008d7eb6f22c46fce474f0f5f4cc *src/ML_meal.h
 ef72f6926440f161f4ae5d1f9ec72349 *src/ML_package.h
 5190547fb04c808c41fed4bfaf34a7be *src/ML_passrng.cpp
 33f5c7321b954c7b25874fc49fea65a4 *src/ML_passrng.h
-4c0d792bef0f5df1a722caea26f4ded0 *src/Makevars
+3bea4a11f9bcec02fc344b6b90cfae88 *src/Makevars
 83ac5bece74b47c90a6bc09bbbc18bdf *src/PCAgrid.cpp
 203750b33c1f918dfb0ac2d8fd33159e *src/PCAgrid.h
 ae70a374c98e90e3bc138fc2dd43a234 *src/PCAproj.cpp
 5f517d32072969ea6e496a1624a4675e *src/PCAproj.h
 55421a030d9e0cd85b3c41cc7ab0fed4 *src/R.Inc.h
-809ddf5e64ece893d6d6394e5d2f4693 *src/R_meal.cpp
+0516c4f17fdd4d25ab029f5ed32b0d72 *src/R_meal.cpp
 ef84dfe2d938f779d7658b58fe940aa7 *src/R_meal.h
-703214a4d2e7d23156a6e5054b291898 *src/R_meal_BLAS.cpp
+7e84e3d4804199091cf1164c6ff19e14 *src/R_meal_BLAS.cpp
 d070d10e3a11af082cf5c493e2ecff82 *src/R_package.cpp
 654efe9ee03475f44ea31ed914fbf5ee *src/R_package.h
 d47d23eea4c8825db14365911f4a1dc0 *src/cov.kendall.cpp

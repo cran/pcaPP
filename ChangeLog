@@ -1,3 +1,20 @@
+2022-04-25  Valentin Todorov  <valentin.todorov@chello.at>
+    *
+    * DESCRIPTION (Version): 2.0-1
+    *
+    * src/R_meal.cpp - Fix for USE_FC_LEN_T becoming the default in 4.2.0
+    * src/R_meal_BLAS.cpp - -"-
+    * R/plotcov.R, NAMESPASE, DESCRIPTION - wrong comparison of class() to a character string,
+    *   use is() instead; add is() to the imports in NAMESPACE and
+    *   add methods to the imports in DESCRIPTION
+    *
+
+2021-04-22  Valentin Todorov  <valentin.todorov@chello.at>
+    *
+    * DESCRIPTION (Version): 1.9-74
+    *
+    * man/l1median_nlm.rd - fixed URLs
+
 2017-01-04  Valentin Todorov  <valentin.todorov@chello.at>
     *
     * DESCRIPTION (Version): 1.9-73

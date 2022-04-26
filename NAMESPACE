@@ -8,6 +8,7 @@ importFrom("graphics", "abline", "lines", "mtext", "par", "plot",
 importFrom("stats", "cov", "cov2cor", "mad", "median", "qchisq",
          "qnorm", "rnorm", "runif", "sd")
 importFrom("utils", "flush.console", "installed.packages")
+importFrom("methods", "is")
 
 export(PCAgrid, PCAproj, PCdiagplot, ScaleAdv, cor.fk, covPC,
        covPCAgrid, covPCAproj, data.Zou, l1median, l1median_BFGS,

@@ -1,7 +1,7 @@
 plotcov <- function (cov1, cov2, method1, labels1, method2, labels2, ndigits = 4, ...)
 {
 
-	if (class (cov1) == "matrix")
+	if (is(cov1, "matrix"))
 		cm1 = cov1
 	else if (is.null (cov1$cov))
 		stop ("No appropriate covariance structure specified")
@@ -30,7 +30,7 @@ plotcov <- function (cov1, cov2, method1, labels1, method2, labels2, ndigits = 4
 	}
 	else
 	{
-		if (class (cov2) == "matrix")
+		if (is(cov2, "matrix"))
 			cm2 = cov2
 		else if (is.null (cov2$cov))
 			stop ("No appropriate covariance structure specified")
@@ -87,7 +87,7 @@ plotcov <- function (cov1, cov2, method1, labels1, method2, labels2, ndigits = 4
 
 	lines (c(0.5, p-0.5), c(p - 0.5, 0.5), lwd = 3)
 
-#	lines (mean (lim) + 
+#	lines (mean (lim) +
 
 	lines (lim[2] - 2 + c(-0.5, 0.3), c(-0.3, -0.3))
 	lines (lim[2] - 2 + c(-0.5, 0.3), c(-0.7, -0.7), ...)

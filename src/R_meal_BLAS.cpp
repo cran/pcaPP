@@ -1,3 +1,5 @@
+#define USE_FC_LEN_T
+
 #ifdef R_PACKAGE_FILE
 
 #include <R_ext/RS.h>
@@ -184,6 +186,7 @@
 			(_MB_CONST _MB_TYPE_D *)	beta,
 			(_MB_TYPE_D *)				y,
 			(_MB_CONST _MB_INT *)		incy
+            FCONE
 		);
 	}
 
@@ -200,6 +203,9 @@
 			(_MB_CONST _MB_INT *)		lda,
 			(_MB_TYPE_D *)				x,
 			(_MB_CONST _MB_INT *)		incx
+            FCONE
+            FCONE
+            FCONE
 		);
 	}
 
@@ -214,6 +220,9 @@
 			(_MB_CONST _MB_TYPE_D *)	ap,
 			(_MB_TYPE_D *)				x,
 			(_MB_CONST _MB_INT *)		incx
+            FCONE
+            FCONE
+            FCONE
 		); 
 	}
 
@@ -229,6 +238,9 @@
 			(_MB_CONST _MB_INT *)		lda,
 			(_MB_TYPE_D *)				x,
 			(_MB_CONST _MB_INT *)		incx
+            FCONE
+            FCONE
+            FCONE
 		);
 	}
 
@@ -245,6 +257,9 @@
 			(_MB_CONST _MB_INT *)		lda,
 			(_MB_TYPE_D *)	x,
 			(_MB_CONST _MB_INT *)		incx
+            FCONE
+            FCONE
+            FCONE
 		);
 	}
 
@@ -259,6 +274,9 @@
 			(_MB_CONST _MB_TYPE_D *	)	ap,
 			(_MB_TYPE_D *)				x,
 			(_MB_CONST _MB_INT *)		incx
+            FCONE
+            FCONE
+            FCONE
 		);
 	}
 
@@ -274,6 +292,9 @@
 			(_MB_CONST _MB_INT *)		lda,
 			(_MB_TYPE_D *)				x,
 			(_MB_CONST _MB_INT *)		incx
+            FCONE
+            FCONE
+            FCONE
 		);
 	}
 
@@ -327,6 +348,7 @@
 			(_MB_CONST _MB_INT *)		incx,
 			(_MB_TYPE_D *)				a,
 			(_MB_CONST _MB_INT *)		lda
+            FCONE
 		);
 	}
 
@@ -340,6 +362,7 @@
 			(_MB_CONST _MB_TYPE_D *)	x,
 			(_MB_CONST _MB_INT *)		incx,
 			(_MB_TYPE_D *)				ap
+            FCONE
 		);
 	}
 
@@ -356,6 +379,7 @@
 			(_MB_CONST _MB_INT *)		incy,
 			(_MB_TYPE_D *)				a,
 			(_MB_CONST _MB_INT *)		lda
+            FCONE
 		);
 	}
 
@@ -371,6 +395,7 @@
 			(_MB_CONST _MB_TYPE_D *)	y,
 			(_MB_CONST _MB_INT *)		incy,
 			(_MB_TYPE_D *)				ap
+            FCONE
 		);
 	}
 
@@ -395,6 +420,8 @@
 			(_MB_CONST _MB_TYPE_D *)	beta,
 			(_MB_TYPE_D *)				c,
 			(_MB_CONST _MB_INT *)		ldc
+            FCONE
+            FCONE
 		) ;
 	}
 
@@ -413,6 +440,10 @@
 			(_MB_CONST _MB_INT *)		lda,
 			(_MB_TYPE_D *)				b,
 			(_MB_CONST _MB_INT *)		ldb
+            FCONE
+            FCONE
+            FCONE
+            FCONE
 		);
 	}
 
@@ -431,6 +462,10 @@
 			(_MB_CONST _MB_INT *)		lda,
 			(_MB_TYPE_D *)				b,
 			(_MB_CONST _MB_INT *)		ldb
+            FCONE
+            FCONE
+            FCONE
+            FCONE
 		);
 	}
 
@@ -450,6 +485,8 @@
 			(_MB_CONST _MB_TYPE_D *)	beta,
 			(_MB_TYPE_D *)				c,
 			(_MB_CONST _MB_INT *)		ldc
+            FCONE
+            FCONE
 		);
 	}
 
@@ -467,6 +504,8 @@
 			(_MB_CONST _MB_TYPE_D *)	beta,
 			(_MB_TYPE_D *)				c,
 			(_MB_CONST _MB_INT *)		ldc
+            FCONE
+            FCONE
 		);
 	}
 
@@ -486,6 +525,8 @@
 			(_MB_CONST _MB_TYPE_D *)	beta,
 			(_MB_TYPE_D *)				c,
 			(_MB_CONST _MB_INT *)		ldc
+            FCONE
+            FCONE
 		);
 	}
 

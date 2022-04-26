@@ -19,6 +19,8 @@
 //	R.meal.cpp
 //	R Mathematical Environment Abstraction Layer
 
+#define USE_FC_LEN_T
+
 #ifdef R_PACKAGE_FILE
 
 
@@ -57,13 +59,13 @@
 
 //	LAPACK
 	void meal_geev (const char* jobvl, const char* jobvr, const int* n, double* a, const int* lda, double* wr, double* wi, double* vl, const int* ldvl, double* vr, const int* ldvr, double* work, const int* lwork, int* info)
-	{ F77_CALL(dgeev)(jobvl, jobvr, n, a, lda, wr, wi, vl, ldvl, vr, ldvr, work, lwork, info) ; }
+	{ F77_CALL(dgeev)(jobvl, jobvr, n, a, lda, wr, wi, vl, ldvl, vr, ldvr, work, lwork, info FCONE FCONE) ; }
 
 	void meal_gesv (const int* n, const int* nrhs, double* a, const int* lda, int* ipiv, double* b, const int* ldb, int* info)
 	{ F77_CALL(dgesv)(n, nrhs, a, lda, ipiv, b, ldb, info) ; }
 
 	void meal_gesvd (const char* jobu, const char* jobvt, const int* m, const int* n, double* a, const int* lda, double* s, double* u, const int* ldu, double* vt, const int* ldvt, double* work, const int* lwork, int* info)
-	{ F77_CALL(dgesvd)(jobu, jobvt, m, n, a, lda, s, u, ldu, vt, ldvt, work, lwork, info) ; }
+	{ F77_CALL(dgesvd)(jobu, jobvt, m, n, a, lda, s, u, ldu, vt, ldvt, work, lwork, info FCONE FCONE) ; }
 
 
 //	SORT
