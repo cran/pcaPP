@@ -3,7 +3,7 @@
 \title{ Fast estimation of Kendall's tau rank correlation coefficient}
 \description{
   Calculates Kendall's tau rank correlation coefficient in O (n log (n)) 
-  rather than O (n\^2) as in the current R implementation.
+  rather than O (n^2) as in the current R implementation.
 }
 \usage{
 %cor.fk (x, y = NULL, cor = TRUE)

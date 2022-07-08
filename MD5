@@ -1,5 +1,5 @@
-fb4bf7646df511ad3b2f6c1076fa70a6 *ChangeLog
-cd113c49a4c42ec7035603e8e38d2891 *DESCRIPTION
+4d487c2a367c4085c43a043dd01fc448 *ChangeLog
+01cbd6f12addc492aff0c2eafa3b0587 *DESCRIPTION
 9c219f5bb53f0623e48559073d45e973 *NAMESPACE
 33b74819d8e58393a5e7291b55eaaae9 *R/PCAgrid.R
 ad60d9aaf7a8e3e1651caeb94308b56f *R/PCAproj.R
@@ -17,7 +17,7 @@ a1a1a6bfcc1d119252512e6bc2b598ef *R/qn.R
 53341a9a59d7ce972a77694cc9c3692c *R/sPCAgrid.obj.R
 da6e5bb651d4890cfed2c320d6863620 *R/sPCAgrid_R.R
 be57f0d8d50d109e203990c57553d0b2 *R/vignette.matlab.R
-72c91e678012d05403d81be9b3b58c2e *build/vignette.rds
+6dac65ac3d6236b8071727f79e4d72e9 *README.md
 2e54398f33df481b15c5d7e6ccde8049 *inst/doc/matlab.R
 574aa72943d76ee4ebfcfd7d702c20ef *inst/doc/matlab.pdf
 75133c85758f26d5f9fc169861deb96c *inst/doc/matlab.rnw
@@ -26,7 +26,7 @@ d6d549ddc4087f18768b4b728fca3b34 *man/PCAgrid.Rd
 9c3bf46eac5b32bb02f97bf4d416eb81 *man/PCdiagplot.Rd
 5b3ba687c868ccc18b575e10c661e0f9 *man/Qn.Rd
 35dcf333f7ebbb8fea62492d44401a4a *man/ScaleAdv.Rd
-a96f41a7d9d417aeb97550728e928ffe *man/cor.fk.Rd
+ff2a9e37ac35bb84f5f2e1763fc22434 *man/cor.fk.Rd
 193ab6afcb8aa26ab0034c824850c077 *man/covPC.Rd
 2583a626dd02481809cc0ddc9c14bcee *man/covPCA.Rd
 465863b60cf348f624267cfc44fa925c *man/data.Zou.Rd
