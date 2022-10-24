@@ -1,5 +1,5 @@
-4d487c2a367c4085c43a043dd01fc448 *ChangeLog
-01cbd6f12addc492aff0c2eafa3b0587 *DESCRIPTION
+d64e0ae0089fd0b4d4076b29b0c60dcc *ChangeLog
+6bcda91d83c5dff270b1133824cbf5a7 *DESCRIPTION
 9c219f5bb53f0623e48559073d45e973 *NAMESPACE
 33b74819d8e58393a5e7291b55eaaae9 *R/PCAgrid.R
 ad60d9aaf7a8e3e1651caeb94308b56f *R/PCAproj.R
@@ -17,7 +17,7 @@ a1a1a6bfcc1d119252512e6bc2b598ef *R/qn.R
 53341a9a59d7ce972a77694cc9c3692c *R/sPCAgrid.obj.R
 da6e5bb651d4890cfed2c320d6863620 *R/sPCAgrid_R.R
 be57f0d8d50d109e203990c57553d0b2 *R/vignette.matlab.R
-6dac65ac3d6236b8071727f79e4d72e9 *README.md
+746a32bd8c0c50182bc811f536a37869 *README.md
 2e54398f33df481b15c5d7e6ccde8049 *inst/doc/matlab.R
 574aa72943d76ee4ebfcfd7d702c20ef *inst/doc/matlab.pdf
 75133c85758f26d5f9fc169861deb96c *inst/doc/matlab.rnw
@@ -46,7 +46,7 @@ ef72f6926440f161f4ae5d1f9ec72349 *src/ML_package.h
 5190547fb04c808c41fed4bfaf34a7be *src/ML_passrng.cpp
 33f5c7321b954c7b25874fc49fea65a4 *src/ML_passrng.h
 3bea4a11f9bcec02fc344b6b90cfae88 *src/Makevars
-83ac5bece74b47c90a6bc09bbbc18bdf *src/PCAgrid.cpp
+0bb9f4af096780e98d7704efa5c613f5 *src/PCAgrid.cpp
 203750b33c1f918dfb0ac2d8fd33159e *src/PCAgrid.h
 ae70a374c98e90e3bc138fc2dd43a234 *src/PCAproj.cpp
 5f517d32072969ea6e496a1624a4675e *src/PCAproj.h
@@ -65,7 +65,7 @@ eb7beca41a2b26f28a995aef3be5d739 *src/outSDo.cpp
 41578212ab83ff545c8dd1903b099f3d *src/outSDo.h
 34304da3de5f95db56bcdd90fe9d556f *src/pcaPP.cpp
 da9be3ca652e21a39a8c1414de66359f *src/pcaPP.h
-bcc1bb053b7c3682ad34afe6939f5e29 *src/pcaPP_init.c
+614ec5c052dfc572b47cf8a9a466007f *src/pcaPP_init.c
 8ad5313fabf3b19d951888eeedc24455 *src/perftimer.h
 e78ff72e051dd9c5b050ebbcbf2990f0 *src/qnn.cpp
 383842a520b736e834442a0d4d0def36 *src/qnn.h
