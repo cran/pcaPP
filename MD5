@@ -1,5 +1,5 @@
-d64e0ae0089fd0b4d4076b29b0c60dcc *ChangeLog
-6bcda91d83c5dff270b1133824cbf5a7 *DESCRIPTION
+8a78a4b1f362e004f84c4f0cecf07077 *ChangeLog
+ce9d2b1c1b09792efa68d6fba6e8e176 *DESCRIPTION
 9c219f5bb53f0623e48559073d45e973 *NAMESPACE
 33b74819d8e58393a5e7291b55eaaae9 *R/PCAgrid.R
 ad60d9aaf7a8e3e1651caeb94308b56f *R/PCAproj.R
@@ -17,12 +17,12 @@ a1a1a6bfcc1d119252512e6bc2b598ef *R/qn.R
 53341a9a59d7ce972a77694cc9c3692c *R/sPCAgrid.obj.R
 da6e5bb651d4890cfed2c320d6863620 *R/sPCAgrid_R.R
 be57f0d8d50d109e203990c57553d0b2 *R/vignette.matlab.R
-746a32bd8c0c50182bc811f536a37869 *README.md
+297467e47632bde3ec73f48cced6aeed *README.md
 2e54398f33df481b15c5d7e6ccde8049 *inst/doc/matlab.R
 574aa72943d76ee4ebfcfd7d702c20ef *inst/doc/matlab.pdf
 75133c85758f26d5f9fc169861deb96c *inst/doc/matlab.rnw
 d6d549ddc4087f18768b4b728fca3b34 *man/PCAgrid.Rd
-5d5aac20cf26fabf54e597ca66d87263 *man/PCAproj.Rd
+006b585b1e4120482979fe85e5281e68 *man/PCAproj.Rd
 9c3bf46eac5b32bb02f97bf4d416eb81 *man/PCdiagplot.Rd
 5b3ba687c868ccc18b575e10c661e0f9 *man/Qn.Rd
 35dcf333f7ebbb8fea62492d44401a4a *man/ScaleAdv.Rd
@@ -38,7 +38,7 @@ a0c50d86061249f9053a6e4a69c0fae1 *man/objplot.Rd
 57f4136e044461aa977a9ca2a5e91373 *man/plotcov.Rd
 d2269a51f3b82d40b4a98f85224f6bbb *src/L1Median.h
 8c1dcf3de0b0ee7a1524ed48e7c7abd8 *src/L1Median_HoCr.cpp
-f67d656a430979062aaa24258d14c8eb *src/L1Median_VardiZhang.cpp
+647b82dbcce907ef3b38d2b4cf3f3d52 *src/L1Median_VardiZhang.cpp
 ecd2a168df3dfeca85dccee4ef27399a *src/ML_meal.cpp
 a345008d7eb6f22c46fce474f0f5f4cc *src/ML_meal.h
 5a8483fcd758b4fb2a7f9cb93bcd29e9 *src/ML_package.cpp
@@ -51,7 +51,7 @@ ef72f6926440f161f4ae5d1f9ec72349 *src/ML_package.h
 ae70a374c98e90e3bc138fc2dd43a234 *src/PCAproj.cpp
 5f517d32072969ea6e496a1624a4675e *src/PCAproj.h
 55421a030d9e0cd85b3c41cc7ab0fed4 *src/R.Inc.h
-0516c4f17fdd4d25ab029f5ed32b0d72 *src/R_meal.cpp
+4fec1b441e3fd692a20dae075f1e143b *src/R_meal.cpp
 ef84dfe2d938f779d7658b58fe940aa7 *src/R_meal.h
 7e84e3d4804199091cf1164c6ff19e14 *src/R_meal_BLAS.cpp
 d070d10e3a11af082cf5c493e2ecff82 *src/R_package.cpp
