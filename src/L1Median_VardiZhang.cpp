@@ -1,3 +1,4 @@
+#define STRICT_R_HEADERS 1
 #include <R_ext/Error.h>
 #include "L1Median.h"
 

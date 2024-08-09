@@ -1,5 +1,5 @@
 8a78a4b1f362e004f84c4f0cecf07077 *ChangeLog
-ce9d2b1c1b09792efa68d6fba6e8e176 *DESCRIPTION
+4c8aba9daddef5af98e012ac5d41f775 *DESCRIPTION
 9c219f5bb53f0623e48559073d45e973 *NAMESPACE
 33b74819d8e58393a5e7291b55eaaae9 *R/PCAgrid.R
 ad60d9aaf7a8e3e1651caeb94308b56f *R/PCAproj.R
@@ -38,7 +38,7 @@ a0c50d86061249f9053a6e4a69c0fae1 *man/objplot.Rd
 57f4136e044461aa977a9ca2a5e91373 *man/plotcov.Rd
 d2269a51f3b82d40b4a98f85224f6bbb *src/L1Median.h
 8c1dcf3de0b0ee7a1524ed48e7c7abd8 *src/L1Median_HoCr.cpp
-647b82dbcce907ef3b38d2b4cf3f3d52 *src/L1Median_VardiZhang.cpp
+1aee30a8be247f8eb8340a710f167c6a *src/L1Median_VardiZhang.cpp
 ecd2a168df3dfeca85dccee4ef27399a *src/ML_meal.cpp
 a345008d7eb6f22c46fce474f0f5f4cc *src/ML_meal.h
 5a8483fcd758b4fb2a7f9cb93bcd29e9 *src/ML_package.cpp
